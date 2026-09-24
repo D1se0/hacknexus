@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-base text-ink font-sans antialiased;
+    overflow-x: hidden;
+  }
+  ::selection {
+    @apply bg-acento/90 text-base;
+  }
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-base;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-edge rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-acento/60;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-acento/70 rounded;
+  }
+  code,
+  pre {
+    @apply font-mono;
+  }
+}
+
+@layer components {
+  .grid-bg {
+    background-image: linear-gradient(rgba(46, 232, 138, 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46, 232, 138, 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .text-glow {
+    text-shadow: 0 0 18px rgba(46, 232, 138, 0.55);
+  }
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(120deg, #fff 20%, #d9e2db 45%, #2ee88a 90%);
+  }
+  .section-tag {
+    @apply font-mono text-xs uppercase tracking-[0.3em] text-acento;
+  }
+  .card {
+    @apply rounded-xl border border-edge bg-panel/80 backdrop-blur-sm transition-all duration-300;
+  }
+  .card-hover {
+    @apply hover:border-acento/50 hover:shadow-glow;
+  }
+  .kbd {
+    @apply inline-flex min-w-[1.9rem] items-center justify-center rounded-md border border-edge bg-[#1a1f1c] px-2 py-1 font-mono text-xs text-ink;
+    box-shadow: 0 2px 0 0 #0b0f0d;
+  }
+  .chip {
+    @apply rounded-full border border-edge bg-panel/70 px-3 py-1.5 font-mono text-xs text-grey backdrop-blur-sm;
+  }
+  .scanline-band {
+    @apply pointer-events-none absolute inset-x-0 h-20 animate-scanline;
+    background: linear-gradient(180deg, transparent, rgba(46, 232, 138, 0.05), transparent);
+  }
+  .halo {
+    @apply pointer-events-none absolute rounded-full blur-[140px];
+  }
+}
+
+@layer utilities {
+  .animate-shimmer-bg {
+    background-size: 200% 100%;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+}
