@@ -158,7 +158,7 @@ export default function Pcap() {
                 ))}
                 <span className="ml-auto font-mono text-[10px] text-grey">{packets.length} paquetes</span>
               </div>
-              <div className="max-h-[520px] overflow-y-auto">
+              <div className="max-h-[520px] overflow-x-auto overflow-y-auto">
                 <table className="w-full min-w-[820px] text-left font-mono text-[11.5px]">
                   <thead className="sticky top-0 bg-panel">
                     <tr className="border-b border-edge text-[10px] uppercase tracking-wider text-grey">

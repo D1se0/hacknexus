@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { ChevronRight, Terminal, ShieldCheck, Zap, Search, Github } from 'lucide-react'
+import { ChevronRight, Terminal, ShieldCheck, Zap, Search, Github, BookOpen, Laptop, Star } from 'lucide-react'
 import { TOOLS, CATEGORIES, CATEGORY_COLORS, type ToolDef } from '../lib/registry'
 import { Counter, Reveal, Typewriter, LiveTerminal, Badge } from '../components/ui'
 import { cn } from '../lib/util'
@@ -55,7 +55,7 @@ export default function Home({ nav }: { nav: Nav }) {
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-5 flex flex-wrap items-center gap-2">
               <span className="chip flex items-center gap-2">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ok" />
-                d1se0@hacknexus:~#&nbsp;<Typewriter phrases={['suite de hacking ético', 'forense digital client-side', 'networking + cripto', '35 herramientas, 0 servidores']} />
+                d1se0@hacknexus:~#&nbsp;<Typewriter phrases={['suite de hacking ético', 'forense digital client-side', 'networking + cripto', 'docs y comparativa de OS', '40 herramientas, 0 servidores']} />
               </span>
             </motion.div>
             <motion.h1
@@ -80,6 +80,12 @@ export default function Home({ nav }: { nav: Nav }) {
               </button>
               <button onClick={() => nav('pcap')} className="flex items-center gap-2 rounded-lg border border-edge px-5 py-3 font-mono text-sm text-ink transition-all hover:border-acento/50 hover:bg-acento/5">
                 <Zap size={15} /> Analizar PCAP
+              </button>
+              <button onClick={() => nav('docs')} className="flex items-center gap-2 rounded-lg border border-acento/40 px-5 py-3 font-mono text-sm text-acento transition-all hover:bg-acento/10">
+                <BookOpen size={15} /> Documentación
+              </button>
+              <button onClick={() => nav('os-compare')} className="flex items-center gap-2 rounded-lg border border-edge px-5 py-3 font-mono text-sm text-ink transition-all hover:border-acento/50 hover:bg-acento/5">
+                <Laptop size={15} /> Comparativa de OS
               </button>
             </motion.div>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-7 flex flex-wrap gap-2">
@@ -121,6 +127,40 @@ export default function Home({ nav }: { nav: Nav }) {
           ))}
         </section>
       </Reveal>
+
+      {/* ─── APRENDE: DOCS + OS ─── */}
+      <section className="py-10">
+        <Reveal>
+          <div className="section-tag mb-2">// aprende</div>
+          <h2 className="mb-8 text-2xl font-extrabold text-white md:text-4xl">Aprende con HackNexus<span className="text-acento">_</span></h2>
+        </Reveal>
+        <div className="grid gap-4 md:grid-cols-2">
+          {[
+            {
+              id: 'docs', icon: BookOpen, t: 'Documentación de cada herramienta', d: 'Qué hace exactamente cada tool, sus parámetros, usos reales del día a día, aplicaciones en hacking ético y tips. Nivel de detalle bestial: la lees una vez y ya sabes sacarle todo el jugo.', cta: 'explorar docs', accent: true,
+            },
+            {
+              id: 'os-compare', icon: Laptop, t: 'Comparativa de OS de hacking ético', d: 'Kali, Arch, Parrot, RHEL, Windows Server, Tails… con estadísticas animadas, pros/contras, veredicto honesto y repos de entornos customizados (incluidos los de D1se0) para dejar tu distro lista en minutos.', cta: 'comparar sistemas', accent: false,
+            },
+          ].map((s, i) => (
+            <Reveal key={s.id} delay={i * 0.08}>
+              <button onClick={() => nav(s.id)} className="card card-hover group relative flex h-full w-full flex-col items-start gap-3 overflow-hidden p-6 text-left">
+                <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-acento/5 blur-2xl transition-all group-hover:bg-acento/10" />
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-acento/25 bg-acento/10 text-acento transition-all group-hover:scale-105 group-hover:shadow-glow">
+                  <s.icon size={20} />
+                </div>
+                <h3 className="flex items-center gap-2 font-bold text-white">{s.t}
+                  <span className="flex items-center gap-0.5 rounded-full border border-acento/40 px-1.5 py-0.5 font-mono text-[8px] uppercase text-acento"><Star size={7} /> nuevo</span>
+                </h3>
+                <p className="text-sm leading-relaxed text-grey">{s.d}</p>
+                <span className="mt-auto flex items-center gap-1 font-mono text-[11px] text-acento">
+                  {s.cta} <ChevronRight size={12} className="transition-transform group-hover:translate-x-1" />
+                </span>
+              </button>
+            </Reveal>
+          ))}
+        </div>
+      </section>
 
       {/* ─── BUSCADOR + GRID ─── */}
       <section id="tools" className="py-10">

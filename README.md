@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>38 herramientas · sin backend · sin trackers · tus datos nunca salen del navegador</span>
+  <span font-mono>40 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-38-2ee88a?style=flat-square" alt="38 tools" />
+  <img src="https://img.shields.io/badge/tools-40-2ee88a?style=flat-square" alt="40 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 38 herramientas
+## 🧰 Las 40 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -47,7 +47,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Hash Cracker** | Cracking con rockyou.txt (10k/100k/1M vía CDN) y reglas, en Web Worker con estadísticas | 🟡 CDN dicts |
 | **HashID** | Identifica formatos de hash, sugiere modo hashcat `-m` y formato John | 🟢 local |
 | **AES & Fernet** | AES-256-GCM con PBKDF2 (100k iteraciones), envelope JSON autenticado | 🟢 local |
-| **JWT Toolkit** | Decodifica, verifica HS*, firma tokens, secrets clásicos y ataques none/alg-confusion | 🟢 local |
+| **JWT Toolkit** | Decodifica, verifica HS*, genera tokens sin firma (alg=none), **crackea secrets con diccionario subido** (SHA-2 nativo, millones/s) y firma tokens propios | 🟢 local |
 | **TOTP Generator** | Códigos 2FA en vivo estilo Authenticator con QR y múltiples cuentas | 🟢 local |
 | **HackingChef** 🔥 port | Cadenas de codificación/cifrado con resultado en vivo (estilo CyberChef) | 🟢 local |
 | **Multi-Encoders** | Base16/32/58/62/64/85, hex, bin, octal, morse, URL, HTML, Unicode | 🟢 local |
@@ -78,8 +78,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **HTTP Inspector** | Auditoría de cabeceras de seguridad (HSTS, CSP, XFO…) con explicaciones | 🔵 target |
 | **Ping & Latencia web** | RTT HTTP real desde el navegador, min/avg/max con gráfica animada | 🔵 target |
 | **Subnetting Calculator** 🔥 port | IPv4/CIDR completa: binarios, clase, wildcard, tabla de referencia clicable | 🟢 local |
-| **Calculadora VLSM** 🔥 port | Segmenta por hosts, ordena mayor→menor, detecta solapamientos | 🟢 local |
-| **IPv6 Toolkit** | Expande/comprime, tipo, prefijos con slider, EUI-64 desde MAC, reverse ip6.arpa | 🟢 local |
+| **Calculadora VLSM** 🔥 port | Segmenta por hosts con mapa visual proporcional, binarios por subred, eficiencia, huecos libres, detalle expandible y export CSV | 🟢 local |
+| **IPv6 Toolkit + IPv4** | Expande/comprime, tipo, prefijos, EUI-64, reverse ip6.arpa + **generador de IPv4 por tipo** (CSPRNG) con análisis de subred y **generador de MACs** | 🟢 local |
 | **Curl Builder** | Construye curl con headers, auth, proxy y equivalente Python requests | 🟢 local |
 
 ### Forense
@@ -94,7 +94,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | Tool | Descripción | Red |
 |---|---|---|
 | **Calculadora CHMOD** 🔥 port | Octal/simbólico con SUID, SGID, Sticky, presets y comando listo | 🟢 local |
-| **Linux/Windows Cheatsheets** | Comandos de red/sistema/defensa, checklist de privesc y equivalencias Linux↔Windows | 🟢 local |
+| **Linux/Windows Cheatsheets** | **~400 comandos**: Linux, Windows/AD, macOS, redes, checklist de privesc, equivalencias y one-liners de reverse shells — con buscador | 🟢 local |
 
 ### Análisis
 | Tool | Descripción | Red |
@@ -106,7 +106,22 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Defanger / Refanger** | Neutraliza o restaura IPs, dominios, URLs y emails para compartir IOCs | 🟢 local |
 | **UUID & IDs** | UUID v4, NanoID, ObjectId y ULID + validador/decodificador con timestamps | 🟢 local |
 
+### Generadores
+| Tool | Descripción | Red |
+|---|---|---|
+| **QR Generator** | Códigos QR con presets WiFi, vCard, email, SMS, tel y geo; corrección de error L/M/Q/H, colores y descarga PNG/SVG en local | 🟢 local |
+| **Lorem Ipsum Generator** | Texto de relleno por párrafos/frases/palabras, salida MD/HTML/JSON y modo hacker para demos | 🟢 local |
+
 🔥 **port** = portada de uno de mis repos originales: [chmod-calculator](https://github.com/D1se0/chmod-calculator) · [revShellsGenerator](https://github.com/D1se0/revShellsGenerator-page) · [PHPDetector](https://github.com/D1se0/PHPDetector-page) · [hackingChef](https://github.com/D1se0/hackingChef-page) · [calculadora_vlsm](https://github.com/D1se0/calculadora_vlsm) · [calculadora_subnetting](https://github.com/D1se0/calculadora_subnetting) · [sql-generator](https://github.com/D1se0/sql-generator)
+
+## 📚 Docs y comparativa de OS
+
+Además de las herramientas, la suite incluye dos secciones de conocimiento:
+
+- **[Documentación](https://d1se0.github.io/hacknexus/#/docs)** — cada herramienta con una ficha ultradetallada: qué hace exactamente, parámetros y entradas, usos reales del día a día, aplicaciones en hacking ético y tips. Con buscador global.
+- **[Comparativa de OS de hacking ético](https://d1se0.github.io/hacknexus/#/os-compare)** — Kali, Arch (+BlackArch), Parrot, Ubuntu, Windows Server/AD, RHEL, Tails, Qubes y más: estadísticas animadas, pros/contras, veredicto honesto, ruta de aprendizaje recomendada y **repos de entornos customizados**, incluidos los del autor:
+  - [kali-environment-install](https://github.com/D1se0/kali-environment-install) · [environment-kali-nordic](https://github.com/D1se0/environment-kali-nordic) · [guía del entorno Kali](https://d1se0.github.io/blog_hacking/view.html?enviroment=kalilinux)
+  - [Arch_i3_d1se0_Environment](https://github.com/D1se0/Arch_i3_d1se0_Environment) · [environment-ubuntu-installer](https://github.com/D1se0/environment-ubuntu-installer)
 
 ## 🔐 Privacidad
 

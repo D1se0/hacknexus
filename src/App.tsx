@@ -4,6 +4,8 @@ import { ToastProvider, Spinner } from './components/ui'
 import { Layout } from './components/Layout'
 import { findTool } from './lib/registry'
 import Home from './pages/Home'
+import Docs from './pages/Docs'
+import OsCompare from './pages/OsCompare'
 import { TOOLS } from './lib/registry'
 
 const toolPages: Record<string, React.LazyExoticComponent<React.ComponentType>> = {}
@@ -33,8 +35,13 @@ export default function App() {
 
   const tool = findTool(route)
   useEffect(() => {
-    document.title = tool ? `${tool.name} — HackNexus` : 'HackNexus — Suite de Hacking Ético'
-  }, [tool])
+    const special: Record<string, string> = { docs: 'Documentación', 'os-compare': 'Comparativa de OS de Hacking Ético' }
+    document.title = tool
+      ? `${tool.name} — HackNexus`
+      : special[route]
+        ? `${special[route]} — HackNexus`
+        : 'HackNexus — Suite de Hacking Ético'
+  }, [tool, route])
 
   const Page = toolPages[route] ?? Home
 
@@ -51,6 +58,10 @@ export default function App() {
           >
             {route === 'home' ? (
               <Home nav={nav} />
+            ) : route === 'docs' ? (
+              <Docs nav={nav} />
+            ) : route === 'os-compare' ? (
+              <OsCompare nav={nav} />
             ) : tool ? (
               <Suspense
                 fallback={

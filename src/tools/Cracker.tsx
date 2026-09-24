@@ -303,7 +303,7 @@ export default function Cracker() {
                   <div className="font-mono text-xs font-bold text-ok">✓ resultados</div>
                   {Object.entries(found).map(([hash, word]) => (
                     <div key={hash} className="flex flex-wrap items-center gap-2 rounded-lg border border-ok/30 bg-ok/5 p-3">
-                      <code className="font-mono text-[11px] text-grey">{hash}</code>
+                      <code className="min-w-0 break-all font-mono text-[11px] text-grey">{hash}</code>
                       <span className="font-mono text-sm font-bold text-ok">{word}</span>
                       <CopyBtn text={word} className="ml-auto" />
                     </div>

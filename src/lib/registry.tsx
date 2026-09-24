@@ -3,7 +3,7 @@ import {
   Hash, KeyRound, ShieldCheck, Fingerprint, FileSearch, ScanSearch, Camera, Waves, TerminalSquare,
   ChefHat, Calculator, Network, Globe, Activity, Radar, Lock, Unlock, ArrowLeftRight, Binary, EyeOff,
   Smile, Radio, Server, Database, FileCode, Bug, Swords, FileKey, ScrollText, Brain, Braces, Regex,
-  CalendarClock, Wifi, Split, Crown, Globe2, Timer, ShieldAlert, Ban,
+  CalendarClock, Wifi, Split, Crown, Globe2, Timer, ShieldAlert, Ban, QrCode, TypeOutline,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -14,6 +14,7 @@ export type ToolCategory =
   | 'Forense'
   | 'Linux & sistema'
   | 'Análisis'
+  | 'Generadores'
 
 export const CATEGORY_COLORS: Record<ToolCategory, string> = {
   Criptografía: 'text-acento',
@@ -23,6 +24,7 @@ export const CATEGORY_COLORS: Record<ToolCategory, string> = {
   Forense: 'text-[#c084fc]',
   'Linux & sistema': 'text-bad',
   Análisis: 'text-ok',
+  Generadores: 'text-[#f472b6]',
 }
 
 export interface ToolDef {
@@ -90,6 +92,10 @@ export const TOOLS: ToolDef[] = [
   { id: 'regex', name: 'Regex Lab', short: 'Regex', desc: 'Prueba expresiones regulares con grupos, matches y flags', category: 'Análisis', icon: Regex },
   { id: 'defanger', name: 'Defanger / Refanger', short: 'Defang', desc: 'Defangea o refangea IPs, dominios y URLs para reportes', category: 'Análisis', icon: Ban },
   { id: 'uuid', name: 'UUID & IDs', short: 'UUID', desc: 'Genera UUID v4, NanoID y ObjectIds con validación', category: 'Análisis', icon: Radio },
+
+  // ─── Generadores ────────────────────────────────────────────────
+  { id: 'qr', name: 'QR Generator', short: 'QR', desc: 'Códigos QR con presets WiFi, vCard, email, SMS y geo; descarga PNG/SVG en local', category: 'Generadores', icon: QrCode },
+  { id: 'lipsum', name: 'Lorem Ipsum Generator', short: 'Lipsum', desc: 'Texto de relleno por párrafos, frases o palabras con modo hacker y salida MD/HTML/JSON', category: 'Generadores', icon: TypeOutline },
 ]
 
 export const CATEGORIES: ToolCategory[] = [
@@ -100,6 +106,7 @@ export const CATEGORIES: ToolCategory[] = [
   'Forense',
   'Linux & sistema',
   'Análisis',
+  'Generadores',
 ]
 
 export const toolsByCategory = (cat: ToolCategory): ToolDef[] => TOOLS.filter((t) => t.category === cat)

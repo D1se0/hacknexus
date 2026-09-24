@@ -143,7 +143,7 @@ export default function Webfuzzer() {
               <Badge tone="neutral">{rows.length} escaneadas</Badge>
               <span className="ml-auto text-[10px]">404 = no existe · 401/403 = existe protegido</span>
             </div>
-            <div className="max-h-[480px] overflow-y-auto">
+            <div className="max-h-[480px] overflow-x-auto overflow-y-auto">
               <table className="w-full text-left font-mono text-[12px]">
                 <thead className="sticky top-0 bg-panel">
                   <tr className="border-b border-edge text-[10px] uppercase tracking-wider text-grey">

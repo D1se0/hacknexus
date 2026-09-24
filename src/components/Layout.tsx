@@ -1,23 +1,33 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight } from 'lucide-react'
+import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, BookOpen, Laptop, Star } from 'lucide-react'
 import { TOOLS, CATEGORIES, CATEGORY_COLORS, type ToolDef } from '../lib/registry'
 import { cn } from '../lib/util'
 import { Typewriter } from './ui'
 
 export type Nav = (id: string) => void
 
+/* ---------------- Páginas especiales ---------------- */
+
+const SPECIAL_PAGES: { id: string; name: string; desc: string; icon: React.ElementType; hint?: string }[] = [
+  { id: 'docs', name: 'Documentación', desc: 'Docs detalladas de cada herramienta: qué hace, parámetros y usos', icon: BookOpen, hint: 'nuevo' },
+  { id: 'os-compare', name: 'Comparativa de OS', desc: 'Kali, Arch, Parrot, RHEL… con repos de entornos customizados', icon: Laptop, hint: 'nuevo' },
+]
+
 /* ---------------- Command Palette ⌘K ---------------- */
 
 function CommandPalette({ open, onClose, nav }: { open: boolean; onClose: () => void; nav: Nav }) {
   const [q, setQ] = useState('')
   const [sel, setSel] = useState(0)
-  const results = useMemo(() => {
+  const results = useMemo<{ special: (typeof SPECIAL_PAGES)[number] | null; tool: ToolDef | null }[]>(() => {
     const qn = q.trim().toLowerCase()
-    if (!qn) return TOOLS
-    return TOOLS.filter(
-      (t) => t.name.toLowerCase().includes(qn) || t.desc.toLowerCase().includes(qn) || t.category.toLowerCase().includes(qn) || t.id.includes(qn),
-    )
+    const pages = SPECIAL_PAGES
+      .filter((p) => !qn || (p.name + p.desc).toLowerCase().includes(qn))
+      .map((p) => ({ special: p, tool: null as ToolDef | null }))
+    const tools = TOOLS.filter(
+      (t) => !qn || t.name.toLowerCase().includes(qn) || t.desc.toLowerCase().includes(qn) || t.category.toLowerCase().includes(qn) || t.id.includes(qn),
+    ).map((t) => ({ special: null, tool: t as ToolDef }))
+    return [...pages, ...tools]
   }, [q])
   useEffect(() => setSel(0), [q])
   useEffect(() => {
@@ -51,7 +61,7 @@ function CommandPalette({ open, onClose, nav }: { open: boolean; onClose: () => 
                 onKeyDown={(e) => {
                   if (e.key === 'ArrowDown') { e.preventDefault(); setSel((s) => Math.min(s + 1, results.length - 1)) }
                   if (e.key === 'ArrowUp') { e.preventDefault(); setSel((s) => Math.max(s - 1, 0)) }
-                  if (e.key === 'Enter' && results[sel]) { nav(results[sel].id); onClose() }
+                  if (e.key === 'Enter' && results[sel]) { nav(results[sel].special?.id ?? results[sel].tool?.id ?? 'home'); onClose() }
                   if (e.key === 'Escape') onClose()
                 }}
                 placeholder="Buscar herramienta… (ej: hash, dns, pcap, jwt)"
@@ -61,24 +71,49 @@ function CommandPalette({ open, onClose, nav }: { open: boolean; onClose: () => 
             </div>
             <div className="max-h-[50vh] overflow-y-auto p-2">
               {results.length === 0 && <div className="px-4 py-8 text-center font-mono text-xs text-grey">Sin resultados para “{q}”</div>}
-              {results.map((t, i) => (
-                <button
-                  key={t.id}
-                  onClick={() => { nav(t.id); onClose() }}
-                  onMouseEnter={() => setSel(i)}
-                  className={cn(
-                    'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
-                    i === sel ? 'bg-acento/10 text-ink' : 'text-grey hover:bg-panel',
-                  )}
-                >
-                  <t.icon size={16} className={cn('shrink-0', CATEGORY_COLORS[t.category])} />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm font-semibold text-ink">{t.name}</div>
-                    <div className="truncate text-xs text-grey">{t.desc}</div>
-                  </div>
-                  <span className="shrink-0 font-mono text-[10px] text-grey/60">{t.category}</span>
-                </button>
-              ))}
+              {results.map((r, i) => {
+                if (r.special) {
+                  const p = r.special
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => { nav(p.id); onClose() }}
+                      onMouseEnter={() => setSel(i)}
+                      className={cn(
+                        'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
+                        i === sel ? 'bg-acento/10 text-ink' : 'text-grey hover:bg-panel',
+                      )}
+                    >
+                      <p.icon size={16} className="shrink-0 text-acento" />
+                      <div className="min-w-0 flex-1">
+                        <div className="truncate text-sm font-semibold text-ink">{p.name}</div>
+                        <div className="truncate text-xs text-grey">{p.desc}</div>
+                      </div>
+                      <span className="shrink-0 rounded-full border border-acento/40 px-1.5 py-0.5 font-mono text-[9px] uppercase text-acento">{p.hint}</span>
+                    </button>
+                  )
+                }
+                const t = r.tool
+                if (!t) return null
+                return (
+                  <button
+                    key={t.id}
+                    onClick={() => { nav(t.id); onClose() }}
+                    onMouseEnter={() => setSel(i)}
+                    className={cn(
+                      'flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left transition-colors',
+                      i === sel ? 'bg-acento/10 text-ink' : 'text-grey hover:bg-panel',
+                    )}
+                  >
+                    <t.icon size={16} className={cn('shrink-0', CATEGORY_COLORS[t.category])} />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-sm font-semibold text-ink">{t.name}</div>
+                      <div className="truncate text-xs text-grey">{t.desc}</div>
+                    </div>
+                    <span className="shrink-0 font-mono text-[10px] text-grey/60">{t.category}</span>
+                  </button>
+                )
+              })}
             </div>
             <div className="flex items-center gap-4 border-t border-edge px-4 py-2.5 font-mono text-[10px] text-grey">
               <span className="flex items-center gap-1"><span className="kbd">↑</span><span className="kbd">↓</span> navegar</span>
@@ -132,6 +167,27 @@ function Sidebar({ route, nav, mobileOpen, setMobileOpen }: { route: string; nav
         >
           <ChevronRight size={14} /> Inicio
         </button>
+
+        {/* páginas destacadas */}
+        <div className="mb-4">
+          <div className="mb-1.5 px-3 font-mono text-[10px] uppercase tracking-[0.25em] text-acento">// destacado</div>
+          {SPECIAL_PAGES.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => { nav(p.id); setMobileOpen(false) }}
+              className={cn(
+                'group flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-[13px] transition-all',
+                route === p.id ? 'bg-acento/10 text-acento' : 'text-grey hover:bg-panel hover:text-ink',
+              )}
+            >
+              <p.icon size={14} className={cn('shrink-0', route === p.id ? 'text-acento' : 'text-grey group-hover:text-ink')} />
+              <span className="truncate">{p.name}</span>
+              <span className="ml-auto flex shrink-0 items-center gap-0.5 rounded-full border border-acento/40 px-1.5 py-0.5 font-mono text-[8px] uppercase text-acento">
+                <Star size={7} /> nuevo
+              </span>
+            </button>
+          ))}
+        </div>
 
         {CATEGORIES.map((cat) => (
           <div key={cat} className="mb-4">

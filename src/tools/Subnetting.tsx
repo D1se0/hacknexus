@@ -159,7 +159,7 @@ export default function Subnetting() {
       <Reveal>
         <div className="card mt-6 overflow-hidden">
           <div className="border-b border-edge bg-black/30 px-4 py-2.5 font-mono text-[11px] uppercase tracking-widest text-grey">tabla CIDR de referencia</div>
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-96 overflow-x-auto overflow-y-auto">
             <table className="w-full text-left font-mono text-[12px]">
               <thead className="sticky top-0 bg-panel">
                 <tr className="border-b border-edge text-[10px] uppercase tracking-wider text-grey">
