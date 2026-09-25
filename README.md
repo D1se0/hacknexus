@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>41 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>50 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-41-2ee88a?style=flat-square" alt="41 tools" />
+  <img src="https://img.shields.io/badge/tools-50-2ee88a?style=flat-square" alt="50 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 41 herramientas
+## 🧰 Las 50 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -90,6 +90,21 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **File Analyzer** | Magic bytes de 25+ formatos, entropía de Shannon por bloques, strings, hashes | 🟢 local |
 | **EXIF & Metadatos** | GPS, cámara, software y comentarios de JPG/PNG/HEIC/TIFF/PDF con aviso de ubicación | 🟢 local |
 | **Esteganografía LSB** | Oculta/extrae mensajes en el bit menos significativo de píxeles PNG (canvas) | 🟢 local |
+| **Log Forensics** | auth.log/syslog y EVTX-XML: fuerza bruta, top IPs, usuarios, histograma horario, eventos sospechosos (sudo peligroso, 4720, 1102…) y export JSON | 🟢 local |
+| **File Carver** | Carving por magic bytes: recupera PNG/JPG/GIF/PDF/ZIP/RAR/7z/GZIP embebidos en dumps, con preview, SHA-256 y búsqueda ASCII/UTF-16 | 🟢 local |
+
+### Ingeniería Inversa
+| Tool | Descripción | Red |
+|---|---|---|
+| **Binary Inspector** | Parsea PE/ELF: headers, secciones con entropía, imports por DLL, exports, packers (UPX/entropía), Go/Rust/.NET y anti-debug — sin ejecutar nada | 🟢 local |
+| **Deobfuscator** | Descodificación multi-capa automática (hex→base64→URL→escapes…), crackeo XOR single-byte por frecuencia, ROT-N y métricas de ofuscación JS | 🟢 local |
+
+### Phishing
+| Tool | Descripción | Red |
+|---|---|---|
+| **Email Header Analyzer** | Cadena Received, SPF/DKIM/DMARC, Return-Path vs From vs Reply-To, X-Mailer de scripts y score de spoofing 0-100 | 🟢 local |
+| **URL Phishing Inspector** | Punycode/homoglyphs carácter a carácter, typosquatting de marcas, acortadores, credenciales en URL y risk score — sin visitar la URL | 🟢 local |
+| **Awareness Campaign Builder** | Plantillas de email y landings de entrenamiento (BEC, O365, DHL, quishing, pretexting) con disclaimers, tracking simulado y QR | 🟢 local |
 
 ### Linux & sistema
 | Tool | Descripción | Red |
@@ -106,6 +121,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Regex Lab** | Resaltado en vivo, grupos captura/nombrados, patrones OSINT (AWS keys, JWT, tarjetas…) | 🟢 local |
 | **Defanger / Refanger** | Neutraliza o restaura IPs, dominios, URLs y emails para compartir IOCs | 🟢 local |
 | **UUID & IDs** | UUID v4, NanoID, ObjectId y ULID + validador/decodificador con timestamps | 🟢 local |
+| **MITRE ATT&CK Navigator** | Matriz enterprise filtrable por táctica/ID, marca cobertura de tu ejercicio y exporta capa JSON para el Navigator oficial | 🟢 local |
 
 ### Generadores
 | Tool | Descripción | Red |

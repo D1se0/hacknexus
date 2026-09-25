@@ -4,6 +4,7 @@ import {
   ChefHat, Calculator, Network, Globe, Activity, Radar, Lock, Unlock, ArrowLeftRight, Binary, EyeOff,
   Smile, Radio, Server, Database, FileCode, Bug, Swords, FileKey, ScrollText, Brain, Braces, Regex,
   CalendarClock, Wifi, Split, Crown, Globe2, Timer, ShieldAlert, Ban, QrCode, TypeOutline,
+  Cpu, Wand2, Fish, Link2, MailWarning, Crosshair, Scissors,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -12,6 +13,8 @@ export type ToolCategory =
   | 'Web & payloads'
   | 'Red'
   | 'Forense'
+  | 'Ingeniería Inversa'
+  | 'Phishing'
   | 'Linux & sistema'
   | 'Análisis'
   | 'Generadores'
@@ -22,6 +25,8 @@ export const CATEGORY_COLORS: Record<ToolCategory, string> = {
   'Web & payloads': 'text-info',
   Red: 'text-acento-bright',
   Forense: 'text-[#c084fc]',
+  'Ingeniería Inversa': 'text-[#fb923c]',
+  Phishing: 'text-[#38bdf8]',
   'Linux & sistema': 'text-bad',
   Análisis: 'text-ok',
   Generadores: 'text-[#f472b6]',
@@ -81,6 +86,17 @@ export const TOOLS: ToolDef[] = [
   { id: 'fileanalyzer', name: 'File Analyzer', short: 'File', desc: 'Magic bytes, entropía, strings y hashes de cualquier archivo', category: 'Forense', icon: FileSearch },
   { id: 'exif', name: 'EXIF & Metadatos', short: 'EXIF', desc: 'Extrae metadatos GPS, cámara y software de imágenes, HEIC, PDFs y más', category: 'Forense', icon: Camera },
   { id: 'stego', name: 'Esteganografía LSB', short: 'Stego', desc: 'Oculta y extrae mensajes en el canal LSB de imágenes PNG', category: 'Forense', icon: EyeOff },
+  { id: 'logparser', name: 'Log Forensics', short: 'Logs', desc: 'Analiza auth.log/syslog y EVTX-XML: fuerza bruta, logins, sudo, eventos sospechosos y timeline', category: 'Forense', icon: ScrollText },
+  { id: 'filecarver', name: 'File Carver', short: 'Carver', desc: 'Recupera imágenes, PDFs y ZIP embebidos en dumps escaneando magic bytes, con preview y SHA-256', category: 'Forense', icon: Scissors },
+
+  // ─── Ingeniería Inversa ────────────────────────────────────────
+  { id: 'bininspect', name: 'Binary Inspector', short: 'BinInspect', desc: 'Parsea PE/ELF: headers, secciones con entropía, imports/exports y detección de packers sin ejecutar nada', category: 'Ingeniería Inversa', icon: Cpu },
+  { id: 'deobfuscate', name: 'Deobfuscator', short: 'Deobf', desc: 'Descodifica capas automáticamente (base64/hex/URL/escapes), crackea XOR y mide ofuscación JS', category: 'Ingeniería Inversa', icon: Wand2 },
+
+  // ─── Phishing ───────────────────────────────────────────────────
+  { id: 'mailheader', name: 'Email Header Analyzer', short: 'MailHdr', desc: 'Parsea cabeceras: cadena Received, SPF/DKIM/DMARC, Return-Path vs From y puntuación de spoofing', category: 'Phishing', icon: MailWarning },
+  { id: 'urlphish', name: 'URL Phishing Inspector', short: 'URLPhish', desc: 'Desmonta URLs: punycode/homoglyphs, typosquatting, acortadores, credenciales incrustadas y risk score', category: 'Phishing', icon: Link2 },
+  { id: 'phishpage', name: 'Awareness Campaign Builder', short: 'Awareness', desc: 'Plantillas de email y landings de entrenamiento anti-phishing con QR (quishing) y disclaimers éticos', category: 'Phishing', icon: Fish },
 
   // ─── Linux & sistema ────────────────────────────────────────────
   { id: 'chmod', name: 'Calculadora CHMOD', short: 'CHMOD', desc: 'Permisos Linux en octal/simbólico con SUID, SGID y Sticky Bit', category: 'Linux & sistema', icon: Crown, ported: true, origin: 'chmod-calculator' },
@@ -93,6 +109,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'regex', name: 'Regex Lab', short: 'Regex', desc: 'Prueba expresiones regulares con grupos, matches y flags', category: 'Análisis', icon: Regex },
   { id: 'defanger', name: 'Defanger / Refanger', short: 'Defang', desc: 'Defangea o refangea IPs, dominios y URLs para reportes', category: 'Análisis', icon: Ban },
   { id: 'uuid', name: 'UUID & IDs', short: 'UUID', desc: 'Genera UUID v4, NanoID y ObjectIds con validación', category: 'Análisis', icon: Radio },
+  { id: 'mitre', name: 'MITRE ATT&CK Navigator', short: 'ATT&CK', desc: 'Matriz enterprise filtrable con cobertura de técnicas y export de capa JSON para el Navigator oficial', category: 'Análisis', icon: Crosshair },
 
   // ─── Generadores ────────────────────────────────────────────────
   { id: 'qr', name: 'QR Generator', short: 'QR', desc: 'Códigos QR con presets WiFi, vCard, email, SMS y geo; descarga PNG/SVG en local', category: 'Generadores', icon: QrCode },
@@ -105,6 +122,8 @@ export const CATEGORIES: ToolCategory[] = [
   'Web & payloads',
   'Red',
   'Forense',
+  'Ingeniería Inversa',
+  'Phishing',
   'Linux & sistema',
   'Análisis',
   'Generadores',

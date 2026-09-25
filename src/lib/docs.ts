@@ -494,4 +494,100 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['Probar el sanitizador de HTML de tu app: pega el HTML generado y verifica el escape', 'Payloads de relleno en fuzzing: bodies grandes para probar límites (413, truncados)', 'En formaciones: textos de ejemplo que suenan a informe real sin incluir datos de clientes'],
     tips: ['El JSON estructurado es perfecto para mockear respuestas de API', 'El modo hacker no cambia la estructura, solo el vocabulario: sigue siendo texto plausible', '500 palabras caben en un CopyBlock: para más, descarga el fichero'],
   },
+
+  /* ── Forense (nuevas) ── */
+  logparser: {
+    what: 'Análisis forense de logs en dos formatos autodetectados: syslog estilo Unix (auth.log, secure, messages — sshd, sudo, su, CRON, PAM) y EVTX-XML de Windows (eventos 4624/4625/4672/4688/4720/4728/4732/4719/1102). Calcula resumen de eventos, top de IPs atacantes, actividad por usuario, histograma horario con fallos marcados en rojo, y una lista de eventos sospechosos clasificados por severidad (fuerza bruta, creación de cuentas, log limpiado, sudo peligroso, RDP inesperado…). Exporta el informe completo en JSON.',
+    params: [
+      { name: 'log', type: 'string | File', required: true, desc: 'pega el log o carga auth.log/secure/messages/.xml; máx 20 MB' },
+      { name: 'formato', type: 'autodetectado', desc: 'syslog si son líneas de texto; EVTX-XML si contiene <Event> o el namespace de Microsoft' },
+      { name: 'ejemplo', type: 'botón', desc: 'carga un auth.log de muestra con fuerza bruta SSH, sudo peligroso y reverse mapping fallido' },
+    ],
+    daily: ['Triaje rápido tras una alerta: ¿hubo fuerza bruta y desde qué IPs antes del acceso aceptado?', 'Revisar qué cuentas tienen fallos de autenticación recurrentes (spraying de contraseñas)', 'Auditar comandos sudo peligrosos (rm -rf, useradd, iptables -F) ejecutados en servidores'],
+    ethical: ['Reconstruir la línea temporal de un incidente autorizado: fallo→fallo→fallo→aceptado→sudo→cuenta nueva es el patrón clásico de compromiso', 'En Windows: detectar 4625 en ráfaga (brute force), 4624 tipo 10 (RDP inesperado) y 1102 (log borrado = anti-forense)', 'Formación: mostrar por qué fallar 100 veces y acertar 1 vez es visible y alarmable'],
+    tips: ['La IP del salto fallido precede al Accepted exitoso: correlaciona ambas tablas para la narrativa del atacante', 'Un pico de eventos entre las 02:00-05:00 fuera de horario merece revisión aunque sean logins OK', 'En EVTX: exporta desde el Visor de eventos con "Guardar eventos seleccionados como…" formato XML, o usa evtx_export.exe del proyecto evtx para convertir .evtx completo', 'El histograma marca en rojo las horas con fallos: es el primer sitio donde mirar'],
+  },
+  filecarver: {
+    what: 'File carving forense: escanea cualquier fichero o dump byte a byte buscando magic bytes de PNG, JPEG, GIF, PDF, ZIP/OOXML/JAR, RAR, 7z y GZIP. Reconstruye los ficheros encontrados delimitando inicio/fin por firma, calcula su SHA-256, previsualiza imágenes recuperadas con object URLs y permite descargarlas individualmente. Incluye búsqueda de cadenas ASCII y UTF-16LE con offsets hexadecimales (base para escribir reglas YARA propias).',
+    params: [
+      { name: 'fichero', type: 'File', required: true, desc: 'dump de memoria, disco, binario, imagen contenedora… máx 30 MB, todo local' },
+      { name: 'firmas', type: 'chips', desc: 'elige qué tipos de fichero buscar (PNG/JPG/PDF/ZIP activados por defecto)' },
+      { name: 'tamaño mínimo', type: 'number', desc: 'filtra falsos positivos de firmas triviales (por defecto 512 bytes)' },
+      { name: 'cadena', type: 'string', desc: 'búsqueda de offsets ASCII + UTF-16LE para IOC hunting manual' },
+    ],
+    daily: ['Recuperar las fotos de una tarjeta SD formateada parcialmente (los JPEG siguen allí)', 'Extraer el ZIP embebido en un binario (instaladores self-extracting, malware con payload adjuntado)', 'Verificar qué ficheros contiene un dump antes de montar herramientas más pesadas'],
+    ethical: ['En respuesta a incidentes: extraer imágenes/PDFs del dump de memoria sin instalar nada en la evidencia', 'Detectar exfiltración: un PNG de 4 MB dentro de un .docx es sospechoso de esteganografía o tunneling', 'CTFs de forense: el clásico "encuentra la bandera escondida tras el EOF del JPEG" se resuelve aquí'],
+    tips: ['El carving por firma no ve fragmentación: si el fichero está partido en clusters no contiguos, necesitarás Scalpel/PhotoRec sobre imagen completa', 'Un JPEG "cortado" (sin FFD9) suele significar que el contenedor lo trunca: bájale el filtro de tamaño mínimo', 'El SHA-256 de cada pieza te permite deduplicar y buscar las piezas en VirusTotal sin subirlas', 'UTF-16LE aparece en dumps de memoria de Windows: busca ahí nombres de usuario, rutas y comandos'],
+  },
+
+  /* ── Ingeniería Inversa ── */
+  bininspect: {
+    what: 'Análisis estático de ejecutables PE (Windows .exe/.dll/.sys) y ELF (Linux .so/binarios) escrito en JS puro: parsea cabeceras DOS/COFF/Optional (arquitectura, bits, entry point, image base, timestamp de compilación), tabla de secciones con entropía de Shannon por sección y flags (RX/W+X), tabla de imports por DLL con hasta 800 símbolos, exports, y heurísticas: detección de packers (UPX/aspack por nombre y entropía > 7.2), binarios Go/Rust/.NET, capacidad de red (winsock/wininet), criptografía, imports anti-debug y firma Authenticode presente.',
+    params: [
+      { name: 'binario', type: 'File', required: true, desc: 'arrastra el .exe/.dll/.so; máx 60 MB; NUNCA se ejecuta, solo se lee' },
+      { name: 'formato', type: 'autodetectado', desc: 'MZ → PE; 0x7F ELF → ELF; otro formato te redirige a File Analyzer' },
+    ],
+    daily: ['Triage de un binario desconocido antes de abrirlo en VM: qué es, a qué APIs enlaza, si viene empaquetado', 'Saber si un ejecutable es x86 o x64, GUI o consola, y cuándo se compiló (el timestamp se puede forjar, pero orienta)', 'Revisar dependencias de software interno heredado: qué DLLs del sistema toca'],
+    ethical: ['Primera fase de reversing autorizado: imports de WS2_32/VirtualAlloc/IsDebuggerPresent dibujan el comportamiento antes de desensamblar', 'Detectar packer → decidir estrategia (upx -d, dumping en VM, o laisser-faire) sin gastar horas en Ghidra a ciegas', 'En respuesta a incidentes: documentar arquitectura, entry point y hashes para el IOC report'],
+    tips: ['El análisis es 100% pasivo: se leen bytes con DataView, no hay ejecución, ni macros, ni scripts', 'Sección con entropía ~7.9 y nombre tipo UPX0: empaquetado; con imports raros (VirtualAlloc + entropía alta sin UPX): packer custom o crypter', 'Los binarios Go muestran cientos de símbolos runtime.*: es normal, no es ofuscación', 'Si el timestamp de compilación es 0 (1970) el build era reproducible/ofuscado: no lo uses como IOC', 'Después de aquí: strings (File Analyzer), Ghidra/radare2 en VM, y comportamiento en sandbox'],
+  },
+  deobfuscate: {
+    what: 'Descodificador multi-capa con detección automática: aplica recursivamente la capa que reconoce (hex, base64, binario, decimal, escapes \\x y \\u, HTML entities, URL-encode, arrays 0x) hasta 10 niveles, mostrando la cadena completa de transformaciones con su salida intermedia. Incluye crackeo de XOR single-byte (255 claves puntuadas por frecuencia del español), descifrado XOR multi-byte manual, ROT-N con slider 1-25 y métricas de ofuscación JavaScript (eval/atob/Function, escapes, identificadores 0x…, token más largo) para reconocer la salida de javascript-obfuscator.',
+    params: [
+      { name: 'entrada', type: 'string', required: true, desc: 'cualquier cadena ofuscada: parámetro de URL, payload de CTF, config "cifrada"' },
+      { name: 'capas', type: 'auto', desc: 'detección por estructura: charset, longitud par, ratio de imprimabilidad > 0.75-0.9' },
+      { name: 'clave XOR', type: 'string', desc: 'descifrado manual multi-byte sobre el resultado de las capas' },
+      { name: 'shift ROT', type: '1-25', desc: 'cifrado César ajustable sobre el resultado' },
+    ],
+    daily: ['Descifrar un parámetro de aplicación que resulta ser base64(base64(JSON))', 'Entender payloads de CTF encadenados: hex → base64 → URL → texto', 'Recuperar cadenas de configs ofuscadas (XOR con clave encontrada en el binario)'],
+    ethical: ['Analizar el stage-1 de un documento malicioso (macros con \\x escapes + base64) sin ejecutar nada', 'Mapear qué capa usa una familia de phishing para esconder la URL: punycode → base64 → redirect', 'En formación: demostrar que ofuscar no es cifrar — la capa XOR de un byte cae en milisegundos'],
+    tips: ['La detección se corta cuando la siguiente capa no produce texto legible: si se detiene pronto, prueba decodificar manualmente cada tipo', 'XOR auto solo sirve para claves de 1 byte: para claves largas usa el campo manual (repite la clave sobre el texto)', 'Las métricas JS no ejecutan el código: cuentan patrones. eval alto + nombres _0x… = javascript-obfuscator seguro', 'Nunca pegues código JS ofuscado en la consola de tu navegador para "ver qué hace": desensamblalo o usa una VM desechable'],
+  },
+
+  /* ── Phishing ── */
+  mailheader: {
+    what: 'Analizador forense de cabeceras de email: parsea el bloque RFC 822 y extrae la cadena Received completa (de origen a destino, con from/by/with/fecha), el veredicto SPF/DKIM/DMARC de Authentication-Results, y compara identidades críticas: From vs Return-Path (envelope) vs Reply-To. Detecta spoofing directo, Reply-To desviado (BEC), X-Mailer de scripts (PHPMailer/swaks/python), saltos sin TLS, display names con autoridad y mails sin Received. Genera una puntuación de riesgo 0-100 con hallazgos explicados y un checklist manual de verificación.',
+    params: [
+      { name: 'cabeceras', type: 'string', required: true, desc: 'pega el original completo (Gmail: Mostrar original; Outlook: Encabezados de internet)' },
+      { name: 'ejemplo', type: 'botón', desc: 'carga un caso de spoofing bancario con SPF softfail, DKIM none y DMARC fail' },
+    ],
+    daily: ['Verificar si ese correo "del banco/director" es legítimo antes de clicar o responder', 'Reportar a tu equipo de seguridad con evidencia: score, hallazgos y ruta de servidores', 'Aprender a leer cabeceras: ver qué MTA tocó el correo y en qué orden'],
+    ethical: ['Triage del buzón de abuso/SoC: clasificar en segundos entre spam, spoofing y BEC real', 'Formación: enseñar que el nombre visible se forja en 1 línea y que quien manda de verdad es el Return-Path', 'Auditar tu propio dominio: si los correos de prueba no pasan DMARC, tu política p=none te está exponiendo'],
+    tips: ['El orden de Received va de abajo (origen) a arriba (tu servidor): el primer salto dice quién envió de verdad', 'SPF pasa pero DMARC falla = el servidor estaba autorizado para OTRO dominio: spoofing con dominio propio del atacante', 'Reply-To distinto de From es la señal #1 de BEC: la respuesta se va al atacante aunque el From parezca interno', 'Esta tool es heurística y local: no valida firma criptográfica real (eso lo hace tu gateway); úsala para triage y formación', 'Cruza la IP del salto 1 con la tool IP Info: país/ASN inesperado = bandera roja'],
+  },
+  urlphish: {
+    what: 'Inspector estructural de URLs anti-phishing: descompone la URL y la analiza sin visitarla. Detecta punycode (xn--) y lo traduce a unicode para ver los homoglyphs carácter a carácter (cada carácter no-ASCII se marca en rojo), credenciales incrustadas (usuario@…), IPs directas, acortadores conocidos, URLs kilométricas que esconden el dominio real, marcas objetivo (PayPal, Microsoft, banca ES) fuera de su dominio legítimo (typosquatting/lookalike), keywords de presión social en el path (login/verify/secure) y HTTP sin TLS. Clasifica el riesgo en alta/media/baja con hallazgos explicados.',
+    params: [
+      { name: 'url', type: 'string', required: true, desc: 'la URL del mensaje sospechoso; también dominio suelto' },
+      { name: 'ejemplos', type: 'chips', desc: '5 casos precargados: punycode, IP con path de marca, subdominio engañoso, acortador y URL legítima' },
+    ],
+    daily: ['Verificar el enlace de ese SMS/correo antes de reenviarlo al departamento de IT', 'Comparar el dominio real de una URL acortada sin expandirla con servicios de terceros', 'Enseñar en formación a leer URLs: qué parte es decoración y cuál es el dominio que manda'],
+    ethical: ['Diferenciar con evidencia un lookalike (paypaI.com con L mayúscula, xn--paypa…) del dominio legítimo', 'Triage de campañas: clasificar URLs de un dump de phishing por riesgo sin visitar ninguna', 'En tu organización: detectar registros de dominios con tu marca en el nombre (marca + tld barato)'],
+    tips: ['La tool NO visita la URL: análisis 100% estructural, cero riesgo de drive-by', 'Regla de oro que enseña la tool: el dominio real es lo que queda justo antes del primer / — en paypal.com.evil.top el dueño es evil.top', 'Punycode no siempre es malo (dominios legítimos con ñ/acentos lo usan): mira el unicode resultante y compara carácter a carácter', 'Para expandir acortadores: curl -sI <url> | grep -i location — la cabecera Location es el destino real'],
+  },
+  phishpage: {
+    what: 'Generador de material de concienciación anti-phishing para formación interna: 5 plantillas de ataque simulado (CEO fraud/BEC, credenciales Office365 con doble captcha, paquete retenido, quishing con QR en PDF, pretexting de soporte TI), cada una con técnica, asunto, pretexto y CTA. Genera el email de entrenamiento (con cabeceras éticas X-Mailer y List-Unsubscribe) y una landing HTML de login falsa con banner de aviso visible, formulario dummy que no envía nada y tracking simulado local. Incluye generador de QR (quishing) para la campaña y checklist de reglas de oro del simulacro ético.',
+    params: [
+      { name: 'plantilla', type: '5 técnicas', required: true, desc: 'BEC, Office365, DHL, quishing, soporte TI — cada una explica su técnica' },
+      { name: 'dominio', type: 'string', desc: 'dominio del simulacro: usa un subdominio interno de lab, nunca el corporativo real' },
+      { name: 'marca', type: 'string', desc: 'nombre de tu organización para la landing' },
+      { name: 'tracking id', type: 'auto', desc: 'ID aleatorio por sesión que aparece en plantilla/landing/QR para correlacionar el material' },
+    ],
+    daily: ['Preparar el material de la sesión de formación de seguridad del trimestre', 'Generar landings de práctica para el CTF interno o el onboarding de nuevos empleados', 'Crear ejemplos realistas para documentar el protocolo de reporte de phishing'],
+    ethical: ['TODO el material lleva disclaimers: banner en la landing, X-Mailer de simulacro, formulario que no captura nada', 'Las campañas reales de phishing interno requieren autorización escrita, scope definido y herramientas corporativas (GoPhish en tu infraestructura) — esta tool genera el material formativo, no la campaña', 'El debrief post-simulacro es formativo, nunca punitivo: quien cayó recibe micro-formación, no sanción', 'Nunca uses dominios ajenos ni marcas reales de terceros en los simulacros: tu organización y plantillas genéricas'],
+    tips: ['El ID de tracking aparece en la URL de la landing y en el QR: así sabes qué material generó cada interacción en tu aula', 'La landing se previsualiza con pop-up o se descarga como HTML autónomo: funciona offline en cualquier aula', 'El QR de quishing ilustra por qué los filtros no lo ven: escanéalo delante del alumnado y muestra el banner de aviso', 'Combínalo con Email Header Analyzer: primero muestran el ataque, luego enseñan a detectarlo con las cabeceras'],
+  },
+
+  /* ── Análisis (extra) ── */
+  mitre: {
+    what: 'Navegador compacto de la matriz MITRE ATT&CK Enterprise: 14 tácticas (Reconnaissance → Impact) con las técnicas más relevantes de cada una. Busca por ID o nombre, marca la cobertura de tu ejercicio/defensa clicando técnicas, y exporta una capa JSON oficial (versions layer 4.5, domain enterprise-attack, con gradiente y leyenda) lista para importar en el ATT&CK Navigator oficial y verla coloreada sobre la matriz completa.',
+    params: [
+      { name: 'búsqueda', type: 'string', desc: 'filtra por ID (T1003) o nombre (dumping, phishing)' },
+      { name: 'cobertura', type: 'click en técnicas', desc: 'marca/desmarca técnicas cubiertas; contador en vivo' },
+      { name: 'export', type: 'botón', desc: 'descarga hacknexus-attack-layer.json compatible con navigator.attack.mitre.org' },
+    ],
+    daily: ['Estructurar el informe de un pentest por tácticas en vez de por hallazgos sueltos', 'Planear un ejercicio red team cubriendo tácticas que normalmente se olvidan (Persistence, Collection)', 'Comunicar cobertura de detección al equipo blue con el vocabulario estándar de la industria'],
+    ethical: ['El mapa mental de ATT&CK ayuda a DEFENDER: cada técnica marcada como cubierta debe tener su detección asociada', 'En threat hunting: elegir una técnica (T1003 dumping) y buscar sus indicadores en los logs (con Log Forensics)', 'Formación: recorrer la matriz explicando 1 técnica real por táctica en 30 minutos'],
+    tips: ['La capa exportada se abre en el Navigator oficial (Open Existing Layer → upload) y allí puedes añadir scores/colores propios', 'La matriz aquí es compacta: si falta una técnica, búscala por ID en el Navigator oficial (attack.mitre.org)', 'Combínalo con CVE Lookup: vulnerabilidad explotada → técnica ATT&CK → detección → informe', 'Los IDs son estables: úsalos en los informes en vez de descripciones libres, y cualquiera podrá buscarlos'],
+  },
 }
