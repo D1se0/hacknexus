@@ -80,6 +80,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'ipv4', name: 'IPv4 Generator', short: 'IPv4 Gen', desc: 'Genera direcciones IPv4 aleatorias criptográficas por tipo con análisis de subred completo', category: 'Red', icon: Network },
   { id: 'ipv6', name: 'IPv6 Toolkit', short: 'IPv6', desc: 'Expande/comprime, tipo de dirección, prefijos, EUI-64, generador de MACs y reverse DNS', category: 'Red', icon: Wifi },
   { id: 'curlbuilder', name: 'Curl Builder', short: 'Curl', desc: 'Construye comandos curl con headers, auth, body y proxy', category: 'Red', icon: Server },
+  { id: 'wifimap', name: 'WiFi Map', short: 'WiFi Map', desc: 'Mapa global comunitario de WiFi compartidos: zoom para revelar puntos, claves, lugares y geolocalización', category: 'Red', icon: Wifi },
 
   // ─── Forense ────────────────────────────────────────────────────
   { id: 'pcap', name: 'PCAP Analyzer', short: 'PCAP', desc: 'Analiza capturas pcap/pcapng: protocolos, top talkers, DNS/HTTP y alertas', category: 'Forense', icon: Waves },

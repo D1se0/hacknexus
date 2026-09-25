@@ -578,6 +578,21 @@ export const DOCS: Record<string, ToolDoc> = {
     tips: ['El ID de tracking aparece en la URL de la landing y en el QR: así sabes qué material generó cada interacción en tu aula', 'La landing se previsualiza con pop-up o se descarga como HTML autónomo: funciona offline en cualquier aula', 'El QR de quishing ilustra por qué los filtros no lo ven: escanéalo delante del alumnado y muestra el banner de aviso', 'Combínalo con Email Header Analyzer: primero muestran el ataque, luego enseñan a detectarlo con las cabeceras'],
   },
 
+  /* ── Red (extra) ── */
+  wifimap: {
+    what: 'Mapa global comunitario de redes WiFi compartidas, inspirado en el WiFi Map de DorkSearch: un mapa interactivo oscuro (Leaflet + tiles CARTO/OSM) donde cada punto es una red con SSID, clave, lugar, tipo de autenticación, banda y notas de la comunidad. A zoom bajo muestra clusters con el número de redes por zona; al acercarse (zoom 7+) se revelan los puntos individuales coloreados por autenticación (verde = abierta, azul = WPA2, morado = WPA3, rojo = WEP). Incluye geolocalización ("localízame"), ranking de redes más cercanas con distancia haversine, buscador por SSID/lugar, formulario para compartir redes propias, eliminación de tus aportes y export/import JSON del mapa completo.',
+    params: [
+      { name: 'mapa', type: 'interactivo', required: true, desc: 'zoom/pan libre; click en cluster = acercarse; click en pin = detalle de la red' },
+      { name: 'localízame', type: 'botón', desc: 'usa navigator.geolocation; calcula distancias a cada red y muestra las 6 más cercanas' },
+      { name: 'buscador', type: 'string', desc: 'filtra por SSID o lugar en tiempo real' },
+      { name: 'compartir red', type: 'formulario', desc: 'SSID, clave, auth, banda, lugar, notas y coordenadas (botones: centro del mapa / mi ubicación)' },
+      { name: 'export/import', type: 'JSON', desc: 'respalda o comparte tu mapa: la importación fusiona con tus puntos actuales (máx 2000)' },
+    ],
+    daily: ['Encontrar redes abiertas o compartidas en una zona antes de salir (cafeterías, bibliotecas, aeropuertos)', 'Guardar tus propios puntos WiFi de confianza con notas ("la clave cambia los lunes")', 'Planear viajar: exportar tu mapa y llevarlo al portátil sin depender de datos móviles'],
+    ethical: ['Comparte SOLO redes tuyas o con permiso expreso: publicar la clave de la red de otro es facilitar un acceso ilícito', 'Las claves que ves aquí son para conectarte legítimamente, no para atacar la red: WEP en 2026 no es una invitación', 'Usa redes abiertas con VPN: cualquier persona en el radio puede escuchar tu tráfico sin cifrar', 'Los 20 puntos demo son ficticios y formativos: sirven para enseñar a leer el mapa sin exponer redes reales'],
+    tips: ['La app funciona offline salvo los tiles del mapa (CARTO) y la búsqueda por geolocalización: tus datos nunca salen del navegador', 'A zoom bajo los clusters agregan por celdas geográficas: el número dentro es cuántas redes hay en esa celda', 'El color del pin indica autenticación: rojo (WEP) = red sin seguridad real, ideal para demos de por qué hay que migrar', 'Al compartir, usa "centro del mapa" para arrastrar el pin al sitio exacto sin escribir coordenadas a mano', 'El export JSON es compatible entre navegadores: puedes importarlo en otro equipo y seguir con tu mapa'],
+  },
+
   /* ── Análisis (extra) ── */
   mitre: {
     what: 'Navegador compacto de la matriz MITRE ATT&CK Enterprise: 14 tácticas (Reconnaissance → Impact) con las técnicas más relevantes de cada una. Busca por ID o nombre, marca la cobertura de tu ejercicio/defensa clicando técnicas, y exporta una capa JSON oficial (versions layer 4.5, domain enterprise-attack, con gradiente y leyenda) lista para importar en el ATT&CK Navigator oficial y verla coloreada sobre la matriz completa.',
