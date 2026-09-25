@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>51 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>57 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-51-2ee88a?style=flat-square" alt="51 tools" />
+  <img src="https://img.shields.io/badge/tools-57-2ee88a?style=flat-square" alt="57 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 51 herramientas
+## 🧰 Las 57 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -82,7 +82,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **IPv4 Generator** | Genera IPs aleatorias criptográficas por tipo (privada, pública, multicast…) con análisis de subred por dirección | 🟢 local |
 | **IPv6 Toolkit** | Expande/comprime, tipo, prefijos, EUI-64, reverse ip6.arpa y **generador de MACs** por fabricante | 🟢 local |
 | **Curl Builder** | Construye curl con headers, auth, proxy y equivalente Python requests | 🟢 local |
-| **WiFi Map** | Mapa global comunitario de WiFi compartidos: clusters por zoom, claves, lugares, geolocalización y export JSON (tiles CARTO) | 🔵 tiles OSM |
+| **WiFi Map** | Mapa global comunitario de WiFi compartidos: **~130 redes demo procedurales** (regeneradas por sesión), clusters por zoom, claves, lugares, geolocalización y export JSON | 🔵 tiles Esri |
 
 ### Forense
 | Tool | Descripción | Red |
@@ -111,7 +111,11 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | Tool | Descripción | Red |
 |---|---|---|
 | **Calculadora CHMOD** 🔥 port | Octal/simbólico con SUID, SGID, Sticky, presets y comando listo | 🟢 local |
-| **Linux/Windows Cheatsheets** | **~400 comandos**: Linux, Windows/AD, macOS, redes, checklist de privesc, equivalencias y one-liners de reverse shells — con buscador | 🟢 local |
+| **Linux/Windows Cheatsheets** | **~530 comandos**: Linux (21 cat), Windows/AD (12), macOS, redes, checklist de privesc, equivalencias y one-liners de reverse shells — con buscador | 🟢 local |
+| **Generador Umask** | Permisos reales que produce cada máscara sobre ficheros/directorios, presets y veredicto de seguridad | 🟢 local |
+| **Generador Sudoers** | Reglas de sudoers.d con análisis automático: GTFOBins, wildcards, rutas relativas y NOPASSWD peligrosos | 🟢 local |
+| **Generador systemd** | Units service (con bloque de hardening), timer con OnCalendar y mount + comandos de activación | 🟢 local |
+| **Permisos NTFS (icacls)** | Generador de icacls con ACEs visuales, herencias, presets y equivalencias chmod ↔ icacls | 🟢 local |
 
 ### Análisis
 | Tool | Descripción | Red |
@@ -123,12 +127,15 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Defanger / Refanger** | Neutraliza o restaura IPs, dominios, URLs y emails para compartir IOCs | 🟢 local |
 | **UUID & IDs** | UUID v4, NanoID, ObjectId y ULID + validador/decodificador con timestamps | 🟢 local |
 | **MITRE ATT&CK Navigator** | Matriz enterprise filtrable por táctica/ID, marca cobertura de tu ejercicio y exporta capa JSON para el Navigator oficial | 🟢 local |
+| **Windows Event IDs** | Qué significa cada evento del log Security/System y cómo convertirlo en detección (queries PS incluidas) | 🟢 local |
+| **Ports & Services** | ~65 puertos con ángulo de pentest, grupos (web/AD/db…) y notas de escaneo | 🟢 local |
 
 ### Generadores
 | Tool | Descripción | Red |
 |---|---|---|
 | **QR Generator** | Códigos QR con presets WiFi, vCard, email, SMS, tel y geo; corrección de error L/M/Q/H, colores y descarga PNG/SVG en local | 🟢 local |
 | **Lorem Ipsum Generator** | Texto de relleno por párrafos/frases/palabras, salida MD/HTML/JSON y modo hacker para demos | 🟢 local |
+| **Dork Arsenal** | ~35 dorks de Google, Bing, GitHub, Shodan y Censys con sustitución de objetivo y apertura directa | 🟢 local |
 
 🔥 **port** = portada de uno de mis repos originales: [chmod-calculator](https://github.com/D1se0/chmod-calculator) · [revShellsGenerator](https://github.com/D1se0/revShellsGenerator-page) · [PHPDetector](https://github.com/D1se0/PHPDetector-page) · [hackingChef](https://github.com/D1se0/hackingChef-page) · [calculadora_vlsm](https://github.com/D1se0/calculadora_vlsm) · [calculadora_subnetting](https://github.com/D1se0/calculadora_subnetting) · [sql-generator](https://github.com/D1se0/sql-generator)
 

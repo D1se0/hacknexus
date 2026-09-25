@@ -5,6 +5,7 @@ import {
   Smile, Radio, Server, Database, FileCode, Bug, Swords, FileKey, ScrollText, Brain, Braces, Regex,
   CalendarClock, Wifi, Split, Crown, Globe2, Timer, ShieldAlert, Ban, QrCode, TypeOutline,
   Cpu, Wand2, Fish, Link2, MailWarning, Crosshair, Scissors,
+  FileLock2, UserCog, Cog, FolderLock, Search, Plug, FileWarning,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -102,6 +103,10 @@ export const TOOLS: ToolDef[] = [
   // ─── Linux & sistema ────────────────────────────────────────────
   { id: 'chmod', name: 'Calculadora CHMOD', short: 'CHMOD', desc: 'Permisos Linux en octal/simbólico con SUID, SGID y Sticky Bit', category: 'Linux & sistema', icon: Crown, ported: true, origin: 'chmod-calculator' },
   { id: 'cheatsheets', name: 'Linux/Windows Cheatsheets', short: 'Cheats', desc: 'Comandos de red, sistema y privesc con equivalencias Linux↔Windows', category: 'Linux & sistema', icon: ScrollText },
+  { id: 'umaskgen', name: 'Generador Umask', short: 'Umask', desc: 'Calcula los permisos reales que produce cada umask con presets y veredicto de seguridad', category: 'Linux & sistema', icon: FileLock2 },
+  { id: 'sudoersgen', name: 'Generador Sudoers', desc: 'Construye reglas de sudoers.d correctas y detecta GTFOBins, wildcards y NOPASSWD peligrosos', short: 'Sudoers', category: 'Linux & sistema', icon: UserCog },
+  { id: 'systemdgen', name: 'Generador systemd', desc: 'Units de service con hardening, timer con OnCalendar y mount listos para desplegar', short: 'systemd', category: 'Linux & sistema', icon: Cog },
+  { id: 'ntfsperm', name: 'Permisos NTFS (icacls)', desc: 'Generador de comandos icacls con ACEs, herencia y equivalencias chmod ↔ icacls', short: 'NTFS', category: 'Linux & sistema', icon: FolderLock },
 
   // ─── Análisis ───────────────────────────────────────────────────
   { id: 'cvelookup', name: 'CVE Lookup', short: 'CVE', desc: 'Consulta CVEs en la NVD con CVSS, descripción y referencias', category: 'Análisis', icon: ShieldAlert },
@@ -111,10 +116,13 @@ export const TOOLS: ToolDef[] = [
   { id: 'defanger', name: 'Defanger / Refanger', short: 'Defang', desc: 'Defangea o refangea IPs, dominios y URLs para reportes', category: 'Análisis', icon: Ban },
   { id: 'uuid', name: 'UUID & IDs', short: 'UUID', desc: 'Genera UUID v4, NanoID y ObjectIds con validación', category: 'Análisis', icon: Radio },
   { id: 'mitre', name: 'MITRE ATT&CK Navigator', short: 'ATT&CK', desc: 'Matriz enterprise filtrable con cobertura de técnicas y export de capa JSON para el Navigator oficial', category: 'Análisis', icon: Crosshair },
+  { id: 'winlog', name: 'Windows Event IDs', desc: 'Significado y detección de los eventos clave del log Security/System para forense y blue team', short: 'Events', category: 'Análisis', icon: FileWarning },
+  { id: 'ports', name: 'Ports & Services', desc: 'Referencia de puertos con ángulo de pentest y filtro por grupo (web, AD, bases de datos…)', short: 'Ports', category: 'Análisis', icon: Plug },
 
   // ─── Generadores ────────────────────────────────────────────────
   { id: 'qr', name: 'QR Generator', short: 'QR', desc: 'Códigos QR con presets WiFi, vCard, email, SMS y geo; descarga PNG/SVG en local', category: 'Generadores', icon: QrCode },
   { id: 'lipsum', name: 'Lorem Ipsum Generator', short: 'Lipsum', desc: 'Texto de relleno por párrafos, frases o palabras con modo hacker y salida MD/HTML/JSON', category: 'Generadores', icon: TypeOutline },
+  { id: 'dorkgen', name: 'Dork Arsenal', desc: 'Dorks de Google, Bing, GitHub, Shodan y Censys con sustitución de objetivo y enlace directo al motor', short: 'Dorks', category: 'Generadores', icon: Search },
 ]
 
 export const CATEGORIES: ToolCategory[] = [

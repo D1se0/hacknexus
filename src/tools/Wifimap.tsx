@@ -54,20 +54,42 @@ export default function Wifimap() {
 
   /* ── init mapa (una vez) ── */
   useEffect(() => {
-    if (!mapDivRef.current || mapRef.current) return
-    const map = L.map(mapDivRef.current, { center: [40.4168, -3.7038], zoom: 3, worldCopyJump: true })
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
-      subdomains: 'abcd',
-      maxZoom: 19,
+    const div = mapDivRef.current
+    if (!div || mapRef.current) return
+
+    const map = L.map(div, { center: [40.4168, -3.7038], zoom: 3, worldCopyJump: true })
+
+    // Tiles Esri Dark Gray Canvas: gratuitos y sin API key (CARTO empezó a
+    // devolver "API KEY REQUIRED" en público). Base + capa de referencia/labels.
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: 'Tiles &copy; Esri — Esri, DeLorme, NAVTEQ &middot; datos: OSM',
+      maxZoom: 16,
     }).addTo(map)
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+      maxZoom: 16,
+      opacity: 0.9,
+      pane: 'shadowPane', // bajo los marcadores, sobre los tiles base
+    }).addTo(map)
+
     layerRef.current = L.layerGroup().addTo(map)
     mapRef.current = map
-    setTimeout(() => map.invalidateSize(), 400) // por si el Reveal anima el contenedor
+
+    // el contenedor puede estar animándose (framer-motion) o sin layout aún:
+    // re-medir hasta que tenga dimensiones reales y observar cambios posteriores
+    let tries = 0
+    const fit = () => {
+      if (div.clientWidth > 0 && div.clientHeight > 0) map.invalidateSize()
+      else if (++tries < 40) requestAnimationFrame(fit)
+    }
+    requestAnimationFrame(fit)
+    const ro = new ResizeObserver(() => map.invalidateSize())
+    ro.observe(div)
+
     const update = () => setZoom(map.getZoom())
     update()
     map.on('zoomend', update)
     return () => {
+      ro.disconnect()
       map.off('zoomend', update)
       map.remove()
       mapRef.current = null
@@ -250,7 +272,7 @@ export default function Wifimap() {
       <ToolHeader icon={Wifi} title="WiFi Map" desc="Mapa global comunitario de redes compartidas: zoom para revelar puntos, click para ver SSID, clave y lugar — como el WiFi Map de DorkSearch, pero tuyo" />
 
       <InfoBanner>
-        <b>Datos demo ficticios + tus redes locales.</b> Los puntos que añadas se guardan solo en tu navegador (localStorage) y puedes exportarlos/importarlos en JSON. Comparte únicamente redes tuyas o con permiso expreso del propietario: conectarse a redes ajenas sin autorización es un delito en la mayoría de jurisdicciones. Los tiles del mapa se cargan desde CARTO/OSM (única petición externa).
+        <b>{SEED_POINTS.length} redes demo ficticias + tus redes locales.</b> El set demo se genera en cada carga (como los tiles de la referencia) y los puntos que añadas se guardan solo en tu navegador (localStorage), exportables/importables en JSON. Comparte únicamente redes tuyas o con permiso expreso del propietario: conectarse a redes ajenas sin autorización es un delito en la mayoría de jurisdicciones. Los tiles del mapa se cargan desde Esri/OSM (única petición externa, sin API key).
       </InfoBanner>
 
       {/* barra de controles */}
@@ -330,7 +352,7 @@ export default function Wifimap() {
             <span className="inline-block h-2.5 w-2.5 rounded-full" style={{ background: c, boxShadow: `0 0 6px ${c}` }} /> {k}
           </span>
         ))}
-        <span className="ml-auto">tiles: CARTO Dark Matter (OSM) · mapa: Leaflet</span>
+        <span className="ml-auto">tiles: Esri Dark Gray Canvas (OSM) · mapa: Leaflet</span>
       </div>
 
       {importErr && <div className="mt-4"><ErrorBox>Import JSON: {importErr}</ErrorBox></div>}
@@ -435,7 +457,7 @@ export default function Wifimap() {
 
       <Reveal>
         <p className="mt-6 font-mono text-[10px] leading-relaxed text-grey/60">
-          💡 {points.filter((p) => p.source === 'usuario').length} red(es) tuyas guardadas en este navegador · los {SEED_POINTS.length} puntos demo son ficticios con fines formativos · exportar JSON para respaldar o compartir tu mapa con quien quieras.
+          💡 {points.filter((p) => p.source === 'usuario').length} red(es) tuyas guardadas en este navegador · las {SEED_POINTS.length} redes demo son ficticias, se regeneran al recargar y son solo formativas · exportar JSON para respaldar o compartir tu mapa con quien quieras.
         </p>
       </Reveal>
     </div>

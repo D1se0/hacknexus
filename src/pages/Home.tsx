@@ -55,7 +55,7 @@ export default function Home({ nav }: { nav: Nav }) {
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="mb-5 flex flex-wrap items-center gap-2">
               <span className="chip flex items-center gap-2">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-ok" />
-                d1se0@hacknexus:~#&nbsp;<Typewriter phrases={['suite de hacking ético', 'forense digital client-side', 'networking + cripto', 'docs y comparativa de OS', '51 herramientas, 0 servidores']} />
+                d1se0@hacknexus:~#&nbsp;<Typewriter phrases={['suite de hacking ético', 'forense digital client-side', 'networking + cripto', 'docs y comparativa de OS', `${TOOLS.length} herramientas, 0 servidores`]} />
               </span>
             </motion.div>
             <motion.h1

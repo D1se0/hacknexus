@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useRef, useState, ty
 import { motion, AnimatePresence, useInView } from 'framer-motion'
 import { Check, Copy, AlertTriangle, Info, CheckCircle2, X } from 'lucide-react'
 import { cn, copyText } from '../lib/util'
+import { TOOLS } from '../lib/registry'
 
 /* ---------------- Toasts ---------------- */
 
@@ -311,7 +312,7 @@ export function Typewriter({ phrases, speed = 55 }: { phrases: string[]; speed?:
 export function LiveTerminal() {
   const LINES: { text: string; kind: 'cmd' | 'out' | 'ok' | 'warn' }[] = [
     { text: './hacknexus --mode stealth --target lab.local', kind: 'cmd' },
-    { text: '[*] cargando 51 herramientas locales…', kind: 'out' },
+    { text: `[+] cargando ${TOOLS.length} herramientas locales…`, kind: 'ok' },
     { text: '[✓] hash suite · cracker · jwt · totp online', kind: 'ok' },
     { text: 'hacknexus> crack md5 --wordlist rockyou.txt', kind: 'cmd' },
     { text: '[*] 14.3M contraseñas · 2.1M h/s · GPU-less mode', kind: 'out' },
@@ -384,7 +385,7 @@ export function LiveTerminal() {
         </div>
       </div>
       <div className="grid grid-cols-4 gap-2 border-t border-edge px-5 py-3 font-mono text-[10px] text-grey">
-        <div><span className="block text-base font-bold text-acento">51</span>tools</div>
+        <div><span className="block text-base font-bold text-acento">{TOOLS.length}</span>tools</div>
         <div><span className="block text-base font-bold text-white">100%</span>client-side</div>
         <div><span className="block text-base font-bold text-white">0</span>servers</div>
         <div><span className="block text-base font-bold text-ok">MIT</span>license</div>

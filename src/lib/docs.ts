@@ -589,8 +589,8 @@ export const DOCS: Record<string, ToolDoc> = {
       { name: 'export/import', type: 'JSON', desc: 'respalda o comparte tu mapa: la importación fusiona con tus puntos actuales (máx 2000)' },
     ],
     daily: ['Encontrar redes abiertas o compartidas en una zona antes de salir (cafeterías, bibliotecas, aeropuertos)', 'Guardar tus propios puntos WiFi de confianza con notas ("la clave cambia los lunes")', 'Planear viajar: exportar tu mapa y llevarlo al portátil sin depender de datos móviles'],
-    ethical: ['Comparte SOLO redes tuyas o con permiso expreso: publicar la clave de la red de otro es facilitar un acceso ilícito', 'Las claves que ves aquí son para conectarte legítimamente, no para atacar la red: WEP en 2026 no es una invitación', 'Usa redes abiertas con VPN: cualquier persona en el radio puede escuchar tu tráfico sin cifrar', 'Los 20 puntos demo son ficticios y formativos: sirven para enseñar a leer el mapa sin exponer redes reales'],
-    tips: ['La app funciona offline salvo los tiles del mapa (CARTO) y la búsqueda por geolocalización: tus datos nunca salen del navegador', 'A zoom bajo los clusters agregan por celdas geográficas: el número dentro es cuántas redes hay en esa celda', 'El color del pin indica autenticación: rojo (WEP) = red sin seguridad real, ideal para demos de por qué hay que migrar', 'Al compartir, usa "centro del mapa" para arrastrar el pin al sitio exacto sin escribir coordenadas a mano', 'El export JSON es compatible entre navegadores: puedes importarlo en otro equipo y seguir con tu mapa'],
+    ethical: ['Comparte SOLO redes tuyas o con permiso expreso: publicar la clave de la red de otro es facilitar un acceso ilícito', 'Las claves que ves aquí son para conectarte legítimamente, no para atacar la red: WEP en 2026 no es una invitación', 'Usa redes abiertas con VPN: cualquier persona en el radio puede escuchar tu tráfico sin cifrar', 'Los ~130 puntos demo son ficticios y se regeneran en cada carga: sirven para enseñar a leer el mapa sin exponer redes reales'],
+    tips: ['La app funciona offline salvo los tiles del mapa (Esri) y la geolocalización: tus datos nunca salen del navegador', 'A zoom bajo los clusters agregan por celdas geográficas: el número dentro es cuántas redes hay en esa celda', 'El color del pin indica autenticación: rojo (WEP) = red sin seguridad real, ideal para demos de por qué hay que migrar', 'Al compartir, usa "centro del mapa" para arrastrar el pin al sitio exacto sin escribir coordenadas a mano', 'El export JSON es compatible entre navegadores: puedes importarlo en otro equipo y seguir con tu mapa', 'Los tiles son Esri Dark Gray Canvas (sin API key): si algún día fallan, la tool sigue funcionando con tus puntos y el buscador'],
   },
 
   /* ── Análisis (extra) ── */
@@ -604,5 +604,87 @@ export const DOCS: Record<string, ToolDoc> = {
     daily: ['Estructurar el informe de un pentest por tácticas en vez de por hallazgos sueltos', 'Planear un ejercicio red team cubriendo tácticas que normalmente se olvidan (Persistence, Collection)', 'Comunicar cobertura de detección al equipo blue con el vocabulario estándar de la industria'],
     ethical: ['El mapa mental de ATT&CK ayuda a DEFENDER: cada técnica marcada como cubierta debe tener su detección asociada', 'En threat hunting: elegir una técnica (T1003 dumping) y buscar sus indicadores en los logs (con Log Forensics)', 'Formación: recorrer la matriz explicando 1 técnica real por táctica en 30 minutos'],
     tips: ['La capa exportada se abre en el Navigator oficial (Open Existing Layer → upload) y allí puedes añadir scores/colores propios', 'La matriz aquí es compacta: si falta una técnica, búscala por ID en el Navigator oficial (attack.mitre.org)', 'Combínalo con CVE Lookup: vulnerabilidad explotada → técnica ATT&CK → detección → informe', 'Los IDs son estables: úsalos en los informes en vez de descripciones libres, y cualquiera podrá buscarlos'],
+  },
+
+  /* ── Linux & sistema (generadores) ── */
+  umaskgen: {
+    what: 'Generador de umask: elige los tres dígitos (o escribe la máscara) y calcula en vivo los permisos reales que tendrán los ficheros nuevos (base 666) y los directorios (base 777), en octal y simbólico. Incluye presets habituales (022, 027, 077, 002…), tabla de qué quita cada dígito, el comando shell para aplicarla y las ubicaciones para hacerla permanente (~/.bashrc, UMask= del unit systemd, /etc/login.defs).',
+    params: [
+      { name: 'dígitos u/g/o', type: '0-7 ×3', required: true, desc: 'cada dígito se quita de la base; clic en los botones o entrada libre octal' },
+      { name: 'presets', type: '6 valores', desc: '022 servidor clásico, 027 web apps, 077 privado total, 002/007 grupos' },
+    ],
+    daily: ['Decidir la umask correcta antes de desplegar un servicio que escribe ficheros', 'Entender por qué tu app crea ficheros 640 y no 600 (la umask del proceso padre)', 'Configurar homes de usuarios SFTP con 077 sin pensar dos veces'],
+    ethical: ['Explicar en formación la diferencia entre chmod (concede) y umask (quita): el error clásico es "poner" umask 000 pensando en permisos', 'Demostrar el riesgo de umask 002 en servidores multiusuario: ficheros grupales escribibles por accidente', 'En hardening: la umask 027/077 es línea base CIS para servicios'],
+    tips: ['Los ficheros NUNCA nacen ejecutables: la base es 666, así que x siempre lo decide el programa que crea el fichero (chmod posterior)', 'Para servicios systemd usa UMask=027 en el [Service]: la umask del usuario no aplica a demonios', 'Comprueba el efecto real con: umask 027 && touch f && mkdir d && ls -l f d'],
+  },
+  sudoersgen: {
+    what: 'Generador de reglas sudoers (/etc/sudoers.d/) con construcción de la línea completa (usuario, host, run-as, tags, comando) y análisis automático de riesgos: detecta comandos con shell escape (GTFOBins: vim, less, awk, find, python…), wildcards peligrosos, rutas relativas que el usuario puede secuestrar por PATH, metacaracteres frágiles y la combinación NOPASSWD+ALL. Incluye presets buenos y uno deliberadamente inseguro para formación.',
+    params: [
+      { name: 'usuario/grupo', type: 'string', required: true, desc: 'deploy, %despliegues… el prefijo % indica grupo' },
+      { name: 'host', type: 'string', desc: 'ALL en la mayoría de setups; hostname para reglas multi-máquina' },
+      { name: 'run-as', type: 'string', desc: 'usuario objetivo: root, postgres, www-data o usuario:grupo' },
+      { name: 'comando', type: 'string (ruta absoluta)', required: true, desc: 'se recomienda absoluta: relativa = resolución por PATH del usuario' },
+      { name: 'tags', type: 'toggles', desc: 'NOPASSWD, SETENV, NOEXEC, LOG_OUTPUT — el análisis reacciona a cada uno' },
+    ],
+    daily: ['Dar a DevOps permiso de reiniciar exactamente un servicio sin abrir el teléfono', 'Delegar lecturas de logs con NOEXEC para bloquear el shell-out desde paginadores', 'Documentar qué puede ejecutar cada rol (la línea generada es autoexplicativa)'],
+    ethical: ['El análisis enseña el catálogo GTFOBins en contexto: cada aviso cita por qué la regla es un vector', 'En auditorías: lanzar sudo -l y contrastar con los avisos de esta tool para priorizar hallazgos', 'El preset inseguro (vim * + NOPASSWD) es material de formación: muéstralo en la revisión y propón la alternativa'],
+    tips: ['SIEMPRE valida con visudo -c antes de salir de la sesión root actual: un sudoers roto te deja sin root', 'NOPASSWD no es malo per se: es malo en ALL o en comandos con shell escape', 'NOEXEC dificulta (no imposibilita) el escape: es defensa en profundidad, no garantía', 'sudoers.d con chmod 440: los permisos importan tanto como el contenido'],
+  },
+  systemdgen: {
+    what: 'Generador de units de systemd en tres pestañas: service (con bloque de hardening opcional: ProtectSystem=strict, NoNewPrivileges, MemoryDenyWriteExecute, CapabilityBoundingSet…), timer (OnCalendar con presets, Persistent y RandomizedDelaySec) y mount (What/Where/Type/Options para NFS/CIFS). Cada unit se genera con sus comandos de activación (daemon-reload, enable --now) y verificación (systemctl status, list-timers, systemd-analyze security).',
+    params: [
+      { name: 'nombre/desc/exec', type: 'string', required: true, desc: 'identidad del unit; ExecStart debe ser ruta absoluta' },
+      { name: 'User/Group', type: 'string', desc: 'vacío o root = corre como root: el veredicto lo marca en rojo' },
+      { name: 'Restart', type: 'no | on-failure | always…', desc: 'política de reinicio con RestartSec=3 fijo' },
+      { name: 'hardening', type: 'toggle', desc: 'añade 12 directivas de sandbox; systemd-analyze security lo premia' },
+      { name: 'OnCalendar', type: 'string', desc: 'formato calendario systemd: presets de diario/hora/15min/semanal/mensual' },
+    ],
+    daily: ['Convertir un script de cron legacy en un timer con Persistent=true (sobrevive apagados)', 'Empaquetar una app interna con usuario dedicado y sandbox en lugar de correr como root', 'Montar un share NFS/CIFS con unit .mount en vez de fstab (mismos datos, mejor logging)'],
+    ethical: ['El veredicto de User=root + ruta escribible enseña el vector ExecStart hijacking (T1543.002) antes de que ocurra', 'En CTFs: systemctl cat de units sospechosos y contrastar con los avisos de esta tool', 'El hardening generado corresponde a recomendaciones CIS/baseline: úsalo en informes como remediación concreta'],
+    tips: ['systemd-analyze security SERVICIO da una puntuación 0-10: pruébalo antes y después del hardening', 'Los timers no sustituyen cron 1:1: OnCalendar=:0/15 y hourly ya cubren el 90% de casos', 'El nombre del .mount se deriva del punto de montaje: /mnt/datos → mnt-datos.mount (escapes de systemd para \ y espacios no están soportados aquí: es una aproximación)', 'Después de editar a mano: daemon-reload SIEMPRE, o estarás probando la versión vieja'],
+  },
+  ntfsperm: {
+    what: 'Generador de permisos NTFS: construye comandos icacls a partir de ACEs visuales (grant/deny × principal × derecho × herencia OI/CI/IO/NP), con presets de casos reales (carpeta compartida, web root IIS, drop folder, antipatrón mundo-escribible), opciones de herencia (/inheritance:r y :d) y recursividad (/t /c). Incluye análisis de riesgo (full-control a grupos amplios = privesc por reemplazo de binarios), tabla de derechos con su ≈chmod y doble tabla de equivalencias chmod↔icacls y setfacl↔icacls.',
+    params: [
+      { name: 'ruta', type: 'string', required: true, desc: 'C:\carpeta o fichero concreto' },
+      { name: 'ACEs', type: 'lista editable', desc: 'tipo, principal (con autocompletado), derecho F/M/RX/R/W…, herencia por botones' },
+      { name: '/t /c', type: 'toggle', desc: 'recursivo y continuar-ante-errores' },
+      { name: '/inheritance:r | :d', type: 'toggle', desc: 'cortar herencia o convertirla a explícita' },
+    ],
+    daily: ['Preparar el comando exacto antes de tocar permisos de una carpeta compartida de producción', 'Documentar el modelo de permisos de un despliegue IIS (IIS_IUSRS lectura, admins control)', 'Migrar permisos entre entornos con /save y /restore en lugar de rehacer a mano'],
+    ethical: ['El antipatrón Everyone:F se incluye a propósito: es EL vector de privesc por reemplazo de binario de servicios', 'En pentest Windows: icacls sobre binarios de servicios y carpetas de Program Files para encontrar escrituras', 'Las ACEs de deny se evalúan primero: úsalas para entender hallazgos confusos de accesos, no como solución por defecto'],
+    tips: ['Respaldar SIEMPRE antes: icacls ruta /save acl.txt /t /c (y /restore para volver)', 'No existe SUID en NTFS: la "escalada" equivalente es un servicio/tarea con cuenta privilegiada y binario modificable', 'Get-Acl | fl AccessToString da la misma info en PowerShell: útil para scripts de auditoría', 'Las herencias (OI)(CI) son la diferencia entre tocar una carpeta y tocar sus 10.000 ficheros: piénsalo antes de /t'],
+  },
+  winlog: {
+    what: 'Referencia accionable de Event IDs de Windows (Security/System): cada evento explica qué es, cómo lo usa un atacante (logon types, Kerberoasting en 4769, borrado de logs 1102, cambios de política 4719…) y cómo convertirlo en detección concreta. Con filtros por categoría y un bloque de queries PowerShell listas (top IPs de fuerza bruta en 4625, RDP en 4624, alerta de 1102).',
+    params: [
+      { name: 'búsqueda', type: 'string', desc: 'por número (4625), servicio (kerberos) o técnica (kerberoast)' },
+      { name: 'categorías', type: 'chips', desc: 'logins, cuentas/grupos, privilegios, política, borrado de logs, otros' },
+      { name: 'queries PS', type: 'CopyBlock', desc: 'tres consultas Get-WinEvent copiables para el SIEM o triage manual' },
+    ],
+    daily: ['Justificar en un informe por qué un evento concreto merece alerta (ID + criterio + query)', 'Triage de un incidente: qué IDs mirar primero y qué patrón es sospechoso', 'Configurar reglas del SIEM con criterio citable en vez de frases genéricas'],
+    ethical: ['Blue team: cada tarjeta es una regla de detección en miniatura (ataque → señal → query)', 'En formación: la pareja 4625/4624 enseña fuerza bruta desde el lado de la defensa', 'Los eventos 1102 y 4719 son las dos "pestañas rojas" anti-forense: si aparecen sin cambio planificado, es incidente'],
+    tips: ['El Logon Type del 4624 lo explica todo: 2=consola, 3=red, 5=servicio, 10=RDP; un 10 desde una IP de servidores es oro forense', 'Kerberoasting = muchos 4769 con etype RC4 (0x17) desde un solo usuario en minutos', 'wevtutil qe Security /c:20 /rd:true /f:text es el equivalente CLI rápido si no tienes PS', 'Los IDs cambian poco entre versiones: esta referencia sirve de Win10 a Server 2025'],
+  },
+  ports: {
+    what: 'Tabla curada de ~65 puertos y servicios con cuatro capas por fila: qué es (descripción honesta), por qué importa en pentest (ángulo ofensivo clásico: default creds, CVE, técnica), grupo temático (web, acceso remoto, AD, bases de datos, correo, ficheros, infraestructura) y protocolo. Buscador por número/servicio/técnica y filtros por grupo. Pensada como memoria de consulta entre nmap y el informe.',
+    params: [
+      { name: 'búsqueda', type: 'string', desc: 'número (443), servicio (smb) o técnica (kerberoast, EternalBlue…)' },
+      { name: 'grupos', type: 'chips', desc: 'web, remote, ad, db, mail, files, infra, misc' },
+    ],
+    daily: ['Interpretar la salida de nmap: qué significa cada puerto abierto en contexto', 'Priorizar un escaneo: qué puertos UDP valen la pena (161 SNMP, 69 TFTP, 53 DNS)', 'Explicar al cliente por qué su Redis 6379 expuesto es crítico, con el ángulo de ataque exacto'],
+    ethical: ['Cada fila recuerda el ángulo de ataque pero el uso real exige autorización: la tabla es conocimiento, no permiso', 'Útil en bug bounty para mapear superficie de ataque del scope y citar puertos en los reportes', 'En defensas: contrastar esta lista con tu inventario de puertos expuestos (attack surface review)'],
+    tips: ['--top-ports 1000 cubre el 95% de los casos; -p- (65535) solo en targets que lo merecen', 'UDP es lento porque no responde si no está abierto: --top-ports 50 -sU es el compromiso razonable', 'Los puertos 5985/5986 (WinRM) son la vía rápida de lateral movement en Windows con evil-winrm', '445 (SMB) cerrado a internet debería ser política: casi todo el catálogo de exploits de AD pasa por ahí'],
+  },
+  dorkgen: {
+    what: 'Arsenal de ~35 dorks organizados por motor y objetivo: Google (exposición de ficheros, logins y tecnología), Bing (variante distinta de indexado), GitHub (secretos filtrados: .env, id_rsa, AKIA, .npmrc), Shodan (superficie expuesta por org/ASN/hostname/puerto) y Censys (inventario por DNS/certificado). Campo de objetivo que reescribe todos los dorks de golpe, buscador, y cada dork con botón de copiar y de abrir la búsqueda real en el motor.',
+    params: [
+      { name: 'objetivo', type: 'string', required: true, desc: 'dominio que sustituye objetivo.com en todos los dorks' },
+      { name: 'motor', type: 'chips', desc: 'todos, Google, Bing, GitHub, Shodan, Censys' },
+      { name: 'búsqueda', type: 'string', desc: 'filtra por texto del dork o descripción' },
+    ],
+    daily: ['OSINT pre-auditoría: qué dice internet de tu cliente antes de tocar nada', 'Self-assessment: correr los dorks de GitHub contra tu organización y llorar a tiempo', 'Inventario rápido de subdominios indexados y paneles expuestos'],
+    ethical: ['Solo sobre activos propios o con autorización (bug bounty in-scope): el dorking es pasivo pero el uso de los hallazgos no lo es', 'La herramienta no visita el objetivo: solo construye búsquedas en motores públicos', 'Los dorks de secretos de GitHub son la demo perfecta de por qué escanear repos ANTES de push es política'],
+    tips: ['En Shodan, org: mejor que hostname: un ASN entero con http.favicon.hash: para paneles concretos', 'Los operadores cambian: intext/intitle funcionan igual en Google y Bing, pero ip: solo en Bing', 'Combínalo con HTTP Inspector y URL Phishing Inspector para analizar los hallazgos sin tocarlos', 'site:*.dominio.com -www es el dork de subdominios más infravalorado'],
   },
 }
