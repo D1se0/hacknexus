@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>57 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>74 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-57-2ee88a?style=flat-square" alt="57 tools" />
+  <img src="https://img.shields.io/badge/tools-74-2ee88a?style=flat-square" alt="74 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 57 herramientas
+## 🧰 Las 74 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -59,6 +59,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 |---|---|---|
 | **Generador de Contraseñas** | Passwords, passphrases y PINs con crypto.getRandomValues sin sesgo | 🟢 local |
 | **Auditor de Contraseñas** | Fortaleza zxcvbn, tiempo de crackeo offline y filtraciones HIBP (k-anonymity: solo 5 chars del SHA-1) | 🟡 HIBP |
+| **Password Policy Builder** | Políticas coherentes Linux/Windows según NIST 800-63B: longitud sobre complejidad, sin rotación suicida, bloqueo progresivo | 🟢 local |
 
 ### Web & payloads
 | Tool | Descripción | Red |
@@ -82,7 +83,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **IPv4 Generator** | Genera IPs aleatorias criptográficas por tipo (privada, pública, multicast…) con análisis de subred por dirección | 🟢 local |
 | **IPv6 Toolkit** | Expande/comprime, tipo, prefijos, EUI-64, reverse ip6.arpa y **generador de MACs** por fabricante | 🟢 local |
 | **Curl Builder** | Construye curl con headers, auth, proxy y equivalente Python requests | 🟢 local |
-| **WiFi Map** | Mapa global comunitario de WiFi compartidos: **~130 redes demo procedurales** (regeneradas por sesión), clusters por zoom, claves, lugares, geolocalización y export JSON | 🔵 tiles Esri |
+| **WiFi Map** | Mapa con la **base de datos real de WiGLE** (1.000M+ redes observadas por la comunidad) con tus credenciales guardadas solo en tu navegador, más el mapa local: ~130 redes demo procedurales, tus puntos persistentes, clusters, geolocalización y export CSV/JSON | 🔵 tiles Esri + API WiGLE |
 
 ### Forense
 | Tool | Descripción | Red |
@@ -116,6 +117,16 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Generador Sudoers** | Reglas de sudoers.d con análisis automático: GTFOBins, wildcards, rutas relativas y NOPASSWD peligrosos | 🟢 local |
 | **Generador systemd** | Units service (con bloque de hardening), timer con OnCalendar y mount + comandos de activación | 🟢 local |
 | **Permisos NTFS (icacls)** | Generador de icacls con ACEs visuales, herencias, presets y equivalencias chmod ↔ icacls | 🟢 local |
+| **Fstab Builder** | Entradas editables con presets por escenario y validador de errores clásicos (credenciales inline, suid en home, fsck en tmpfs) | 🟢 local |
+| **Sysctl Hardening** | Catálogo explicado de claves del kernel con perfiles servidor/desktop/Docker y conf listo para /etc/sysctl.d | 🟢 local |
+| **SSH Hardening** | sshd_config endurecido con explicación de cada directiva: solo claves, cifrados AEAD, AllowUsers y banner legal | 🟢 local |
+| **NFTables Builder** | Rulesets nft con policy drop, established/related, rate limit SSH y presets web/home/workstation | 🟢 local |
+| **WireGuard Config** | Túnel completo servidor+peers con claves WebCrypto, AllowedIPs explicado, MTU, NAT y firewall | 🟢 local |
+| **Firewall Windows** | Reglas netsh advfirewall con mínimo privilegio, presets (RDP LAN, WinRM, SMB) y aviso de reglas peligrosas | 🟢 local |
+| **Windows Scheduled Tasks** | schtasks + PowerShell con sección de detección: event IDs 4698-4702 y el abuso T1053.005 | 🟢 local |
+| **Windows Hardening** | ~25 controles estilo CIS con justificación, aplicación, verificación y reversión (LSA, LLMNR, SMB…) | 🟢 local |
+| **PowerShell Lab** | One-liners de administración, red, disco y blue team con la trampa de cada uno explicada | 🟢 local |
+| **Windows Registry Tweaks** | Tweaks de telemetría/privacidad/hardening con reversión y export a .reg listo para fusionar | 🟢 local |
 
 ### Análisis
 | Tool | Descripción | Red |
@@ -129,6 +140,10 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **MITRE ATT&CK Navigator** | Matriz enterprise filtrable por táctica/ID, marca cobertura de tu ejercicio y exporta capa JSON para el Navigator oficial | 🟢 local |
 | **Windows Event IDs** | Qué significa cada evento del log Security/System y cómo convertirlo en detección (queries PS incluidas) | 🟢 local |
 | **Ports & Services** | ~65 puertos con ángulo de pentest, grupos (web/AD/db…) y notas de escaneo | 🟢 local |
+| **IOC Extractor** | IPs, dominios, hashes, CVEs, wallets y técnicas MITRE desde cualquier texto, con contexto y enlaces VT/AbuseIPDB | 🟢 local |
+| **Log Anonymizer** | Pseudonimización consistente y reversible de IPs/usuarios/dominios para compartir logs sin exponer nada | 🟢 local |
+| **Username OSINT** | URLs de perfil en ~20 plataformas, patrón del alias, variantes y dorks de Google/GitHub — todo pasivo | 🟢 local |
+| **Sysmon Config Builder** | XML de Sysmon por perfiles con guía ofensiva/defensiva de cada evento: el punto de partida de todo SOC | 🟢 local |
 
 ### Generadores
 | Tool | Descripción | Red |
@@ -136,6 +151,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **QR Generator** | Códigos QR con presets WiFi, vCard, email, SMS, tel y geo; corrección de error L/M/Q/H, colores y descarga PNG/SVG en local | 🟢 local |
 | **Lorem Ipsum Generator** | Texto de relleno por párrafos/frases/palabras, salida MD/HTML/JSON y modo hacker para demos | 🟢 local |
 | **Dork Arsenal** | ~35 dorks de Google, Bing, GitHub, Shodan y Censys con sustitución de objetivo y apertura directa | 🟢 local |
+| **Wordlist Builder** | Wordlists dirigidas desde datos del objetivo con las mutaciones que la gente realmente usa | 🟢 local |
+| **Pentest Report Builder** | Hallazgos con severidad/evidencia/remediación y export Markdown profesional listo para pandoc | 🟢 local |
 
 🔥 **port** = portada de uno de mis repos originales: [chmod-calculator](https://github.com/D1se0/chmod-calculator) · [revShellsGenerator](https://github.com/D1se0/revShellsGenerator-page) · [PHPDetector](https://github.com/D1se0/PHPDetector-page) · [hackingChef](https://github.com/D1se0/hackingChef-page) · [calculadora_vlsm](https://github.com/D1se0/calculadora_vlsm) · [calculadora_subnetting](https://github.com/D1se0/calculadora_subnetting) · [sql-generator](https://github.com/D1se0/sql-generator)
 

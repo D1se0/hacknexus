@@ -580,17 +580,21 @@ export const DOCS: Record<string, ToolDoc> = {
 
   /* ── Red (extra) ── */
   wifimap: {
-    what: 'Mapa global comunitario de redes WiFi compartidas, inspirado en el WiFi Map de DorkSearch: un mapa interactivo oscuro (Leaflet + tiles CARTO/OSM) donde cada punto es una red con SSID, clave, lugar, tipo de autenticación, banda y notas de la comunidad. A zoom bajo muestra clusters con el número de redes por zona; al acercarse (zoom 7+) se revelan los puntos individuales coloreados por autenticación (verde = abierta, azul = WPA2, morado = WPA3, rojo = WEP). Incluye geolocalización ("localízame"), ranking de redes más cercanas con distancia haversine, buscador por SSID/lugar, formulario para compartir redes propias, eliminación de tus aportes y export/import JSON del mapa completo.',
+    what: 'Mapa global de redes WiFi con integración EN VIVO de la base de datos de WiGLE (Wireless Geographic Logging Engine): más de 1.000 millones de redes observadas por la comunidad war-driving global. Con unas credenciales gratuitas de wigle.net guardadas SOLO en tu navegador (localStorage), la tool consulta la API oficial v2 al mover el mapa y descarga las redes reales del viewport: BSSID, SSID, canal, banda, cifrado, nivel de señal, coordenadas exactas y última vez vista, con paginación automática y caché por sesión para no quemar el cupo diario de la API. Sin credenciales (o en modo mixto) funciona el mapa comunitario local: ~130 redes demo procedurales que se regeneran cada sesión y tus puntos propios persistentes. A zoom bajo clusters agregan por zona; al acercarse se revelan pins coloreados por autenticación (verde = abierta, azul = WPA2, morado = WPA3, rojo = WEP). Incluye geolocalización, ranking de redes cercanas por haversine, buscador, ficha enriquecida por red, export CSV de la búsqueda actual y export/import JSON del mapa local.',
     params: [
       { name: 'mapa', type: 'interactivo', required: true, desc: 'zoom/pan libre; click en cluster = acercarse; click en pin = detalle de la red' },
       { name: 'localízame', type: 'botón', desc: 'usa navigator.geolocation; calcula distancias a cada red y muestra las 6 más cercanas' },
-      { name: 'buscador', type: 'string', desc: 'filtra por SSID o lugar en tiempo real' },
+      { name: 'credenciales WiGLE', type: 'token + user', desc: 'el token de API de wigle.net (gratuito) se guarda cifrado en localStorage y NUNCA sale hacia otro sitio; panel con probar/guardar/borrar' },
+      { name: 'búsqueda WiGLE', type: 'API v2', desc: 'al terminar de arrastrar el mapa se piden las redes del viewport (bos provided, paginado, hasta 2 páginas por movimiento); resultados cacheados y mezclados con los locales' },
+      { name: 'filtros', type: 'chips', desc: 'por autenticación (abierta/WEP/WPA2/WPA3) y origen (demo/tuyas/WiGLE)' },
+      { name: 'buscador', type: 'string', desc: 'filtra por SSID, lugar o BSSID en tiempo real' },
+      { name: 'export CSV', type: 'fichero', desc: 'descarga las redes filtradas actualmente visibles (SSID, BSSID, canal, banda, auth, señal, lat, lon, última vez vista)' },
       { name: 'compartir red', type: 'formulario', desc: 'SSID, clave, auth, banda, lugar, notas y coordenadas (botones: centro del mapa / mi ubicación)' },
       { name: 'export/import', type: 'JSON', desc: 'respalda o comparte tu mapa: la importación fusiona con tus puntos actuales (máx 2000)' },
     ],
-    daily: ['Encontrar redes abiertas o compartidas en una zona antes de salir (cafeterías, bibliotecas, aeropuertos)', 'Guardar tus propios puntos WiFi de confianza con notas ("la clave cambia los lunes")', 'Planear viajar: exportar tu mapa y llevarlo al portátil sin depender de datos móviles'],
-    ethical: ['Comparte SOLO redes tuyas o con permiso expreso: publicar la clave de la red de otro es facilitar un acceso ilícito', 'Las claves que ves aquí son para conectarte legítimamente, no para atacar la red: WEP en 2026 no es una invitación', 'Usa redes abiertas con VPN: cualquier persona en el radio puede escuchar tu tráfico sin cifrar', 'Los ~130 puntos demo son ficticios y se regeneran en cada carga: sirven para enseñar a leer el mapa sin exponer redes reales'],
-    tips: ['La app funciona offline salvo los tiles del mapa (Esri) y la geolocalización: tus datos nunca salen del navegador', 'A zoom bajo los clusters agregan por celdas geográficas: el número dentro es cuántas redes hay en esa celda', 'El color del pin indica autenticación: rojo (WEP) = red sin seguridad real, ideal para demos de por qué hay que migrar', 'Al compartir, usa "centro del mapa" para arrastrar el pin al sitio exacto sin escribir coordenadas a mano', 'El export JSON es compatible entre navegadores: puedes importarlo en otro equipo y seguir con tu mapa', 'Los tiles son Esri Dark Gray Canvas (sin API key): si algún día fallan, la tool sigue funcionando con tus puntos y el buscador'],
+    daily: ['Encontrar redes abiertas o compartidas en una zona antes de salir (cafeterías, bibliotecas, aeropuertos) consultando los datos reales de WiGLE', 'Reconocimiento pasivo autorizado: mapear la densidad de redes y tecnologías (WEP aún vivo, WPA3 adoptado) de una zona antes de un wardrive con permiso', 'Guardar tus propios puntos WiFi de confianza con notas ("la clave cambia los lunes") y exportarlos CSV para tus informes', 'Planear viajar: exportar tu mapa y llevarlo al portátil sin depender de datos móviles'],
+    ethical: ['WiGLE es observación pasiva de señales públicas: ver una red en el mapa NO es permiso para conectarte ni atacar; sin autorización es ilícito en la mayoría de países', 'Comparte SOLO redes tuyas o con permiso expreso: publicar la clave de la red de otro es facilitar un acceso ilícito', 'Usa redes abiertas con VPN: cualquier persona en el radio puede escuchar tu tráfico sin cifrar', 'El cupo de la API es limitado y compartido: los fetch solo ocurren al soltar el mapa y quedan cacheados, no re-fetch en cada píxel de zoom', 'Los ~130 puntos demo son ficticios y se regeneran en cada carga: sirven para enseñar a leer el mapa sin exponer redes reales'],
+    tips: ['Consigue el token gratis en wigle.net → account → show my token; pégalo en el panel y dale a probar: si responde OK queda guardado en tu navegador', 'El cupo gratuito se reponе a diario: la caché por sesión evita repetir fetches del mismo viewport, y puedes borrar credenciales con un click', 'A zoom bajo los clusters agregan por celdas geográficas: el número dentro es cuántas redes hay en esa celda; WiGLE se activa a partir de zoom 8 para no pedir ciudades enteras', 'El color del pin indica autenticación: rojo (WEP) = red sin seguridad real, ideal para demos de por qué hay que migrar', 'El export CSV sale ordenado por señal: útil como evidencia de wardrive autorizado con timestamp y coordenadas', 'Los tiles son Esri Dark Gray Canvas (sin API key): si algún día fallan, la tool sigue funcionando con tus puntos y el buscador'],
   },
 
   /* ── Análisis (extra) ── */
@@ -686,5 +690,192 @@ export const DOCS: Record<string, ToolDoc> = {
     daily: ['OSINT pre-auditoría: qué dice internet de tu cliente antes de tocar nada', 'Self-assessment: correr los dorks de GitHub contra tu organización y llorar a tiempo', 'Inventario rápido de subdominios indexados y paneles expuestos'],
     ethical: ['Solo sobre activos propios o con autorización (bug bounty in-scope): el dorking es pasivo pero el uso de los hallazgos no lo es', 'La herramienta no visita el objetivo: solo construye búsquedas en motores públicos', 'Los dorks de secretos de GitHub son la demo perfecta de por qué escanear repos ANTES de push es política'],
     tips: ['En Shodan, org: mejor que hostname: un ASN entero con http.favicon.hash: para paneles concretos', 'Los operadores cambian: intext/intitle funcionan igual en Google y Bing, pero ip: solo en Bing', 'Combínalo con HTTP Inspector y URL Phishing Inspector para analizar los hallazgos sin tocarlos', 'site:*.dominio.com -www es el dork de subdominios más infravalorado'],
+  },
+
+  /* ── Ronda 6: Linux, Windows, blue team y generadores ── */
+  fstabgen: {
+    what: 'Construye /etc/fstab correcto y sin sustos: entradas editables, presets por escenario (raíz, /home, /tmp con noexec, swap, NFS, CIFS, tmpfs) y validador que detecta los errores clásicos — credenciales inline en NFS/CIFS, suid en montajes escribibles, opciones rotas, fsck en tmpfs.',
+    params: [
+      { name: 'entradas', type: 'tabla', required: true, desc: 'spec (UUID/LABEL/ruta), punto de montaje, tipo, options, dump y pass nº' },
+      { name: 'presets', type: 'botones', desc: 'añaden entradas ya listas: ext4 raíz, tmpfs /tmp con noexec, NFS4, CIFS con credenciales externas' },
+      { name: 'generar', type: 'texto', desc: 'fstab completo con comentario de cabecera, listo para /etc/fstab' },
+    ],
+    daily: ['Montar un disco externo de forma permanente sin romper el boot', 'Montar un share de la NAS (CIFS/NFS) con credenciales fuera del fstab (credentials=)', 'Migrar a SSD: cambiar UUIDs con lsblk -f y regenerar el fstab limpio'],
+    ethical: ['Un fstab mal hecho es un privesc: opciones user,suid,exec en unidades montables permiten root directo', 'Auditar fstab de un cliente es tarea estándar: busca suid en montajes escribibles y credenciales inline', 'tmpfs con noexec,nosuid en /tmp, /dev/shm y /var/tmp es recomendación CIS que esta tool aplica en un click'],
+    tips: ['Valida SIEMPRE con findmnt --verify antes de reboot: esta tool te lo recuerda', 'Si te equivocas y no arranca: initramfs → mount -o remount,rw / y corrige el fichero', 'Añade x-systemd.device-timeout=5s a volúmenes externos para que el boot no se cuelgue si los desconectas'],
+  },
+  sysctlgen: {
+    what: 'Catálogo explicado de ~30 claves sysctl de hardening (anti-spoofing, ICMP, TCP, kernel, memoria) con valor recomendado, advertencia de impacto y generador de conf para /etc/sysctl.d/99-hardening.conf con perfiles servidor, desktop y host Docker.',
+    params: [
+      { name: 'catálogo', type: 'tabla', required: true, desc: 'cada clave con valor, explicación y tono (ok/info/warn)' },
+      { name: 'perfil', type: 'select', desc: 'ajusta los valores según el rol de la máquina (servidor expuesto, desktop, host de contenedores)' },
+      { name: 'generar', type: 'texto', desc: 'conf comentada lista para aplicar con sysctl --system' },
+    ],
+    daily: ['Endurecer el stack de red de un VPS recién estrenado', 'Preparar una máquina para certificación o auditoría CIS', 'Entender qué hace cada clave ANTES de copiarla de un blog'],
+    ethical: ['rp_filter e icmp_echo_ignore_broadcasts son defensas directas contra ataques clásicos (smurf, IP spoofing)', 'Un sysctl mal entendido puede aislar la máquina: la tool advierte del impacto antes de aplicar', 'En pentests defensivos, comparar el sysctl actual contra el catálogo es un hallazgo de informe inmediato'],
+    tips: ['Aplica con sysctl --system y revisa qué claves no existen en tu kernel: no todas las series están disponibles', 'kernel.unprivileged_userns_clone=0 rompe Docker sin root y algunos sandbox: lee la advertencia', 'Guarda el original: cp /etc/sysctl.conf /etc/sysctl.conf.bak y revierte con sysctl -p del backup'],
+  },
+  sshharden: {
+    what: 'Generador de sshd_config endurecido con explicación directa de cada directiva: solo claves (sin contraseñas), sin root, cifrados AEAD actuales, límites de sesión, sin forwarding innecesario y banner legal. Grupos básico/auth/crypto/limits con toggles.',
+    params: [
+      { name: 'opciones', type: 'toggles', required: true, desc: 'cada directiva con valor y explicación de por qué importa' },
+      { name: 'AllowUsers/Groups', type: 'lista', desc: 'restringe quién puede entrar: la medida anti-brute-force más efectiva que existe' },
+      { name: 'generar', type: 'texto', desc: 'sshd_config completo + comandos de verificación' },
+    ],
+    daily: ['Endurecer el SSH de un VPS en 2 minutos sin romper nada', 'Aplicar la guía de cifrados de Mozilla OpenSSH o la salida de ssh-audit', 'Preparar máquinas para auditoría: banner legal, MaxAuthTries, login grace time'],
+    ethical: ['PasswordAuthentication no es solo molestia: un SSH con claves elimina el 100% del brute-force de credenciales', 'PermitRootLogin no prohíbe ser root: prohíbe que los bots adivinen la contraseña de root', 'En CTFs/lab verás la diferencia: sshd endurecido resiste una clase entera de ataques'],
+    tips: ['Antes de reiniciar: sshd -t valida la sintaxis, y deja una sesión abierta de emergencia', 'Cambia el puerto por ruido, no por seguridad: corta el ruido real con AllowUsers y fail2ban', 'Si usas claves ED25519 no necesitas KbdInteractive ni PasswordAuthentication para nada'],
+  },
+  nftgen: {
+    what: 'Generador de rulesets nftables con mínimo privilegio: policy drop, established/related primero, rate limit SSH, loopback y reglas por servicio con explicación de cada acción. Presets web server, home server y workstation.',
+    params: [
+      { name: 'reglas', type: 'tabla', required: true, desc: 'proto, puerto, origen CIDR, acción (accept/drop/reject/log-drop/limit-drop)' },
+      { name: 'presets', type: 'botones', desc: 'web server (80/443), home server (SSH + Samba), workstation (salida full)' },
+      { name: 'generar', type: 'texto', desc: 'ruleset completo con flush, tabla inet y comentarios por regla' },
+    ],
+    daily: ['Firewall de un VPS sin instalar nada (nftables viene en el kernel)', 'Reemplazar un iptables legacy por nft limpio y legible', 'Rate-limit de SSH: bloquear brute force sin fail2ban'],
+    ethical: ['La política drop por defecto es la base del mínimo privilegio: lo que no está explícito, cae', 'El rate limit de SSH ralentiza brute force sin sacrificar accesibilidad legítima', 'Un ruleset con comentarios es documentación viva: en auditorías se lee el firewall como código'],
+    tips: ['Prueba con nft -c -f ruleset.nft (check) antes de cargar: si te equivocas con SSH, el lockout es real', 'nft -f ruleset.nft no es persistente: si pierdes acceso, un reboot lo revierte todo', 'La tabla inet cubre IPv4+IPv6 a la vez: un solo ruleset para ambos mundos'],
+  },
+  wgquick: {
+    what: 'Generador de configuración WireGuard completa: servidor y N peers con claves generadas localmente (WebCrypto, nunca salen del navegador), AllowedIPs explicado (0.0.0.0/0 = túnel completo vs subredes), MTU, keepalive para NAT y bloque de firewall/NAT del servidor para salida a internet.',
+    params: [
+      { name: 'servidor', type: 'formulario', required: true, desc: 'endpoint, puerto UDP, subred del túnel (10.x.x.x/24 típico)' },
+      { name: 'peers', type: 'tabla', desc: 'uno por cliente/dispositivo: nombre, AllowedIPs propios y claves autogeneradas' },
+      { name: 'generar', type: 'texto', desc: 'wg0.conf del servidor + wg0.conf de cada peer + comandos de arranque' },
+    ],
+    daily: ['Tu VPN personal para salir por casa desde cualquier lugar', 'Acceder a servicios internos de tu lab (homelab) desde fuera', 'Conectar dos redes domésticas de forma segura sin hardware extra'],
+    ethical: ['Un túnel propio cifrado es la respuesta correcta al WiFi abierto: tu tráfico no viaja en claro', 'Administración remota, acceso a homelab, WiFi hostil: los usos legítimos de una VPN propia sobran', 'Con 0.0.0.0/0 TODO tu tráfico pasa por tu servidor: confía en él o usa AllowedIPs de subredes'],
+    tips: ['Las claves se generan en tu navegador con WebCrypto y NUNCA se envían: nada de generadores online de claves', 'MTU 1420 evita el blackhole típico en PPPoE/4G: si "conecta pero no navega", baja MTU', 'PersistentKeepalive=25 solo en peers tras NAT: mantiene el agujero abierto en el router del cliente'],
+  },
+  winfirewall: {
+    what: 'Generador de reglas de Windows Defender Firewall con netsh advfirewall: entrada/salida, allow/block, TCP/UDP/ICMP, puertos, programa o IPs remotas, con presets (RDP restringido, WinRM, SMB, SQL, HTTP) y detección de reglas peligrosas (allow any-any, RDP abierto a Internet).',
+    params: [
+      { name: 'reglas', type: 'tabla', required: true, desc: 'nombre, dirección, acción, proto, puertos, programa, remoteip' },
+      { name: 'presets', type: 'botones', desc: 'RDP solo de LAN, WinRM HTTP(S), SMB de subred, SQL desde app server' },
+      { name: 'generar', type: 'texto', desc: 'script netsh completo en orden correcto + nota de verificación' },
+    ],
+    daily: ['Abrir un puerto a una app concreta sin dejar "cualquiera-any" abierto', 'Restringir RDP de tu equipo a la VPN/subred corporativa', 'Documentar el firewall como script versionable en vez de clicks en el GUI'],
+    ethical: ['Las reglas allow any-any son el "chmod 777" de Windows: la tool las señala con explicación', 'RDP abierto a Internet es el vector #1 de ransomware: la tool advierte si remoteip=any en 3389', 'El script es idempotente (con delete previo): se puede versionar y reaplicar en todo el parque'],
+    tips: ['netsh advfirewall sigue siendo la forma más fiable de scriptar el firewall de Windows', 'Limita remoteip a la subred o VPN: un puerto abierto a la LAN no es lo mismo que a Internet', 'Comprueba con Get-NetFirewallRule -Enabled True | measure: si tienes 400 reglas, alguien las fue acumulando'],
+  },
+  schtasks: {
+    what: 'Creador de tareas programadas de Windows en dos dialectos (schtasks CMD y Register-ScheduledTask PowerShell) con triggers daily/weekly/onstart/onlogon/onidle, run level, y — lo especial — sección de Detección: los event IDs que delatan una tarea maliciosa y cómo se abusa de ellas (MITRE T1053.005).',
+    params: [
+      { name: 'tarea', type: 'formulario', required: true, desc: 'nombre, trigger (daily/weekly/onstart/onlogon/onidle), hora, días, acción y argumentos' },
+      { name: 'run level', type: 'select', desc: 'limited o highest (con privilegios altos, más visible para el SOC)' },
+      { name: 'detección', type: 'panel', desc: 'eventos 4698/4699/4700/4702 y 106/200/201 con los patrones a vigilar' },
+    ],
+    daily: ['Automatizar backups, limpieza de temp o scripts de mantenimiento', 'Ejecutar un script al arrancar sin depender de la carpeta Startup', 'Documentar tareas programadas como código (PowerShell versionable)'],
+    ethical: ['Las tareas programadas son la persistencia #1 en Windows junto a Run keys: entenderlas es entender cómo te atacan', 'En red team autorizado, una tarea visible en 4698 con script en TEMP es EXACTAMENTE lo que debe detectar el SOC', 'En blue team: 4702 (tarea actualizada) es oro puro — el malware actualiza su tarea al cambiar de payload'],
+    tips: ['schtasks /create /sc onlogon /ru SYSTEM requiere admin y es MUY visible: úsalo solo si lo necesitas de verdad', 'Register-ScheduledTask es más potente (triggers múltiples, condiciones) pero schtasks está incluso en Server Core', 'Para auditar tareas existentes: Get-ScheduledTask | Where State -ne Disabled — sorpresas garantizadas'],
+  },
+  winharden: {
+    what: 'Checklist de hardening de Windows con ~25 controles (LSA protection, credenciales en memoria, LLMNR/NetBIOS, SMB signing, telemetría, RDP, UAC, PowerShell constraining, macros de Office…) cada uno con justificación, comando de aplicación, verificación y reversión.',
+    params: [
+      { name: 'controles', type: 'toggles', required: true, desc: 'cada uno con descripción del ataque que mitiga' },
+      { name: 'generar', type: 'texto', desc: 'script .ps1 o .reg completo con comentarios y secciones' },
+    ],
+    daily: ['Endurecer una estación de trabajo nueva en minutos', 'Preparar una VM de análisis de malware más resistente', 'Baseline de servidores Windows sin desplegar InTune ni GPO complejas'],
+    ethical: ['LSA Protection y RunAsPPL son la defensa directa contra mimikatz: sin ellas, cualquier admin lee credenciales de memoria', 'Desactivar LLMNR/NBT-NS elimina el poisoning de Responder: el ataque más fácil de toda auditoría interna', 'Cada control explica el ataque que mitiga: es hardening entendido, no copiado'],
+    tips: ['Aplica por fases y verifica: un control mal aplicado (ej. RunAsPPL) puede romper flujos legítimos de servicio', 'CredentialGuard requiere Enterprise/Educación: la tool avisa si tu edición no lo soporta', 'Reversión documentada: cada control tiene su comando de undo para poder probar sin miedo'],
+  },
+  pslab: {
+    what: 'Recetario de one-liners de PowerShell organizados por dominio (sistema, red, disco, procesos, servicios, registro, usuarios y blue team), cada uno con explicación de la trampa o detalle fino que lo diferencia del comando obvio.',
+    params: [
+      { name: 'buscador', type: 'string', required: true, desc: 'filtra por texto del comando o descripción' },
+      { name: 'categorías', type: 'chips', desc: 'sistema, red, disco, procesos, servicios, registro, usuarios, blue team' },
+    ],
+    daily: ['Administrar Windows sin abrir el GUI: procesos, servicios, discos, red', 'Inventario rápido de software, usuarios locales y shares de una máquina', 'Blue team: sesiones interactivas, tareas con binaries raros, logs recientes'],
+    ethical: ['Los one-liners de red (Get-NetTCPConnection, Get-SmbShare) son el reconocimiento interno más rápido', 'Los de blue team (procesos con parent raro, tareas con binarios en TEMP) son detección inmediata en un incidente', 'Get-LocalUser y net user son el primer paso tras un acceso: saber quién existe en la máquina'],
+    tips: ['Si un cmdlet no existe, probablemente falte importar el módulo: Import-Module y Get-Command son tus amigos', 'En PowerShell 7 (pwsh) varios cmdlets cambian: la tool indica la variante cuando importa', 'Cuidado con Remove-Item -Force -Recurse: PowerShell no tiene papelera: verifica el path dos veces'],
+  },
+  regtweaks: {
+    what: 'Catálogo de tweaks del registro de Windows por categoría (telemetría, privacidad, rendimiento, hardening, calidad de vida) con ruta exacta, valor, tipo, explicación de qué toca, reversión y export a .reg completo listo para fusionar.',
+    params: [
+      { name: 'tweaks', type: 'toggles', required: true, desc: 'cada uno con explicación y nivel de riesgo' },
+      { name: 'export .reg', type: 'fichero', desc: 'fichero .reg con solo los tweaks activos, con comentario de cabecera' },
+    ],
+    daily: ['Desactivar telemetría y publicidad de Windows 10/11', 'Deshabilitar Cortana/Copilot, sugerencias de inicio y apps preinstaladas', 'Cambios persistentes sin GPO en máquinas sin dominio'],
+    ethical: ['La telemetría de Windows es un problema real de privacidad: saber exactamente qué clave toca es defensa', 'Varias de estas claves son EXACTAMENTE las que un atacante toca para desactivar Defender: conocerlas es detectarlas', 'En auditorías, comparar claves de telemetría contra este catálogo es baseline de privacidad en minutos'],
+    tips: ['Exporta el .reg y revísalo antes de fusionar: regedit no avisa de nada', 'Muchos tweaks requieren reiniciar Explorer o reboot para aplicarse: el export incluye la nota', 'Haz backup del estado actual con reg export antes de tocar nada'],
+  },
+  iocextract: {
+    what: 'Extrae indicadores de compromiso de cualquier texto pegado: IPs (excluyendo privadas opcional), dominios y subdominios, URLs, hashes MD5/SHA1/SHA256, CVEs, emails, wallets Bitcoin/Ethereum, mutexes estilo {GUID} y técnicas MITRE Txxxx — con contexto de la línea donde apareció y enlaces de análisis a VirusTotal, AbuseIPDB y más.',
+    params: [
+      { name: 'texto', type: 'textarea', required: true, desc: 'informe, log, tweet, email, salida de sandbox: cualquier texto' },
+      { name: 'opciones', type: 'toggles', desc: 'excluir IPs privadas, deduplicar, defang automático' },
+      { name: 'export', type: 'fichero', desc: 'CSV con tipo, valor, contexto y enlaces de enriquecimiento' },
+    ],
+    daily: ['Procesar un informe de threat intel y quedarte con los IOCs accionables', 'Extraer todos los IOCs de un hilo de un investigador en X/Twitter', 'Homogeneizar IOCs de múltiples fuentes en un CSV para el SIEM'],
+    ethical: ['El defang automático (1.2.3.4 → 1.2.3[.]4) permite compartir IOCs sin riesgo de clic accidental', 'El contexto de cada IOC ayuda a evitar falsos positivos: un hash en un changelog no es un IOC', 'Todo local: pegas informes de terceros sin enviarlos a ningún servicio online'],
+    tips: ['Combínalo con Defanger para el sharing seguro y con CVE Lookup para el enriquecimiento', 'Los dominios se extraen por TLD conocido: si un TLD es raro, revisa que no sea falso positivo', 'Para IOCs dentro de un PDF: File Analyzer + este extractor y tienes el flujo completo'],
+  },
+  loganonymize: {
+    what: 'Pseudonimiza logs y ficheros de configuración para compartirlos sin exponer datos: IPs consistentes (misma IP → mismo alias), usuarios, hostnames, dominios y emails, con mapa de pseudónimos visible para revisar, revertir o explicar, y detección de tokens/secretos para redactar.',
+    params: [
+      { name: 'entrada', type: 'textarea', required: true, desc: 'log, config, correo, salida de consola: cualquier texto' },
+      { name: 'qué anonimizar', type: 'toggles', desc: 'IPs, usuarios, hostnames, dominios, emails, tokens' },
+      { name: 'mapa', type: 'panel', desc: 'tabla original → alias para revisar o revertir' },
+    ],
+    daily: ['Pedir ayuda en un foro o issue de GitHub sin exponer tu infraestructura real', 'Adjuntar logs a un ticket con terceros sin filtrar IPs de clientes', 'Publicar una configuración como ejemplo en un blog o charla'],
+    ethical: ['Compartir logs con IPs reales de clientes en un foro público es fuga de datos: pseudonimizar es la práctica correcta', 'La consistencia (misma IP → mismo alias) preserva el valor forense del log sin exponer nada', 'La detección de secretos (claves API, tokens) evita publicar credenciales por accidente'],
+    tips: ['La pseudonimización es CONSISTENTE: la misma IP siempre obtiene el mismo alias, el log sigue siendo analizable', 'Guarda el mapa si vas a continuar la conversación: necesitarás los mismos alias la próxima vez', 'Para logs enormes, anonimiza la sección problemática y pega solo esa'],
+  },
+  userosint: {
+    what: 'Investigación pasiva de un alias de usuario: URLs de perfil en ~20 plataformas (GitHub, X, Reddit, Instagram, Twitch, Steam, Mastodon…), análisis del patrón del alias (contiene año, separadores, leet), variantes sugeridas para buscar (sin año, con años 1980-2010, leet, guiones) y dorks listos para Google y GitHub.',
+    params: [
+      { name: 'alias', type: 'string', required: true, desc: 'usuario a investigar: sin @, tal como aparece' },
+      { name: 'plataformas', type: 'enlaces', desc: 'cada una abre la URL de perfil directamente para verificación manual' },
+      { name: 'dorks', type: 'enlaces', desc: 'búsquedas listas para Google y GitHub con el alias y sus variantes' },
+    ],
+    daily: ['Verificar qué expone de ti una búsqueda de tu propio alias (auto-OSINT)', 'Elegir un alias nuevo: comprobar que no colisiona con alguien existente', 'Recuperar tus propias cuentas antiguas: dónde te registraste con ese nombre'],
+    ethical: ['Todo es pasivo: se generan URLs, no hay scraping ni contacto con el sujeto', 'Un alias NO es una identidad legal: no lo uses para doxxing ni acoso, jamás', 'En pentest con autorización, el OSINT de usuario es legítimo; sin ella, no lo es'],
+    tips: ['La verificación de existencia es manual a propósito: el clickthrough evita baneos y falsos positivos automáticos', 'Si el alias contiene año, prueba las variantes sin año y con otros años: es la mutación más común', 'Combina con Dork Arsenal para profundizar en dominios de la organización, no solo el alias'],
+  },
+  sysmonbuilder: {
+    what: 'Generador de configuración XML de Sysmon con perfiles esencial/completo/mínimo, toggles por evento, hashes SHA256+imphash y exclusiones de ruido. Lo especial: cada evento viene con su guía ofensiva (para qué lo usa un atacante) y defensiva (qué buscar) — conocimiento de SOC destilado en la tool.',
+    params: [
+      { name: 'perfil', type: 'select', required: true, desc: 'esencial (recomendado), completo (SIEM), mínimo (endpoints antiguos)' },
+      { name: 'eventos', type: 'toggles', desc: 'activa/desactiva cada ID con su explicación' },
+      { name: 'exclusiones', type: 'lista', desc: 'procesos de ruido conocido que no quieres loguear' },
+      { name: 'generar', type: 'texto', desc: 'sysmon-config.xml listo para sysmon64.exe -i' },
+    ],
+    daily: ['Montar visibilidad de procesos, red y registro en endpoints de tu lab', 'Preparar una demo de detección (simulación → alerta) para formación', 'Baseline de Sysmon para un parque pequeño sin desplegar GPO'],
+    ethical: ['Sysmon es telemetría defensiva: genera logs, no analiza ni bloquea nada', 'La guía ofensiva de cada evento enseña el ataque para detectarlo, no para ejecutarlo', 'En un CTF azul, la diferencia entre detectar o no un T1055 es tener el evento 8 activo'],
+    tips: ['Empieza con el perfil esencial y escala con sysmon-modular cuando tu SIEM aguante el volumen', 'Event 10 contra lsass con GrantedAccess específicos es la detección de mimikatz más simple que existe', 'Redirige los logs a tu SIEM con Winlogbeat: Sysmon solo escribe localmente'],
+  },
+  wordlistgen: {
+    what: 'Generador de wordlists dirigidas a partir de datos del objetivo (empresa, nombres, mascotas, hobbies, años, ciudad) con las mutaciones que la gente realmente usa: capitalizar, leet básico, sufijos de año y símbolos, separadores — estadísticas de contraseñas reales destiladas en reglas.',
+    params: [
+      { name: 'datos del objetivo', type: 'formulario', required: true, desc: 'empresa, nombres de empleados, mascotas, hobbies, ciudad, años' },
+      { name: 'mutaciones', type: 'toggles', desc: 'capitalizar, leet, sufijos año, sufijos !, separadores' },
+      { name: 'export', type: 'fichero', desc: 'txt con una candidata por línea lista para hashcat/john' },
+    ],
+    daily: ['Auditar las contraseñas de TU organización (con autorización) antes de que lo haga otro', 'Demostrar en formación por qué "Empresa2024!" no es una contraseña fuerte', 'Generar listas para tu propio lab sin descargar rockyou'],
+    ethical: ['Solo en auditorías con autorización expresa y por escrito: usarla contra sistemas ajenos es delito', 'El objetivo educativo es mostrar que las contraseñas "personales" son las primeras en caer', 'En informes, la evidencia es el patrón, no la lista: reporta hallazgos, no contraseñas'],
+    tips: ['Las mutaciones de sufijos de año + ! cubren un porcentaje enorme de contraseñas corporativas reales', 'Combínala con reglas de hashcat (best64.rule) para multiplicar la cobertura', 'Cuanto más específicos los datos (nombres reales de empleados), más efectiva: y más éticamente sensible'],
+  },
+  pwpolicy: {
+    what: 'Generador de políticas de contraseñas coherentes entre Linux (pam_pwquality + login.defs) y Windows (fine-grained password policy en PowerShell) según NIST 800-63B: longitud sobre complejidad, sin rotación forzada sin evidencia, blacklist de filtraciones, bloqueo progresivo — con el por qué de cada decisión.',
+    params: [
+      { name: 'parámetros', type: 'formulario', required: true, desc: 'longitud mínima, clases requeridas, historial, bloqueo, edad' },
+      { name: 'presets', type: 'select', desc: 'NIST moderno, corporativo clásico, alto secreto' },
+      { name: 'generar', type: 'texto', desc: 'salidas Linux (pam + login.defs) y Windows (PowerShell) coherentes entre sí' },
+    ],
+    daily: ['Actualizar la política de contraseñas de tu organización al estándar actual', 'Dejar de forzar rotaciones de 30 días que acaban en Password1!', 'Baseline coherente en entornos mixtos Linux+Windows'],
+    ethical: ['Las políticas de complejidad+rotación obligatoria empujan a patrones predecibles: NIST 800-63B lo documenta con datos', 'Una buena política es defensa masiva con coste cero: un click genera ambas configuraciones', 'Blacklist de filtraciones (HIBP k-anonymity) es la medida anti-Password1! más efectiva que existe'],
+    tips: ['La longitud mínima de 12-16 gana a complejidad con 8: la entropía escala exponencialmente con la longitud', 'La rotación forzada solo tiene sentido tras evidencia de compromiso, no por calendario', 'En AD, las fine-grained policies requieren Windows Server 2008 domain functional level o superior'],
+  },
+  pentestreport: {
+    what: 'Constructor de informes de pentest: hallazgos con severidad, evidencia, impacto, remediación y referencias, con datos del encargo (cliente, fechas, alcance, metodología) y export a Markdown completo con portada, resumen ejecutivo, tabla de hallazgos por severidad y detalle de cada uno.',
+    params: [
+      { name: 'datos del encargo', type: 'formulario', required: true, desc: 'cliente, fechas, alcance, metodología' },
+      { name: 'hallazgos', type: 'tabla', desc: 'título, severidad, CVSS opcional, activo, evidencia, impacto, remediación' },
+      { name: 'export', type: 'fichero', desc: 'Markdown completo listo para convertir a PDF con pandoc' },
+    ],
+    daily: ['Documentar hallazgos de una auditoría web o de red mientras los descubres', 'Generar el entregable en Markdown y convertirlo a PDF con pandoc', 'Reutilizar la estructura en múltiples encargos con consistencia'],
+    ethical: ['Un informe profesional es la parte más importante de un pentest: sin documentación, no ocurrió', 'La estructura severidad→impacto→remediación es la que esperan clientes y aseguradoras', 'Los datos se quedan en tu navegador: nada del encargo sale de tu máquina'],
+    tips: ['El resumen ejecutivo se redacta para quien decide, no para quien arregla: cero jerga, máximo impacto de negocio', 'Cada hallazgo con evidencia concreta (request/response) es 10 veces más defendible', 'Convierte a PDF: pandoc informe.md -o informe.pdf --pdf-engine=xelatex'],
   },
 }

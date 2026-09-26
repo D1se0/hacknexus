@@ -8,15 +8,23 @@ export interface WifiPoint {
   id: string
   ssid: string
   password?: string
-  auth?: 'abierta' | 'WPA2' | 'WPA3' | 'WEP'
+  auth?: 'abierta' | 'WPA2' | 'WPA3' | 'WEP' | 'desconocida'
   place: string
   lat: number
   lon: number
-  band?: '2.4 GHz' | '5 GHz' | '6 GHz'
+  band?: '2.4 GHz' | '5 GHz' | '6 GHz' | string
   notes?: string
   author?: string
   added: string // ISO date
-  source: 'demo' | 'usuario'
+  source: 'demo' | 'usuario' | 'wigle'
+  /* metadatos cuando la red viene de WiGLE */
+  bssid?: string
+  channel?: number
+  frequency?: number
+  lastSeen?: string // 'hace 3 días' (precalculado)
+  lastSeenRaw?: string // ISO original de WiGLE
+  security?: string // tipo crudo de WiGLE (WPA3, WPA2, WEP…)
+  encryption?: string // cifrado crudo (CCMP, TKIP…)
 }
 
 const LS_KEY = 'hacknexus-wifi-points-v1'

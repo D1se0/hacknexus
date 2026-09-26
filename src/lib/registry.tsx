@@ -6,6 +6,8 @@ import {
   CalendarClock, Wifi, Split, Crown, Globe2, Timer, ShieldAlert, Ban, QrCode, TypeOutline,
   Cpu, Wand2, Fish, Link2, MailWarning, Crosshair, Scissors,
   FileLock2, UserCog, Cog, FolderLock, Search, Plug, FileWarning,
+  HardDrive, Gauge, KeySquare, BrickWall, Waypoints, Clock, Shield, FileTerminal,
+  UserSearch, ListPlus, ClipboardList, MonitorCog, FileCog, FileText,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -81,7 +83,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'ipv4', name: 'IPv4 Generator', short: 'IPv4 Gen', desc: 'Genera direcciones IPv4 aleatorias criptográficas por tipo con análisis de subred completo', category: 'Red', icon: Network },
   { id: 'ipv6', name: 'IPv6 Toolkit', short: 'IPv6', desc: 'Expande/comprime, tipo de dirección, prefijos, EUI-64, generador de MACs y reverse DNS', category: 'Red', icon: Wifi },
   { id: 'curlbuilder', name: 'Curl Builder', short: 'Curl', desc: 'Construye comandos curl con headers, auth, body y proxy', category: 'Red', icon: Server },
-  { id: 'wifimap', name: 'WiFi Map', short: 'WiFi Map', desc: 'Mapa global comunitario de WiFi compartidos: zoom para revelar puntos, claves, lugares y geolocalización', category: 'Red', icon: Wifi },
+  { id: 'wifimap', name: 'WiFi Map', short: 'WiFi Map', desc: 'Mapa con la base de datos real de WiGLE (más de 1.000M de redes observadas por la comunidad): BSSID, canal, cifrado y última vez vista — con tus credenciales guardadas solo en tu navegador', category: 'Red', icon: Wifi },
 
   // ─── Forense ────────────────────────────────────────────────────
   { id: 'pcap', name: 'PCAP Analyzer', short: 'PCAP', desc: 'Analiza capturas pcap/pcapng: protocolos, top talkers, DNS/HTTP y alertas', category: 'Forense', icon: Waves },
@@ -107,6 +109,16 @@ export const TOOLS: ToolDef[] = [
   { id: 'sudoersgen', name: 'Generador Sudoers', desc: 'Construye reglas de sudoers.d correctas y detecta GTFOBins, wildcards y NOPASSWD peligrosos', short: 'Sudoers', category: 'Linux & sistema', icon: UserCog },
   { id: 'systemdgen', name: 'Generador systemd', desc: 'Units de service con hardening, timer con OnCalendar y mount listos para desplegar', short: 'systemd', category: 'Linux & sistema', icon: Cog },
   { id: 'ntfsperm', name: 'Permisos NTFS (icacls)', desc: 'Generador de comandos icacls con ACEs, herencia y equivalencias chmod ↔ icacls', short: 'NTFS', category: 'Linux & sistema', icon: FolderLock },
+  { id: 'fstabgen', name: 'Fstab Builder', desc: 'Construye /etc/fstab con presets por escenario y avisos de privesc (suid noexec), contraseñas inline y flags rotos', short: 'fstab', category: 'Linux & sistema', icon: HardDrive },
+  { id: 'sysctlgen', name: 'Sysctl Hardening', desc: 'Catálogo explicado de claves del kernel con perfiles servidor/desktop/docker y conf listo para /etc/sysctl.d', short: 'sysctl', category: 'Linux & sistema', icon: Gauge },
+  { id: 'sshharden', name: 'SSH Hardening', desc: 'sshd_config endurecido con explicación de cada directiva: solo claves, cifrados AEAD, límites y sin forwarding', short: 'SSH', category: 'Linux & sistema', icon: KeySquare },
+  { id: 'nftgen', name: 'NFTables Builder', desc: 'Rulesets nft con policy drop, established/related, rate limit SSH y reglas por servicio explicadas', short: 'nft', category: 'Linux & sistema', icon: BrickWall },
+  { id: 'wgquick', name: 'WireGuard Config', desc: 'Túnel completo: servidor + peers con claves, AllowedIPs explicado, MTU, NAT y firewall para salida a internet', short: 'WireGuard', category: 'Linux & sistema', icon: Waypoints },
+  { id: 'winfirewall', name: 'Firewall Windows', desc: 'Reglas netsh advfirewall con mínimo privilegio, presets seguros y detección de puertos de administración abiertos', short: 'FW Win', category: 'Linux & sistema', icon: ShieldCheck },
+  { id: 'schtasks', name: 'Windows Scheduled Tasks', desc: 'Crea tareas programadas con schtasks y PowerShell y aprende a detectarlas como persistencia (MITRE T1053.005)', short: 'Tasks', category: 'Linux & sistema', icon: Clock },
+  { id: 'winharden', name: 'Windows Hardening', desc: 'Auditoría de endurecimiento con justificación, comando de aplicación, verificación y reversión al estilo CIS', short: 'Harden', category: 'Linux & sistema', icon: Shield },
+  { id: 'pslab', name: 'PowerShell Lab', desc: 'Recetario de one-liners de administración, red, disco, registro y blue team con la trampa de cada uno explicada', short: 'PS Lab', category: 'Linux & sistema', icon: FileTerminal },
+  { id: 'regtweaks', name: 'Windows Registry Tweaks', desc: 'Tweaks de telemetría, privacidad y hardening con ruta exacta, valor, reversión y export a .reg listo para fusionar', short: 'Regedit', category: 'Linux & sistema', icon: MonitorCog },
 
   // ─── Análisis ───────────────────────────────────────────────────
   { id: 'cvelookup', name: 'CVE Lookup', short: 'CVE', desc: 'Consulta CVEs en la NVD con CVSS, descripción y referencias', category: 'Análisis', icon: ShieldAlert },
@@ -118,11 +130,18 @@ export const TOOLS: ToolDef[] = [
   { id: 'mitre', name: 'MITRE ATT&CK Navigator', short: 'ATT&CK', desc: 'Matriz enterprise filtrable con cobertura de técnicas y export de capa JSON para el Navigator oficial', category: 'Análisis', icon: Crosshair },
   { id: 'winlog', name: 'Windows Event IDs', desc: 'Significado y detección de los eventos clave del log Security/System para forense y blue team', short: 'Events', category: 'Análisis', icon: FileWarning },
   { id: 'ports', name: 'Ports & Services', desc: 'Referencia de puertos con ángulo de pentest y filtro por grupo (web, AD, bases de datos…)', short: 'Ports', category: 'Análisis', icon: Plug },
+  { id: 'iocextract', name: 'IOC Extractor', desc: 'Extrae IPs, dominios, hashes, CVEs, wallets y técnicas MITRE de cualquier texto con contexto y enlaces de análisis', short: 'IOCs', category: 'Análisis', icon: Crosshair },
+  { id: 'loganonymize', name: 'Log Anonymizer', desc: 'Pseudonimiza IPs, usuarios y dominios de forma consistente y reversible para compartir logs sin exponer nada', short: 'AnonLogs', category: 'Análisis', icon: EyeOff },
+  { id: 'userosint', name: 'Username OSINT', desc: 'Investiga un alias: plataformas donde existe, patrón que sigue, variantes y dorks listos para Google y GitHub', short: 'OSINT', category: 'Análisis', icon: UserSearch },
+  { id: 'sysmonbuilder', name: 'Sysmon Config Builder', desc: 'Configuración XML de Sysmon con perfiles y guía ofensiva/defensiva de cada evento: el punto de partida de todo SOC', short: 'Sysmon', category: 'Análisis', icon: FileCog },
 
   // ─── Generadores ────────────────────────────────────────────────
   { id: 'qr', name: 'QR Generator', short: 'QR', desc: 'Códigos QR con presets WiFi, vCard, email, SMS y geo; descarga PNG/SVG en local', category: 'Generadores', icon: QrCode },
   { id: 'lipsum', name: 'Lorem Ipsum Generator', short: 'Lipsum', desc: 'Texto de relleno por párrafos, frases o palabras con modo hacker y salida MD/HTML/JSON', category: 'Generadores', icon: TypeOutline },
   { id: 'dorkgen', name: 'Dork Arsenal', desc: 'Dorks de Google, Bing, GitHub, Shodan y Censys con sustitución de objetivo y enlace directo al motor', short: 'Dorks', category: 'Generadores', icon: Search },
+  { id: 'wordlistgen', name: 'Wordlist Builder', desc: 'Wordlists dirigidas desde datos del objetivo con las mutaciones que la gente realmente usa: más efectiva que rockyou', short: 'Wordlists', category: 'Generadores', icon: ListPlus },
+  { id: 'pwpolicy', name: 'Password Policy Builder', desc: 'Políticas coherentes Linux/Windows según NIST 800-63B: longitud sobre complejidad, sin rotación suicida, con bloqueo', short: 'Policy', category: 'Contraseñas', icon: ClipboardList },
+  { id: 'pentestreport', name: 'Pentest Report Builder', desc: 'Estructura hallazgos con severidad, evidencia, impacto y remediación y exporta un informe Markdown profesional', short: 'Report', category: 'Generadores', icon: FileText },
 ]
 
 export const CATEGORIES: ToolCategory[] = [
