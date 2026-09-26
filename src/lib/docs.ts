@@ -958,4 +958,130 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['Cada tarea enlaza solo a herramientas legítimas del suite: el flujo entero asume auditorías autorizadas', 'Los pasos son de mínimo privilegio: firewall antes que exposición, permisos antes que comodidad'],
     tips: ['Si no encuentras la tarea, busca por SINÓNIMO: "túnel" y "vpn" llegan a lo mismo', 'Los botones de tool navegan directo a la herramienta: sin menús intermedios', 'Combínalo con ⌘K: el task finder es para FLUJOS, el comando palette para herramientas concretas'],
   },
+
+  /* ── Ronda 8: GTFOBins, explotación y calculadoras de red ── */
+  gtfobins: {
+    what: 'Base de datos COMPLETA de GTFOBins (458 binarios) embebida en la app con TODOS los comandos de abuso de cada binario organizados por función (shell, command, reverse-shell, file-read/write, upload/download, library-load, privilege-escalation) y CONTEXTO (sudo, SUID, capabilities, unprivileged), incluyendo los comandos alternativos por contexto (bash -p en SUID, por ejemplo). Búsqueda por nombre, filtros por función y contexto, veredicto de riesgo y estadísticas globales.',
+    params: [
+      { name: 'búsqueda', type: 'string', desc: 'por nombre de binario (vim, find, awk…)' },
+      { name: 'función', type: 'chips', desc: 'filtra por tipo de abuso (solo los con shell: 228)' },
+      { name: 'contexto', type: 'chips', desc: 'sudo, SUID o capabilities: los que necesitas según tu enumeración' },
+      { name: 'ficha', type: 'expandida', desc: 'todos los comandos por función con copiar, comentarios y herencias' },
+    ],
+    daily: ['Privesc en CTFs/labs: sudo -l → buscar aquí → ejecutar el comando del contexto correcto', 'Blue team: auditar qué binarios de tu parque tienen funciones de shell y blindarlos', 'Formación: entender POR QUÉ un binario es peligroso (y no copiar a ciegas)'],
+    ethical: ['GTFOBins documenta técnicas de escalamiento de privilegios: usarlas sin autorización es delito', 'La versión legítima: tu pentest autorizado, tu hardening, tu formación', 'El lado defensivo: quitar permisos innecesarios, auditar sudoers, montar con noexec/nosuid'],
+    tips: ['El CONTEXTO lo es todo: un binario inofensivo se vuelve crítico con sudo NOPASSWD o SUID', 'Los contextos SUID a veces exigen -p (bash -p, find -exec /bin/sh -p): la data lo indica en cada comando', 'Si tu binario no está aquí, mira LOLBAS (Windows) o LOBAS de macOS', 'Combínalo con Sudoers Generator para AUDITAR tus reglas: cada línea NOPASSWD con binario de GTFOBins es hallazgo'],
+  },
+  usergen: {
+    what: 'Generador de variaciones de usernames y emails corporativos: 9 convenciones (jsmith, j.smith, john.smith, smithj…), service accounts típicas (admin, svc-*, backup…) y listas deduplicadas listas para kerbrute, AS-REP Roasting, spraying y OWA. Descarga en TXT.',
+    params: [
+      { name: 'nombres', type: 'lista', required: true, desc: 'uno por línea: primero apellido (o solo nombre)' },
+      { name: 'dominio', type: 'string', desc: 'para los emails: empresa.com' },
+      { name: 'service accounts', type: 'toggle', desc: 'añade admin, svc_sql, backup, postgres…' },
+      { name: 'descarga', type: 'fichero', desc: 'users.txt y emails.txt separados' },
+    ],
+    daily: ['Pentest AD: lista de LinkedIn → convención → kerbrute userenum (no bloquea) → AS-REP → spraying medido', 'Auditoría de exposición: ¿cuántos emails corporativos siguen el patrón nombre.apellido y son predecibles?', 'Preparar pruebas de MFA/spraying con autorización y ventana acordada'],
+    ethical: ['La enumeración de usuarios contra sistemas sin autorización es el primer paso de un ataque real: úsala solo en tu scope', 'Spraying con 1 password × muchas cuentas a deshoras y con lockout respetado: nunca lo contrario', 'Los datos de nombres son personales: trátalos según RGPD aunque sean de tu cliente'],
+    tips: ['La convención REAL se descubre en LinkedIn, firmas de email o un email filtrado en un dork: no asumas la más común', 'kerbrute userenum NO genera eventos de login fallido: es la enumeración más silenciosa que existe', 'Combinaciones raras (j_smith, john.s) a veces pertenecen a service accounts o VIPs: no las descartes'],
+  },
+  acronyms: {
+    what: 'Diccionario de 196 acrónimos de ciberseguridad con definiciones en español, organizados en 10 dominios: ofensivo, defensivo, redes, cripto, Windows/AD, Linux, web, cloud, gobierno/marcos y forense. Búsqueda instantánea por sigla o texto de definición.',
+    params: [
+      { name: 'búsqueda', type: 'string', desc: 'por sigla (SOC) o por concepto dentro de la definición' },
+      { name: 'categoría', type: 'chips', desc: '10 dominios filtrables' },
+    ],
+    daily: ['Leer un informe técnico sin googleo cada 2 líneas', 'Preparar certificaciones (Security+, OSCP, CC): dominar la jerga es la mitad del examen', 'Homogeneizar vocabulario del equipo: que todos digan IOC igual que tú'],
+    ethical: ['Todo el contenido es terminología pública de la industria: sin payloads ni técnicas operativas', 'Perfecto para onboarding de juniors: el idioma primero, las manos después'],
+    tips: ['Busca por CONCEPTO si no recuerdas la sigla: "monitoriza logs" te lleva a SIEM', 'Las definiciones incluyen el ángulo práctico: qué herramienta o evento está asociado', 'Los acrónimos polisémicos (PAM, ACL, IAM) están separados por dominio: elige la categoría antes de buscar'],
+  },
+  xsgen: {
+    what: 'Generador de payloads XSS con 26 plantillas clasificadas por vector (básico, evento, etiqueta rara, evasión, sin <) y por contexto de inyección (HTML body, atributo, string JS, URL). Cada payload se adapta: texto del alert personalizado, URL-encoding, HTML entities y envoltura con comentario de prueba. Incluye guía de caza: cómo identificar DÓNDE cae tu input en el DOM y qué filtrado hay.',
+    params: [
+      { name: 'filtros', type: 'chips', desc: 'vector y contexto: los payloads que aplican a TU punto de inyección' },
+      { name: 'texto alert', type: 'string', desc: 'personaliza la demo (XSS-HackNexus, o la cookie que demostrarías)' },
+      { name: 'encoding', type: 'select', desc: 'nada, URL-encoded (parámetros) o HTML entities (doble decode)' },
+    ],
+    daily: ['Probar el sanitizado de TU aplicación tras cada deploy', 'Entender por qué el filtro de la empresa no basta (case, barras, entidades)', 'Formar al equipo de desarrollo con ejemplos reales de su propio código'],
+    ethical: ['Solo sobre aplicaciones propias o con autorización expresa: inyectar XSS en terceros es delito', 'El alert(1) demuestra ejecución; el informe debe documentar IMPACTO real (robo de sesión, acciones en nombre del usuario)', 'La guía de caza enseña el método: identificar el contexto antes de lanzar payloads'],
+    tips: ['El CONTEXTO manda: un payload de HTML no funciona dentro de un atributo — mira primero dónde cae tu input', 'Con CSP activo la mayoría no corren: mira la cabecera antes de concluir que no hay XSS', 'Los vectores sin < (autofocus, jsbreak, jstemplate) son los que sobreviven a sanitizadores básicos de etiquetas'],
+  },
+  xmlgen: {
+    what: 'Arsenal de plantillas XML con 10 payloads: XXE directo (ficheros, wrapper PHP base64), out-of-band con evil.dtd alojado en tu servidor, exfiltración vía error message, XInclude cuando el DOCTYPE está bloqueado, XSLT (lectura con document(), RCE con extensiones PHP), SSRF por SOAP y billion laughs de detección. Todo se sustituye con tu IP, puerto y fichero.',
+    params: [
+      { name: 'fichero', type: 'string', desc: '/etc/passwd, c:/windows/win.ini, php://filter…' },
+      { name: 'host:puerto', type: 'string', desc: 'tu servidor para los métodos OOB (o Burp Collaborator)' },
+      { name: 'plantillas', type: 'chips', desc: 'por categoría: xxe, oob, xinclude, xslt, util' },
+    ],
+    daily: ['Probar parsers XML de TU API: SOAP legacy, SAML, configs con DOCTYPE activado', 'Verificar que el hardening del parser (disable external entities) funciona tras updates', 'Formación: demostrar en 5 minutos por qué el XXE sigue siendo grave'],
+    ethical: ['El XXE expone ficheros del SERVIDOR: sin autorización es intrusión directa', 'El método OOB requiere que el servidor salga a TU servidor: montarlo en red ajena sin permiso es delito', 'Billion laughs es DoS: solo para demostrar límites del parser en tu propia infraestructura'],
+    tips: ['Flujo: ¿parsea XML? → ¿DOCTYPE? → entidades directas → sin respuesta: OOB → sin salida: error message → sin DOCTYPE: XInclude', 'Java es el parser más permisivo por defecto: los endpoints SOAP legacy son el mejor coto', 'El evil.dtd es el que concatena fichero+HTTP: aloja en tu servidor con python -m http.server'],
+  },
+  phpfilter: {
+    what: 'Generador de cadenas de filtros PHP para convertir LFI en RCE SIN subir ficheros: port 1:1 del generador oficial de Synacktiv (MIT). Introduces código PHP, la tool lo codifica en base64 y compone la cadena de filtros convert.iconv que SINTETIZA esos bytes al pasar por php://filter. Modo debug con base64 crudo y créditos a loknop/wupco.',
+    params: [
+      { name: 'código PHP', type: 'textarea', required: true, desc: 'lo que se ejecutará al hacer include de la cadena' },
+      { name: 'modo', type: 'select', desc: 'código→cadena completa o base64 crudo (debug de Synacktiv)' },
+      { name: 'salida', type: 'texto', desc: 'payload php://filter/… listo para el parámetro vulnerable' },
+    ],
+    daily: ['CTFs con include($_GET[\'file\']) sin validación: RCE en 30 segundos sin subir nada', 'Probar si el WAF bloquea php://filter pero no los filtros iconv concretos', 'Demostrar en formación que un LFI "inocente" es RCE con la cadena adecuada'],
+    ethical: ['Convertir LFI a RCE es ejecución de código en servidor ajeno: solo con autorización escrita', 'La cadena no deja ficheros en disco (todo es en memoria): igualmente es RCE detectable por logs', 'Crédito del algoritmo: Synacktiv, loknop y wupco — usa herramientas atribuidas en tus informes'],
+    tips: ['Si el include añade sufijo (.php), la cadena funciona igual: php://temp absorbe el sufijo', 'Añade espacios finales al código si el payload se corta: el padding lo arregla', 'La salida puede ser ENORME (miles de chars): si la URL se trunca, reduce el código al mínimo (<?=`$_GET[0]`;)'],
+  },
+  bofcalc: {
+    what: 'Calculadora de Buffer Overflow clásico en 4 pasos: 1) patrón cíclico estilo Metasploit generado nativamente (Aa0Aa1…), 2) cálculo del offset aceptando el EIP crashado como texto ("Aa3A") o hex (0x41336141) con búsqueda little-endian, 3) cadena de badchars 1-255 con exclusión interactiva y método mona, 4) payload final: basura × offset + EIP en little-endian automático + NOP sled + shellcode msfvenom, con script Python de envío listo y avisos (null bytes, sin sled…).',
+    params: [
+      { name: 'longitud', type: 'string', desc: 'del patrón (mayor que el buffer que crashea)' },
+      { name: 'EIP', type: 'string', desc: '4 chars o hex del registro tras el crash' },
+      { name: 'badchars', type: 'lista', desc: 'bytes excluidos de la cadena y del shellcode' },
+      { name: 'payload', type: 'formulario', desc: 'offset, JMP ESP, NOPs y shellcode hex' },
+    ],
+    daily: ['OSCP/HTB: el BOF clásico (vulnserver, rooms de buffer overflow) de principio a fin', 'Entender little-endian con la conversión visual del EIP', 'Fuzzing responsable: el patrón identifica el offset sin repetir crashes a ciegas'],
+    ethical: ['Los BOF son exploits de memoria: sin autorización, ejecutarlos es intrusión con agravante', 'En Windows moderno (DEP/ASLR/CFG) el BOF clásico no aplica: es la base para entender ROP', 'La tool hace aritmética; la responsabilidad del exploit y su alcance es tuya'],
+    tips: ['El patrón aquí es IDÉNTICO al de Metasploit: puedes usar pattern_offset.rb sobre el patrón de esta tool', 'EXITFUNC=thread en msfvenom: la shell no mata el proceso y puedes seguir el exploit', 'JMP ESP sin badchars: mona jmp -r esp -cpb "\\x00\\x0a\\x0d" y verifica el endianness aquí mismo'],
+  },
+  pivotmap: {
+    what: 'Mapa visual e interactivo de pivoting: nodos (atacante, pivotes, objetivos) con sus interfaces de red, aristas por protocolo (ssh, chisel, socat, smb) y estado (vivo/muerto). Calcula la RUTA del atacante a cada nodo por BFS y genera los comandos EXACTOS por tramo: SSH -D con ProxyJump para saltos, chisel server/cliente con SOCKS encadenados, socat TCP-LISTEN con forward, y verificación con proxychains. Editor de nodos inline, chuleta de pivoting y notas de OPSEC.',
+    params: [
+      { name: 'nodos', type: 'editor', required: true, desc: 'nombre, rol e interfaces (la red que te alcanza y la que esconde)' },
+      { name: 'aristas', type: 'protocolo', desc: 'ssh, chisel, socat… vivo o caído' },
+      { name: 'objetivo', type: 'click', desc: 'marca el nodo final: la tool calcula ruta y comandos' },
+    ],
+    daily: ['Planear el pivoting de un lab multi-nivel (HTB pro labs, AD chains)', 'Documentar el acceso al informe: diagrama + comandos por tramo', 'Formar en el concepto: la diferencia entre SOCKS, forward y ProxyJump se VE en el mapa'],
+    ethical: ['El pivoting es acceso a redes internas adicionales: cada salto debe estar en el scope del encargo', 'Enumera interfaces y redes del pivote solo para el alcance aprobado: "ip a" revela redes que NO tenías autorizadas', 'Todo túnel debe quedar documentado y cerrarse al terminar el encargo'],
+    tips: ['Enumera SIEMPRE las interfaces del pivote (ip a): la segunda interface es la red que aún no conoces', 'ssh -J (ProxyJump) es lo primero que probamos: si hay SSH, encadena saltos sin herramientas extra', 'sshuttle -r user@pivote RED/24 es "VPN sin instalar nada": prueba el mapa primero y usa sshuttle cuando funcione', 'Con Windows pivotes: plink.exe -D 1080 (PuTTY CLI) equivale a ssh -D desde un binario portable'],
+  },
+  netcalc: {
+    what: '7 calculadoras para administradores de redes: 1) TTL→SO con bases 255/128/64/60/50 y cálculo de saltos, 2) MTU/MSS con breakdown por IPv4/IPv6 y comandos ping de test (Linux -M do, Windows -f -l), 3) wildcards y máscaras ACL Cisco con equivalente nftables y traductor máscara→prefijo, 4) plan de VLANs con dimensionado automático por hosts, detección de VLANs reservadas, gateway calculado y config router-on-a-stick (Cisco + Linux), 5) ToS/DSCP bidireccional con clases EF/AF/CS, 6) tiempos de transferencia con overhead configurable, 7) tabla CIDR completa con uso típico.',
+    params: [
+      { name: 'pestaña', type: 'chips', required: true, desc: 'las 7 calculadoras' },
+      { name: 'TTL', type: 'number', desc: '1-255 del ping observado' },
+      { name: 'MTU', type: 'number', desc: 'o elige la situación típica (PPPoE, VPN, jumbo)' },
+      { name: 'VLANs', type: 'tabla', desc: 'id, nombre y hosts: red, máscara, gateway y margen automáticos' },
+    ],
+    daily: ['Diagnóstico: ¿por qué no carga el sitio tras la VPN? → MTU/MSS con el test de ping listo', 'Diseño de red nueva: dimensionar VLANs por sede sin sorpresas de solapamiento', 'Auditar ACLs: wildcard correcta y equivalente nftables para entornos mixtos'],
+    ethical: ['La identificación por TTL es fingerprinting pasivo de redes propias o autorizadas', 'El dimensionado correcto de VLANs (datos/voz/invitados separadas) es defensa en profundidad real', 'Cada calculadora enseña el PORQUÉ: no copias una wildcard sin entenderla'],
+    tips: ['TTL 57 con 3 saltos y base 60: probable Alpine/contenedor — el ahorro de saltos delata virtualización', 'El test de MTU con ping -M do -s 1472 es EL diagnóstico del "conecta pero no carga"', 'Nunca uses la VLAN 1 para datos ni management: la tabla de reservadas te lo recuerda al planear'],
+  },
+  ttyupgrade: {
+    what: 'Guía interactiva de 6 métodos de upgrade de reverse shell a TTY interactiva completa: python3/python pty con calibración stty (el estándar de 5 pasos), script de util-linux (sin Python), socat completo (PTY desde el inicio con binarios estáticos), rlwrap (mejora solo desde tu lado), referencia manual de stty (qué hace cada flag y el orden de siempre) y opciones Windows (conpty, C2, WinRM). Cada método con pasos numerados exactos, calidad por estrellas, cuándo usarlo y troubleshooting del día a día (Ctrl+C que mata todo, echo duplicado, sin tab-completion).',
+    params: [
+      { name: 'método', type: 'chips', required: true, desc: '6 métodos con calidad y requisitos' },
+      { name: 'prechecks', type: 'panel', desc: '¿es TTY? ¿qué python hay? ¿tamaño de tu terminal?' },
+      { name: 'copiar', type: 'botón', desc: 'solo los comandos, sin comentarios' },
+    ],
+    daily: ['CTF/labs: la reverse shell de nc nunca es TTY — este upgrade es EL paso 1 de post-explotación', 'Calibrar stty rows/cols para que vi/nano funcionen en la shell remota', 'Enseñar a juniors por qué su shell "no funciona": casi siempre falta stty raw -echo; fg'],
+    ethical: ['Las técnicas de TTY upgrade son estándar de OSCP/HTB: material formativo y operativo en labs autorizados', 'En Windows, la solución real es un agente C2 de laboratorio, no trucos de consola', 'El troubleshooting enseña a restaurar (stty sane/reset): útil también para tu propia terminal'],
+    tips: ['El orden sagrado: pty.spawn → Ctrl+Z → stty raw -echo → fg → TERM + stty rows/cols', 'Si tras fg no ves nada, escribe Enter a ciegas: es normal, no está rota', 'socat con binario estático (github.com/andrew-d/static-binaries) es la mejor experiencia: PTY completa sin pasos'],
+  },
+  filexfer: {
+    what: 'Arsenal de 14 métodos de transferencia de ficheros atacante↔víctima con comandos generados según tu IP, puerto y fichero: HTTP (python http.server, uploadserver), netcat directo y con hash on-the-fly, scp/sftp, base64 inline por consola, /dev/tcp de bash puro (sin nc ni wget), y para Windows: certutil (LOLBIN), WebClient/PowerShell, subida con UploadFile, SMB con impacket smbserver, bitsadmin, nc.exe y FTP (pyftpdlib + script de consola). Filtros por SO y sentido (descarga/subida), notas de OPSEC por método y sección de DETEcción blue team (qué eventos y logs genera cada uno).',
+    params: [
+      { name: 'host/puerto/fichero', type: 'formulario', required: true, desc: 'todo se sustituye en los comandos' },
+      { name: 'SO', type: 'chips', desc: 'linux, windows o ambos' },
+      { name: 'sentido', type: 'chips', desc: 'descarga (víctima baja de ti) o subida (víctima te manda)' },
+    ],
+    daily: ['Subir linpeas/winpeas al objetivo en un pentest autorizado', 'Exfiltrar resultados o evidencias hacia tu máquina con hash verificado', 'En boxes capados: /dev/tcp de bash funciona SIN nc, wget ni curl'],
+    ethical: ['Cada método deja rastros distintos (certutil cachea, SMB crea sesiones): elige conscientemente y documenta', 'La sección de detección es para el blue team: saber cómo se detecta cada método es defender mejor', 'Verifica SIEMPRE el hash en ambos extremos: un fichero truncado pierde horas de trabajo'],
+    tips: ['Si la víctima no puede salir a tu IP (segmentación), invierte el sentido o monta el tunnel con Pivoting Map', 'certutil -urlcache … delete limpia la caché: OPSEC básica en Windows', 'Para carpetas enteras: tar czf - | nc (comando incluido) en vez de fichero a fichero'],
+  },
 }

@@ -9,6 +9,7 @@ import {
   HardDrive, Gauge, KeySquare, BrickWall, Waypoints, Clock, Shield, FileTerminal,
   UserSearch, ListPlus, ClipboardList, MonitorCog, FileCog, FileText,
   Terminal, Sparkles, FileDiff,
+  Filter, FileCode2, Route, MonitorPlay, FileInput, Users, BookMarked,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -58,16 +59,46 @@ export interface SubsectionDef {
 
 export const SUBSECTIONS: SubsectionDef[] = [
   {
-    id: 'linux-generadores',
+    id: 'discos-almacenamiento',
     category: 'Linux & sistema',
-    label: 'Generadores de comandos',
-    toolIds: ['diskcmds', 'admincmds', 'fstabgen', 'sysctlgen', 'sshharden', 'nftgen', 'wgquick', 'sudoersgen', 'systemdgen', 'umaskgen'],
+    label: 'Discos y almacenamiento',
+    toolIds: ['diskcmds', 'fstabgen'],
+  },
+  {
+    id: 'red-servicios-linux',
+    category: 'Linux & sistema',
+    label: 'Red y servicios Linux',
+    toolIds: ['nftgen', 'sshharden', 'wgquick', 'sysctlgen'],
+  },
+  {
+    id: 'permisos-privesc-linux',
+    category: 'Linux & sistema',
+    label: 'Permisos y privesc',
+    toolIds: ['chmod', 'umaskgen', 'sudoersgen', 'systemdgen', 'admincmds'],
   },
   {
     id: 'win-config',
     category: 'Linux & sistema',
     label: 'Configuración Windows',
     toolIds: ['winfirewall', 'schtasks', 'winharden', 'pslab', 'regtweaks', 'ntfsperm'],
+  },
+  {
+    id: 'postex',
+    category: 'Web & payloads',
+    label: 'Post-explotación',
+    toolIds: ['ttyupgrade', 'filexfer', 'pivotmap', 'revshells'],
+  },
+  {
+    id: 'explotacion',
+    category: 'Web & payloads',
+    label: 'Explotación',
+    toolIds: ['bofcalc', 'phpfilter', 'xsgen', 'xmlgen', 'payloads'],
+  },
+  {
+    id: 'privesc-recursos',
+    category: 'Análisis',
+    label: 'Privesc y enumeración',
+    toolIds: ['gtfobins', 'usergen', 'ports'],
   },
 ]
 
@@ -176,6 +207,17 @@ export const TOOLS: ToolDef[] = [
   { id: 'aliases', name: 'Shell Alias Pack', desc: 'Pack de alias y funciones de calidad de vida y seguridad para bash/zsh con la explicación de qué hábito corrige cada uno', short: 'Alias', category: 'Generadores', icon: Sparkles },
   { id: 'crontalk', name: 'Cron Translator', desc: 'Explica expresiones cron en cristiano, señala patrones sospechosos y las convierte a systemd OnCalendar', short: 'CronTalk', category: 'Generadores', icon: CalendarClock },
   { id: 'confdiff', name: 'Config Diff', desc: 'Diff semántico de ficheros de configuración: ignora comentarios y orden, resalta directivas de seguridad que cambiaron', short: 'ConfDiff', category: 'Análisis', icon: FileDiff },
+  { id: 'gtfobins', name: 'GTFOBins Explorer', desc: 'Base de datos COMPLETA de GTFOBins: 458 binarios UNIX con todos sus comandos de abuso por contexto (sudo, SUID, capabilities)', short: 'GTFOBins', category: 'Análisis', icon: Swords },
+  { id: 'usergen', name: 'Usuario Generator', desc: 'Variaciones de usernames y emails corporativos con 9 convenciones y service accounts para enumeración y spraying', short: 'Users', category: 'Análisis', icon: Users },
+  { id: 'acronyms', name: 'Diccionario de Acrónimos', desc: '196 acrónimos de ciberseguridad con definición en español organizados por dominio: de APT a YARA', short: 'Acrónimos', category: 'Análisis', icon: BookMarked },
+  { id: 'xsgen', name: 'XSS Payload Generator', desc: '26 payloads clasificados por vector y contexto (HTML, atributo, JS, URL) con encoding y guía de caza de inyecciones', short: 'XSS', category: 'Web & payloads', icon: Bug },
+  { id: 'xmlgen', name: 'XML & XXE Arsenal', desc: 'Plantillas XXE directo, OOB con evil.dtd, vía error, XInclude y XSLT hasta RCE con detección de parsers', short: 'XXE', category: 'Web & payloads', icon: FileCode2 },
+  { id: 'phpfilter', name: 'PHP Filter Chain', desc: 'LFI a RCE sin subir ficheros: cadenas php://filter con iconv que sintetizan tu código (algoritmo Synacktiv)', short: 'PHPFilter', category: 'Web & payloads', icon: Filter },
+  { id: 'bofcalc', name: 'Buffer Overflow Calc', desc: 'Patrón cíclico estilo Metasploit, offset desde EIP, badchars y payload con NOP sled + shellcode + retorno', short: 'BOF', category: 'Web & payloads', icon: Binary },
+  { id: 'pivotmap', name: 'Pivoting Map', desc: 'Mapa visual de pivotes con interfaces y rutas: genera los comandos chisel/socat/ssh exactos por tramo', short: 'Pivoting', category: 'Red', icon: Route },
+  { id: 'netcalc', name: 'Network Admin Calc', desc: '7 calculadoras de red: TTL→SO, MTU/MSS, wildcards ACL Cisco, plan de VLANs, ToS/DSCP, transferencias y CIDR', short: 'NetCalc', category: 'Red', icon: Calculator },
+  { id: 'ttyupgrade', name: 'TTY Upgrade', desc: 'De reverse shell tonta a terminal interactiva: python pty, script, socat, rlwrap con pasos y troubleshooting', short: 'TTY', category: 'Web & payloads', icon: MonitorPlay },
+  { id: 'filexfer', name: 'File Transfer Arsenal', desc: '14 métodos de transferencia atacante↔víctima con comandos exactos: HTTP, nc, scp, certutil, PowerShell, SMB…', short: 'Transfer', category: 'Web & payloads', icon: FileInput },
 ]
 
 export const CATEGORIES: ToolCategory[] = [
