@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { ShieldCheck } from 'lucide-react'
 import { ToolHeader, Badge, Button, Reveal, Field, TextInput, Select, CopyBlock, InfoBanner, useToast } from '../components/ui'
 import { PW_PRESETS, buildPwPolicyConf, buildPamConfig, buildWinPolicy, PW_POLICY_NOTES, type PwPolicy } from '../lib/pwpolicy'
@@ -17,6 +18,12 @@ export default function Pwpolicy() {
   return (
     <div>
       <ToolHeader icon={ShieldCheck} title="Password Policy Builder" desc="Políticas de contraseñas coherentes entre Linux y Windows basadas en NIST 800-63B: longitud sobre complejidad, sin rotación suicida, con bloqueo y verificación de filtraciones" />
+      <SnapshotButtons
+        toolId="pwpolicy"
+        label="política completa"
+        getData={() => ({ policy })}
+        onLoad={(d) => d.policy && setPolicy(d.policy)}
+      />
 
       <InfoBanner>
         <b>NIST 800-63B cambió las reglas del juego:</b> la complejidad forzada y la rotación a 90 días producen P@ssw0rd! y Pataton2 — peores que una passphrase larga sin cambios. Esta tool genera la config real para <span className="font-mono">pwquality.conf</span>/PAM y para <span className="font-mono">net accounts</span>/GPO con el enfoque moderno.

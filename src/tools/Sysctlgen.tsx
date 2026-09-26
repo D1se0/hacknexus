@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { Gauge, Check, X } from 'lucide-react'
 import { ToolHeader, Badge, Button, Reveal, Field, TextInput, CopyBlock, InfoBanner, useToast } from '../components/ui'
 import { SYSCTL_CATALOG, SYSCTL_PROFILES, buildSysctlConf } from '../lib/sysctl'
@@ -22,6 +23,12 @@ export default function Sysctlgen() {
   return (
     <div>
       <ToolHeader icon={Gauge} title="Sysctl Hardening" desc="Configura el kernel Linux en frío: catálogo explicado de claves net/* y kernel/*, perfiles por tipo de máquina y conf listo para /etc/sysctl.d" />
+      <SnapshotButtons
+        toolId="sysctlgen"
+        label="claves activadas + extras"
+        getData={() => ({ active, extra })}
+        onLoad={(d) => { if (d.active) setActive(d.active); if (d.extra) setExtra(d.extra) }}
+      />
 
       <InfoBanner>
         <b>sysctl es la caja de interruptores del kernel.</b> Las claves correctas cierran ataques clásicos: SYN flood, ARP spoofing, exploits de ptrace, BPF no privilegiado, fugas de punteros del kernel. El perfil <b>máximo endurecimiento</b> puede romper flatpaks/sandboxes — pruébalo antes en staging. Aplica con <span className="font-mono">sudo sysctl --system</span>.

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { BrickWall, Plus, Trash2 } from 'lucide-react'
 import { ToolHeader, Badge, Button, Reveal, Field, TextInput, Select, CopyBlock, InfoBanner, useToast } from '../components/ui'
 import { NFT_SERVICES, ACTION_INFO, buildNftRuleset, NFT_VERIFY, NFT_NOTES, type NftRule, type RuleAction } from '../lib/nftables'
@@ -42,6 +43,12 @@ export default function Nftgen() {
   return (
     <div>
       <ToolHeader icon={BrickWall} title="NFTables Builder" desc="Genera rulesets nft con mínimo privilegio: policy drop, established/related, rate limit SSH y reglas por servicio con explicación de cada acción" />
+      <SnapshotButtons
+        toolId="nftgen"
+        label="ruleset completo"
+        getData={() => ({ iface, defaultInput, allowEstablished, logDrops, rateLimitSsh, dropInvalid, rules })}
+        onLoad={(d) => { if (d.iface) setIface(d.iface); if (d.defaultInput) setDefaultInput(d.defaultInput); if (d.rules) setRules(d.rules); if (d.allowEstablished !== undefined) setAllowEstablished(d.allowEstablished); if (d.logDrops !== undefined) setLogDrops(d.logDrops); if (d.rateLimitSsh !== undefined) setRateLimitSsh(d.rateLimitSsh); if (d.dropInvalid !== undefined) setDropInvalid(d.dropInvalid) }}
+      />
 
       <InfoBanner>
         <b>nftables reemplaza iptables</b> en kernels modernos (una sola sintaxis para IPv4+IPv6). La estructura correcta es: policy drop en input + aceptar established/related + abrir solo lo necesario. <b>Peligro:</b> si aplicas por SSH sin protección puedes cortarte el acceso — deja un <span className="font-mono">sleep 120 && nft flush ruleset</span> corriendo en background como red de seguridad.

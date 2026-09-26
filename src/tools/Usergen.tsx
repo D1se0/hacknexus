@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { Users } from 'lucide-react'
 import { ToolHeader, Badge, CopyBtn, CopyBlock, Field, TextInput, Reveal, InfoBanner, Button } from '../components/ui'
 import { buildUserList, userVariants, USERGEN_USE, USERGEN_NOTES, EMAIL_CONVENTIONS, type NamePair } from '../lib/usergen'
@@ -31,6 +32,12 @@ export default function Usergen() {
   return (
     <>
       <ToolHeader icon={Users} title="Usuario Generator" desc="Genera las variaciones de usernames y emails corporativos de una lista de nombres: 9 convenciones (jsmith, j.smith, john.smith…), service accounts típicas y listas listas para kerbrute, spraying y OWA" />
+      <SnapshotButtons
+        toolId="usergen"
+        label="nombres + dominio"
+        getData={() => ({ raw, domain, services, extraDomains })}
+        onLoad={(d) => { if (d.raw) setRaw(d.raw); if (d.domain) setDomain(d.domain); if (d.services !== undefined) setServices(d.services); if (d.extraDomains !== undefined) setExtraDomains(d.extraDomains) }}
+      />
 
       <InfoBanner>
         <b>¿Por qué las convenciones importan?</b> Password spraying contra AD necesita USERNAMES; OWA/M365 necesita EMAILS.

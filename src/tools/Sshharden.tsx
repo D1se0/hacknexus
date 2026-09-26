@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { KeySquare } from 'lucide-react'
 import { ToolHeader, Badge, Button, Reveal, TextInput, CopyBlock, InfoBanner, useToast } from '../components/ui'
 import { SSH_OPTIONS, SSH_PROFILES, buildSshdConfig, SSH_VERIFY, type SshGroup } from '../lib/sshharden'
@@ -42,6 +43,12 @@ export default function Sshharden() {
   return (
     <div>
       <ToolHeader icon={KeySquare} title="SSH Hardening" desc="Genera un sshd_config endurecido con explicación directa de cada directiva: solo claves, cifrados AEAD, límites de sesión y sin forwarding innecesario" />
+      <SnapshotButtons
+        toolId="sshharden"
+        label="directivas + perfil"
+        getData={() => ({ values, profile })}
+        onLoad={(d) => { if (d.values) setValues(d.values); if (d.profile) setProfile(d.profile) }}
+      />
 
       <InfoBanner>
         <b>sshd es la puerta de entrada número uno a servidores Linux.</b> Este editor marca los flags rojos en tiempo real: root login, PasswordAuthentication yes, forwarding abierto. Tras aplicar, ejecuta <span className="font-mono">sshd -t</span> y verifica desde <b>otra terminal</b> antes de cerrar la sesión actual — quedarte fuera es el error #1.

@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>91 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>92 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 91 herramientas
+## 🧰 Las 92 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -159,6 +159,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Chuleta Generator** | Compón chuletas de vim/tmux/find/grep/bash/red/git en TXT o Markdown listas para imprimir | 🟢 local |
 | **Shell Alias Pack** | 42 alias y funciones de calidad de vida y seguridad con el hábito que corrige cada uno | 🟢 local |
 | **Cron Translator** | Explica cron en cristiano, señala patrones sospechosos y convierte a systemd OnCalendar | 🟢 local |
+| **Chronolog** | Timeline del engagement con fases, TTE (time-to-exploit), huecos sin documentar y export Markdown/CSV | 🟢 local |
 
 🔥 **port** = portada de uno de mis repos originales: [chmod-calculator](https://github.com/D1se0/chmod-calculator) · [revShellsGenerator](https://github.com/D1se0/revShellsGenerator-page) · [PHPDetector](https://github.com/D1se0/PHPDetector-page) · [hackingChef](https://github.com/D1se0/hackingChef-page) · [calculadora_vlsm](https://github.com/D1se0/calculadora_vlsm) · [calculadora_subnetting](https://github.com/D1se0/calculadora_subnetting) · [sql-generator](https://github.com/D1se0/sql-generator)
 

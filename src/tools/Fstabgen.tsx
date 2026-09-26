@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { HardDrive, Plus, Trash2 } from 'lucide-react'
 import { ToolHeader, Badge, Button, Reveal, Field, TextInput, Select, CopyBlock, ErrorBox, InfoBanner, useToast } from '../components/ui'
 import { FS_TYPES, OPTION_INFO, FSTAB_PRESETS, fstabWarnings, buildFstabLine, FSTAB_CHEATSHEET, type FstabEntry } from '../lib/fstab'
@@ -37,6 +38,12 @@ export default function Fstabgen() {
   return (
     <div>
       <ToolHeader icon={HardDrive} title="Fstab Builder" desc="Construye /etc/fstab sin miedo: presets seguros por escenario, avisos de privesc (suid en home), contraseñas inline y flags rotos" />
+      <SnapshotButtons
+        toolId="fstabgen"
+        label="entradas fstab"
+        getData={() => ({ entries })}
+        onLoad={(d) => d.entries && setEntries(d.entries)}
+      />
 
       <InfoBanner>
         <b>fstab es el mapa de montaje del sistema:</b> una línea mal escrita y el servidor no arranca. Este generador marca los errores clásicos — <span className="font-mono">password=</span> legible por todos, <span className="font-mono">/tmp</span> ejecutable, SUID en particiones de datos, mounts de red sin <span className="font-mono">nofail</span>. Valida SIEMPRE con <span className="font-mono">findmnt --verify</span> antes de reiniciar.

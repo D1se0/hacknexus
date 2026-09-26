@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { Binary } from 'lucide-react'
 import { ToolHeader, Badge, CopyBtn, CopyBlock, Field, TextInput, Reveal, InfoBanner } from '../components/ui'
 import { cyclicPattern, findOffset, badcharString, buildBofPayload, DEFAULT_BADCHARS, BOF_METHOD, BOF_NOTES, MSF_SHELLCODE_CMDS } from '../lib/bofcalc'
@@ -46,6 +47,12 @@ export default function Bofcalc() {
   return (
     <>
       <ToolHeader icon={Binary} title="Buffer Overflow Calculator" desc="Las 4 piezas del exploit clásico: patrón cíclico estilo Metasploit, cálculo de offset desde el EIP crashado, cadena de badchars y payload final con NOP sled + shellcode + dirección de retorno en little-endian" />
+      <SnapshotButtons
+        toolId="bofcalc"
+        label="offset + badchars + payload"
+        getData={() => ({ patLen, eip, bad, offset, eipAddr, nops, sc })}
+        onLoad={(d) => { if (d.patLen) setPatLen(d.patLen); if (d.eip) setEip(d.eip); if (d.bad) setBad(d.bad); if (d.offset) setOffset(d.offset); if (d.eipAddr) setEipAddr(d.eipAddr); if (d.nops) setNops(d.nops); if (d.sc) setSc(d.sc) }}
+      />
 
       <InfoBanner>
         <b>El flujo del BOF clásico (OSCP/HTB):</b> fuzzing → patrón cíclico → offset → badchars → JMP ESP + shellcode.

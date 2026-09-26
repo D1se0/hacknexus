@@ -8,7 +8,7 @@ import {
   FileLock2, UserCog, Cog, FolderLock, Search, Plug, FileWarning,
   HardDrive, Gauge, KeySquare, BrickWall, Waypoints, Clock, Shield, FileTerminal,
   UserSearch, ListPlus, ClipboardList, MonitorCog, FileCog, FileText,
-  Terminal, Sparkles, FileDiff,
+  Terminal, Sparkles, FileDiff, History,
   Filter, FileCode2, Route, MonitorPlay, FileInput, Users, BookMarked,
 } from 'lucide-react'
 
@@ -210,6 +210,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'gtfobins', name: 'GTFOBins Explorer', desc: 'Base de datos COMPLETA de GTFOBins: 458 binarios UNIX con todos sus comandos de abuso por contexto (sudo, SUID, capabilities)', short: 'GTFOBins', category: 'Análisis', icon: Swords },
   { id: 'usergen', name: 'Usuario Generator', desc: 'Variaciones de usernames y emails corporativos con 9 convenciones y service accounts para enumeración y spraying', short: 'Users', category: 'Análisis', icon: Users },
   { id: 'acronyms', name: 'Diccionario de Acrónimos', desc: '196 acrónimos de ciberseguridad con definición en español organizados por dominio: de APT a YARA', short: 'Acrónimos', category: 'Análisis', icon: BookMarked },
+  { id: 'chronolog', name: 'Chronolog', desc: 'Timeline de tu engagement con fases, TTE (time-to-exploit), huecos sin documentar y export Markdown/CSV del writeup', short: 'Chronolog', category: 'Generadores', icon: History },
   { id: 'xsgen', name: 'XSS Payload Generator', desc: '26 payloads clasificados por vector y contexto (HTML, atributo, JS, URL) con encoding y guía de caza de inyecciones', short: 'XSS', category: 'Web & payloads', icon: Bug },
   { id: 'xmlgen', name: 'XML & XXE Arsenal', desc: 'Plantillas XXE directo, OOB con evil.dtd, vía error, XInclude y XSLT hasta RCE con detección de parsers', short: 'XXE', category: 'Web & payloads', icon: FileCode2 },
   { id: 'phpfilter', name: 'PHP Filter Chain', desc: 'LFI a RCE sin subir ficheros: cadenas php://filter con iconv que sintetizan tu código (algoritmo Synacktiv)', short: 'PHPFilter', category: 'Web & payloads', icon: Filter },

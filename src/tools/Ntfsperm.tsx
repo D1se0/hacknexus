@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { FolderLock, Plus, Trash2 } from 'lucide-react'
 import { ToolHeader, Badge, Button, Reveal, Field, TextInput, Select, Toggle, CopyBlock, InfoBanner } from '../components/ui'
 import { buildIcaclsCommands, aclSummary, RIGHT_INFO, INHERIT_INFO, PRINCIPALS, ACE_PRESETS, EQUIV_PERMS, CHOWN_EQUIV, type Ace, type AclRight, type AclInherit, type IcaclsOpts } from '../lib/icacls'
@@ -33,6 +34,12 @@ icacls "${path}" /save backup-acl.txt /t /c   # respaldar antes de tocar
   return (
     <div>
       <ToolHeader icon={FolderLock} title="Permisos NTFS (icacls)" desc="Generador de comandos icacls con ACEs, herencias y presets — más traducción chmod ↔ icacls para entornos mixtos" />
+      <SnapshotButtons
+        toolId="ntfsperm"
+        label="ruta + ACEs"
+        getData={() => ({ path, recursive, resetInheritance, disableInheritanceKeep, aces })}
+        onLoad={(d) => { if (d.path) setPath(d.path); if (d.aces) setAces(d.aces); if (d.recursive !== undefined) setRecursive(d.recursive); if (d.resetInheritance !== undefined) setResetInheritance(d.resetInheritance); if (d.disableInheritanceKeep !== undefined) setDisableInheritance(d.disableInheritanceKeep) }}
+      />
 
       <InfoBanner>
         NTFS no tiene octal ni SUID: usa <b>ACEs</b> (permitir/denegar por usuario o grupo) con herencia a ficheros (OI) y carpetas (CI). Las de <b>denegación se evalúan primero</b> y ganan siempre: úsalas con cuentagotas. Si vienes de Linux, mira la tabla de equivalencias del final.

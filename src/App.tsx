@@ -6,6 +6,7 @@ import { findTool } from './lib/registry'
 import Home from './pages/Home'
 import Docs from './pages/Docs'
 import OsCompare from './pages/OsCompare'
+import Whoami from './pages/Whoami'
 import { TOOLS } from './lib/registry'
 
 const toolPages: Record<string, React.LazyExoticComponent<React.ComponentType>> = {}
@@ -35,7 +36,7 @@ export default function App() {
 
   const tool = findTool(route)
   useEffect(() => {
-    const special: Record<string, string> = { docs: 'Documentación', 'os-compare': 'Comparativa de OS de Hacking Ético' }
+    const special: Record<string, string> = { whoami: 'Whoami — D1se0', docs: 'Documentación', 'os-compare': 'Comparativa de OS de Hacking Ético' }
     document.title = tool
       ? `${tool.name} — HackNexus`
       : special[route]
@@ -58,6 +59,8 @@ export default function App() {
           >
             {route === 'home' ? (
               <Home nav={nav} />
+            ) : route === 'whoami' ? (
+              <Whoami />
             ) : route === 'docs' ? (
               <Docs nav={nav} />
             ) : route === 'os-compare' ? (

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { FileDiff } from 'lucide-react'
 import { ToolHeader, Badge, Field, Reveal, InfoBanner } from '../components/ui'
 import { diffConfigs, securityHits, CONFDIFF_NOTES, CONFDIFF_USECASES } from '../lib/confdiff'
@@ -31,6 +32,12 @@ export default function Confdiff() {
   return (
     <>
       <ToolHeader icon={FileDiff} title="Config Diff" desc="Compara ficheros de configuración como un profesional: diff SEMÁNTICO que ignora comentarios, espacios y orden, resalta las directivas de seguridad que cambiaron y cuenta qué se añadió, quitó o modificó" />
+      <SnapshotButtons
+        toolId="confdiff"
+        label="los dos textos"
+        getData={() => ({ a, b })}
+        onLoad={(d) => { if (d.a) setA(d.a); if (d.b) setB(d.b) }}
+      />
 
       <InfoBanner>
         <b>Ideal para auditoría:</b> pega la config de fábrica (o un backup) y la config actual del servidor.

@@ -1084,4 +1084,15 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['Cada método deja rastros distintos (certutil cachea, SMB crea sesiones): elige conscientemente y documenta', 'La sección de detección es para el blue team: saber cómo se detecta cada método es defender mejor', 'Verifica SIEMPRE el hash en ambos extremos: un fichero truncado pierde horas de trabajo'],
     tips: ['Si la víctima no puede salir a tu IP (segmentación), invierte el sentido o monta el tunnel con Pivoting Map', 'certutil -urlcache … delete limpia la caché: OPSEC básica en Windows', 'Para carpetas enteras: tar czf - | nc (comando incluido) en vez de fichero a fichero'],
   },
+  chronolog: {
+    what: 'Timeline viva de tu engagement (CTF, pentest o bug bounty): cada evento con minuto, fase (recon → enum → exploit → privesc → post → pivot → loot → cleanup) y host. Calcula TTE (time-to-exploit), duración total, señala huecos mayores de 45 minutos y fases clave sin cobertura, y exporta el writeup en Markdown o CSV.',
+    params: [
+      { name: 'título / operador / inicio', type: 'formulario', required: true, desc: 'la hora de inicio convierte los minutos relativos a reloj real' },
+      { name: 'evento', type: 'formulario', desc: 'minuto, fase (9 disponibles), título, detalle, host y severidad' },
+      { name: 'export', type: 'chips', desc: 'Markdown (tabla completa) o CSV; más snapshot JSON de la timeline' },
+    ],
+    daily: ['Documentar el ataque EN VIVO en vez de reconstruirlo al día siguiente desde el history', 'Justificar horas en informes de pentest: el TTE y los huecos son métricas que el cliente entiende', 'En CTFs: comparar tu cronología con el writeup oficial para ver dónde perdiste tiempo'],
+    ethical: ['Un timeline completo es evidencia de metodología: protege la trazabilidad de lo que hiciste y cuándo', 'En pentests reales, la fase cleanup documentada demuestra que cerraste túneles y borraste artefactos', 'No publiques timelines de clientes: anonimiza hosts y rutas antes de convertirlo en writeup público'],
+    tips: ['El hueco >45m suele ser "estuve atascado": anótalo como nota, es oro para aprender', 'Usa la fase nota para deducciones ("el admin reusa contraseñas") — son las que aceleran el siguiente engagement', 'El Markdown exportado pega directo en tu GitBook o en el informe sin retoques'],
+  },
 }

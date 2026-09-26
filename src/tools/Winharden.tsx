@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { Shield, Check, RotateCcw } from 'lucide-react'
 import { ToolHeader, Badge, Button, Reveal, CopyBlock, InfoBanner, useToast } from '../components/ui'
 import { HARDENING, HARDENING_PROFILES, buildHardeningScript, HARDENING_AUDIT, type HGroup, type HTweak } from '../lib/hardening'
@@ -29,6 +30,12 @@ export default function Winharden() {
   return (
     <div>
       <ToolHeader icon={Shield} title="Windows Hardening" desc="Auditoría y tweaks de endurecimiento con justificación, comando de aplicación, verificación y reversión — al estilo CIS but en cristiano" />
+      <SnapshotButtons
+        toolId="winharden"
+        label="nivel + controles"
+        getData={() => ({ level, selected })}
+        onLoad={(d) => { if (d.level) setLevel(d.level); if (d.selected) setSelected(d.selected) }}
+      />
 
       <InfoBanner>
         <b>Cada tweak incluye el porqué, cómo verificarlo y cómo revertirlo.</b> El nivel 1 (CIS básico) es seguro en cualquier entorno; el nivel 2 puede romper instaladores sin firma o scripts propios. Crea un punto de restauración (el script lo intenta con <span className="font-mono">Checkpoint-Computer</span>) y aplica por bloques, no todo de golpe.

@@ -1,4 +1,5 @@
 import { useState, useMemo } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { ToolHeader, Badge, CopyBtn, CopyBlock, Field, Select, Toggle, InfoBanner } from '../components/ui'
 import { SYSMON_EVENTS, SYSMON_PROFILES, SYSMON_DEPLOY, SYSMON_NOTES, buildSysmonConfig } from '../lib/sysmon'
 import { download } from '../lib/util'
@@ -24,6 +25,12 @@ export default function SysmonBuilder() {
         icon={FileCog}
         title="Sysmon Config Builder"
         desc="Genera configuraciones XML de Sysmon con foco en detección. Cada evento explica por qué importa y para qué lo usa un atacante — las reglas vienen de la experiencia real de SOC."
+      />
+      <SnapshotButtons
+        toolId="sysmonbuilder"
+        label="profile + eventos + exclusiones"
+        getData={() => ({ profile, ids, hashAlgos, checkRevocation, exclude })}
+        onLoad={(d) => { if (d.profile) setProfile(d.profile); if (d.ids) setIds(d.ids); if (d.hashAlgos) setHashAlgos(d.hashAlgos); if (d.checkRevocation !== undefined) setCheckRevocation(d.checkRevocation); if (d.exclude !== undefined) setExclude(d.exclude) }}
       />
       <InfoBanner>
         Este builder es el punto de partida ideal: instala, prueba en tu SIEM, y luego escala con

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { UserCog } from 'lucide-react'
 import { ToolHeader, Badge, Reveal, Field, TextInput, Toggle, Button, CopyBlock, InfoBanner } from '../components/ui'
 import { buildSudoersLine, sudoersWarnings, SUDOERS_PRESETS, type SudoersOpts } from '../lib/sudoers'
@@ -30,6 +31,12 @@ sudo -u ${o.runas.replace(/[()]/g, '').split(':')[0] || 'root'} -l | tail`
   return (
     <div>
       <ToolHeader icon={UserCog} title="Generador Sudoers" desc="Construye reglas de /etc/sudoers.d correctas y avisa de los clásicos vector GTFOBins, wildcards y NOPASSWD peligrosos" />
+      <SnapshotButtons
+        toolId="sudoersgen"
+        label="regla sudoers"
+        getData={() => ({ o })}
+        onLoad={(d) => d.o && setO(d.o)}
+      />
 
       <InfoBanner>
         Reglas mínimas: <b>rutas absolutas</b>, <b>sin wildcards</b> que puedas controlar y nunca <b>NOPASSWD: ALL</b>. Un sudo que ejecuta un editor o un intérprete equivale a dar root. Todo se construye aquí en tu navegador y se copia listo para <span className="font-mono">visudo</span>.

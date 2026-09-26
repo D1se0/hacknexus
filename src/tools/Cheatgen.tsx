@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { ScrollText } from 'lucide-react'
 import { ToolHeader, CopyBlock, Field, TextInput, Toggle, InfoBanner } from '../components/ui'
 import { CHEAT_TOPICS, buildCheatSheet, CHEAT_NOTES } from '../lib/cheatgen'
@@ -25,6 +26,12 @@ export default function Cheatgen() {
   return (
     <>
       <ToolHeader icon={ScrollText} title="Chuleta Generator" desc="Composición de chuletas a tu medida: elige temas (vim, tmux, find/grep, bash, red, git) y genera una hoja imprimible con índice, en TXT o Markdown lista para pegar junto al monitor" />
+      <SnapshotButtons
+        toolId="cheatgen"
+        label="temas + formato"
+        getData={() => ({ title, topics, format, includeHeader, includeIndex, twoColHint })}
+        onLoad={(d) => { if (d.title) setTitle(d.title); if (d.topics) setTopics(d.topics); if (d.format) setFormat(d.format); if (d.includeHeader !== undefined) setIncludeHeader(d.includeHeader); if (d.includeIndex !== undefined) setIncludeIndex(d.includeIndex); if (d.twoColHint !== undefined) setTwoColHint(d.twoColHint) }}
+      />
 
       <InfoBanner>
         Cada tema cabe en una página. Combínalos, imprime en A5 y póntala junto al teclado: la memoria espacial

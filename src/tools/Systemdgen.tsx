@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { Cog } from 'lucide-react'
 import { ToolHeader, Badge, Reveal, Field, TextInput, Toggle, CopyBlock, InfoBanner } from '../components/ui'
 import { buildServiceUnit, buildTimerUnit, buildMountUnit, RESTART_OPTIONS, TIMER_PRESETS, serviceVerdict, type SvcOpts, type TimerOpts } from '../lib/systemd'
@@ -46,6 +47,12 @@ sudo systemctl start ${mount.where.replace(/^\//, '').replace(/\//g, '-')}.mount
   return (
     <div>
       <ToolHeader icon={Cog} title="Generador systemd" desc="Units de service (con hardening), timer y mount listos para copiar, con veredictos de seguridad" />
+      <SnapshotButtons
+        toolId="systemdgen"
+        label="service + timer + mount"
+        getData={() => ({ svc, timer, mount })}
+        onLoad={(d) => { if (d.svc) setSvc(d.svc); if (d.timer) setTimer(d.timer); if (d.mount) setMount(d.mount) }}
+      />
 
       <InfoBanner>
         El modo <b>hardening</b> añade sandboxing (ProtectSystem=strict, NoNewPrivileges, etc.): <span className="font-mono">systemd-analyze security</span> lo puntúa. Si tu app necesita algo que el sandbox corta, desactívalo conscientemente, no por defecto.

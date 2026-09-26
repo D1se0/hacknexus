@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { ShieldCheck, Plus, Trash2 } from 'lucide-react'
 import { ToolHeader, Badge, Button, Reveal, Field, TextInput, Select, CopyBlock, InfoBanner, useToast } from '../components/ui'
 import { FW_PRESETS, buildNetshRule, removeRuleCmd, fwWarnings, FW_HARDENING_SNIPPETS, FW_VERIFY, type FwRule } from '../lib/winfirewall'
@@ -36,6 +37,12 @@ export default function Winfirewall() {
   return (
     <div>
       <ToolHeader icon={ShieldCheck} title="Firewall Windows" desc="Genera reglas netsh advfirewall con mínimo privilegio: presets seguros, detección de puertos de administración abiertos y script listo para PowerShell" />
+      <SnapshotButtons
+        toolId="winfirewall"
+        label="reglas netsh"
+        getData={() => ({ rules })}
+        onLoad={(d) => d.rules && setRules(d.rules)}
+      />
 
       <InfoBanner>
         <b>El firewall de Windows es deny-by-default entrante</b> pero muchos instaladores abren agujeros sin avisar. Esta tool marca en rojo las combinaciones típicas de incidente: RDP/SMB abiertos a "any", allow en todos los perfiles, reglas sin programa fijado. Haz <span className="font-mono">netsh advfirewall export</span> antes de tocar nada.

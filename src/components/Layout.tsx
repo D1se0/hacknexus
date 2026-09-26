@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, ChevronDown, BookOpen, Laptop, Star, FolderTree } from 'lucide-react'
+import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, ChevronDown, BookOpen, Laptop, Star, FolderTree, UserRound } from 'lucide-react'
 import { TOOLS, CATEGORIES, CATEGORY_COLORS, SUBSECTIONS, subsectionOf, type ToolDef } from '../lib/registry'
 import { cn } from '../lib/util'
 import { Typewriter } from './ui'
@@ -10,8 +10,9 @@ export type Nav = (id: string) => void
 /* ---------------- Páginas especiales ---------------- */
 
 const SPECIAL_PAGES: { id: string; name: string; desc: string; icon: React.ElementType; hint?: string }[] = [
-  { id: 'docs', name: 'Documentación', desc: 'Docs detalladas de cada herramienta: qué hace, parámetros y usos', icon: BookOpen, hint: 'nuevo' },
-  { id: 'os-compare', name: 'Comparativa de OS', desc: 'Kali, Arch, Parrot, RHEL… con repos de entornos customizados', icon: Laptop, hint: 'nuevo' },
+  { id: 'whoami', name: 'Whoami', desc: 'Perfil del autor: analíticas, CVEs, certificaciones y contenido', icon: UserRound },
+  { id: 'docs', name: 'Documentación', desc: 'Docs detalladas de cada herramienta: qué hace, parámetros y usos', icon: BookOpen },
+  { id: 'os-compare', name: 'Comparativa de OS', desc: 'Kali, Arch, Parrot, RHEL… con repos de entornos customizados', icon: Laptop },
 ]
 
 /* ---------------- Command Palette ⌘K ---------------- */
@@ -211,9 +212,11 @@ function Sidebar({ route, nav, mobileOpen, setMobileOpen }: { route: string; nav
             >
               <p.icon size={14} className={cn('shrink-0', route === p.id ? 'text-acento' : 'text-grey group-hover:text-ink')} />
               <span className="truncate">{p.name}</span>
-              <span className="ml-auto flex shrink-0 items-center gap-0.5 rounded-full border border-acento/40 px-1.5 py-0.5 font-mono text-[8px] uppercase text-acento">
-                <Star size={7} /> nuevo
-              </span>
+              {p.hint && (
+                <span className="ml-auto flex shrink-0 items-center gap-0.5 rounded-full border border-acento/40 px-1.5 py-0.5 font-mono text-[8px] uppercase text-acento">
+                  <Star size={7} /> {p.hint}
+                </span>
+              )}
             </button>
           ))}
         </div>

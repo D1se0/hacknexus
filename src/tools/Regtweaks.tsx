@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { MonitorCog, Check } from 'lucide-react'
 import { ToolHeader, Badge, Button, Reveal, CopyBlock, InfoBanner, useToast } from '../components/ui'
 
@@ -75,6 +76,12 @@ export default function Regtweaks() {
   return (
     <div>
       <ToolHeader icon={MonitorCog} title="Windows Registry Tweaks" desc="Catálogo de tweaks de telemetría, privacidad, rendimiento y hardening con su ruta exacta del registro, valor, reversión y export a .reg listo para fusionar" />
+      <SnapshotButtons
+        toolId="regtweaks"
+        label="tweaks seleccionados"
+        getData={() => ({ selected })}
+        onLoad={(d) => d.selected && setSelected(d.selected)}
+      />
 
       <InfoBanner>
         <b>Cada tweak indica qué hace, cómo revertirlo y qué puede romper.</b> Exporta el .reg y ejecútalo con doble clic (pide admin en claves HKLM). Antes de tocar: <span className="font-mono">reg export "HKLM\SOFTWARE" backup.reg</span> — el registro es la configuración real de Windows y un valor mal puesto puede dejar cosas raras.

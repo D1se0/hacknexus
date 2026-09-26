@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { SnapshotButtons } from '../components/SnapshotButtons'
 import { Sparkles } from 'lucide-react'
 import { ToolHeader, CopyBlock, Field, Reveal, InfoBanner, Toggle, Button } from '../components/ui'
 import { ALIAS_CATALOG, ALIAS_CATS, buildAliasBlock, ALIAS_NOTES, type AliasCat, type AliasShell } from '../lib/aliases'
@@ -16,6 +17,12 @@ export default function Aliases() {
   return (
     <>
       <ToolHeader icon={Sparkles} title="Shell Alias Pack" desc="Genera tu pack de alias y funciones de calidad de vida y seguridad para ~/.bashrc o ~/.zshrc: cada uno con la explicación de qué hábito corrige" />
+      <SnapshotButtons
+        toolId="aliases"
+        label="shell + categorías"
+        getData={() => ({ shell, cats, withHeader })}
+        onLoad={(d) => { if (d.shell) setShell(d.shell); if (d.cats) setCats(d.cats); if (d.withHeader !== undefined) setWithHeader(d.withHeader) }}
+      />
 
       <InfoBanner>
         Los alias de seguridad (<span className="font-mono">cp -i</span>, <span className="font-mono">rm -I</span>, <span className="font-mono">chmod --preserve-root</span>) son los que evitan desastres: cambian el hábito, no la herramienta. En scripts NO se aplican — ahí mandan los comandos reales.
