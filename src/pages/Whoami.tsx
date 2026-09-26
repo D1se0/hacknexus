@@ -133,7 +133,7 @@ export default function Whoami() {
             {CVES.map((c) => (
               <a
                 key={c.id}
-                href={`https://nvd.nist.gov/vuln/detail/${c.id}`}
+                href={`https://www.cve.org/CVERecord?id=${c.id}`}
                 target="_blank"
                 rel="noreferrer"
                 className="group flex items-center justify-between rounded-lg border border-edge bg-black/30 px-3 py-2 font-mono text-xs text-ink transition-colors hover:border-bad/50 hover:text-bad"
