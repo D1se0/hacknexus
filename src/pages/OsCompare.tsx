@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Laptop, Star, Check, X, Package, ExternalLink, ShieldCheck, Terminal, BookOpen, Sparkles, Monitor, Cpu } from 'lucide-react'
+import { Laptop, Star, Check, X, Package, ExternalLink, ShieldCheck, Terminal, BookOpen, Sparkles, Monitor, Cpu, Compass } from 'lucide-react'
 import { cn } from '../lib/util'
+import { searchTasks, TASK_CATS, TASK_CAT_LABEL, type TaskEntry } from '../lib/taskguide'
 
 type Nav = (id: string) => void
 type Level = 'Principiante' | 'Intermedio' | 'Avanzado'
@@ -457,6 +458,101 @@ function GithubIcon() {
 
 /* ---------- Página ---------- */
 
+/* ---------------- Guía rápida: "quiero hacer X" → herramientas ---------------- */
+
+function TaskFinder({ nav }: { nav: Nav }) {
+  const [q, setQ] = useState('')
+  const [cat, setCat] = useState<TaskEntry['category'] | 'todas'>('todas')
+  const [openId, setOpenId] = useState<string | null>(null)
+
+  const tasks = useMemo(() => {
+    let list = searchTasks(q)
+    if (cat !== 'todas') list = list.filter((t) => t.category === cat)
+    return list
+  }, [q, cat])
+
+  const goToTool = (id: string) => { window.location.hash = '/' + id }
+
+  return (
+    <div className="mt-10">
+      <div className="mb-4 flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-acento/30 bg-acento/10 text-acento"><Compass size={18} /></div>
+        <div>
+          <h2 className="text-lg font-bold text-white">¿Qué quieres hacer hoy?</h2>
+          <p className="text-xs text-grey">Dime la tarea y te llevo directo a las herramientas adecuadas</p>
+        </div>
+      </div>
+
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <input
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="buscar tarea… (firewall, vpn, ssh, wordlist, informe)"
+          className="min-w-[220px] flex-1 rounded-lg border border-edge bg-black/40 px-3 py-2 font-mono text-xs text-ink outline-none placeholder:text-grey/50 focus:border-acento/50"
+        />
+      </div>
+      <div className="mb-4 flex flex-wrap gap-1.5">
+        {(['todas', ...TASK_CATS] as const).map((c) => (
+          <button
+            key={c}
+            onClick={() => setCat(c as TaskEntry['category'] | 'todas')}
+            className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${cat === c ? 'border-acento/60 bg-acento/15 text-acento' : 'border-edge text-grey hover:border-acento/40 hover:text-ink'}`}
+          >
+            {c === 'todas' ? 'todas' : TASK_CAT_LABEL[c as TaskEntry['category']]}
+          </button>
+        ))}
+      </div>
+
+      <div className="grid gap-2 md:grid-cols-2">
+        {tasks.map((t) => {
+          const open = openId === t.id
+          return (
+            <div key={t.id} className={cn('card rounded-lg p-4 transition-all', open && 'md:col-span-2')}>
+              <button onClick={() => setOpenId(open ? null : t.id)} className="w-full text-left">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{t.icon}</span>
+                  <span className="text-sm font-semibold text-white">{t.task}</span>
+                  <span className="ml-auto rounded-full border border-edge px-2 py-0.5 font-mono text-[9px] text-grey">{TASK_CAT_LABEL[t.category]}</span>
+                </div>
+                <p className="mt-1 text-xs text-grey">{t.desc}</p>
+              </button>
+              {open && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="overflow-hidden">
+                  <div className="mt-3 grid gap-4 border-t border-edge pt-3 md:grid-cols-2">
+                    <div>
+                      <h4 className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-acento">por dónde empezar</h4>
+                      <ol className="space-y-1 text-xs text-grey">
+                        {t.steps.map((s, i) => <li key={s}><span className="text-acento">{i + 1}.</span> {s}</li>)}
+                      </ol>
+                    </div>
+                    <div>
+                      <h4 className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-acento">herramientas para esto</h4>
+                      <div className="flex flex-wrap gap-1.5">
+                        {t.tools.map((tid) => (
+                          <button
+                            key={tid}
+                            onClick={() => goToTool(tid)}
+                            className="rounded border border-acento/40 bg-acento/5 px-2 py-1 font-mono text-[11px] text-acento transition-all hover:bg-acento/15"
+                          >
+                            {tid} →
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          )
+        })}
+        {tasks.length === 0 && (
+          <div className="rounded border border-edge py-6 text-center font-mono text-xs text-grey md:col-span-2">sin tareas para "{q}" — prueba con firewall, vpn, osint…</div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export default function OsCompare({ nav }: { nav: Nav }) {
   const [filter, setFilter] = useState<'todas' | Family>('todas')
   const [openId, setOpenId] = useState<string | null>(null)
@@ -604,6 +700,9 @@ export default function OsCompare({ nav }: { nav: Nav }) {
           ))}
         </div>
       </div>
+
+      {/* guía rápida de tareas */}
+      <TaskFinder nav={nav} />
 
       {/* disclaimer */}
       <div className="mt-10 flex items-start gap-3 rounded-lg border border-warn/30 bg-warn/5 px-4 py-3 text-xs text-warn/90">

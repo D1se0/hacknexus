@@ -8,6 +8,7 @@ import {
   FileLock2, UserCog, Cog, FolderLock, Search, Plug, FileWarning,
   HardDrive, Gauge, KeySquare, BrickWall, Waypoints, Clock, Shield, FileTerminal,
   UserSearch, ListPlus, ClipboardList, MonitorCog, FileCog, FileText,
+  Terminal, Sparkles, FileDiff,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -45,6 +46,33 @@ export interface ToolDef {
   ported?: boolean // portada de uno de los repos originales
   origin?: string
 }
+
+/* Subsecciones: agrupan tools dentro de una categoría en el menú lateral
+   (desplegable). Las tools con subsection se muestran dentro de su grupo. */
+export interface SubsectionDef {
+  id: string
+  category: ToolCategory
+  label: string
+  toolIds: string[]
+}
+
+export const SUBSECTIONS: SubsectionDef[] = [
+  {
+    id: 'linux-generadores',
+    category: 'Linux & sistema',
+    label: 'Generadores de comandos',
+    toolIds: ['diskcmds', 'admincmds', 'fstabgen', 'sysctlgen', 'sshharden', 'nftgen', 'wgquick', 'sudoersgen', 'systemdgen', 'umaskgen'],
+  },
+  {
+    id: 'win-config',
+    category: 'Linux & sistema',
+    label: 'Configuración Windows',
+    toolIds: ['winfirewall', 'schtasks', 'winharden', 'pslab', 'regtweaks', 'ntfsperm'],
+  },
+]
+
+export const subsectionOf = (toolId: string): SubsectionDef | undefined =>
+  SUBSECTIONS.find((s) => s.toolIds.includes(toolId))
 
 export const TOOLS: ToolDef[] = [
   // ─── Criptografía ───────────────────────────────────────────────
@@ -119,6 +147,8 @@ export const TOOLS: ToolDef[] = [
   { id: 'winharden', name: 'Windows Hardening', desc: 'Auditoría de endurecimiento con justificación, comando de aplicación, verificación y reversión al estilo CIS', short: 'Harden', category: 'Linux & sistema', icon: Shield },
   { id: 'pslab', name: 'PowerShell Lab', desc: 'Recetario de one-liners de administración, red, disco, registro y blue team con la trampa de cada uno explicada', short: 'PS Lab', category: 'Linux & sistema', icon: FileTerminal },
   { id: 'regtweaks', name: 'Windows Registry Tweaks', desc: 'Tweaks de telemetría, privacidad y hardening con ruta exacta, valor, reversión y export a .reg listo para fusionar', short: 'Regedit', category: 'Linux & sistema', icon: MonitorCog },
+  { id: 'diskcmds', name: 'Disk & LVM Commander', desc: 'Formador de comandos de discos paso a paso: LVM (volúmenes físicos y lógicos), RAID mdadm, LUKS, dd y swap con porqués y avisos de peligro', short: 'Discos/LVM', category: 'Linux & sistema', icon: HardDrive },
+  { id: 'admincmds', name: 'Linux Admin Commander', desc: 'Formador de comandos de administración: 56 comandos por dominio (usuarios, paquetes, servicios, logs, red, cron, procesos, kernel) con trampas', short: 'Admin Linux', category: 'Linux & sistema', icon: Terminal },
 
   // ─── Análisis ───────────────────────────────────────────────────
   { id: 'cvelookup', name: 'CVE Lookup', short: 'CVE', desc: 'Consulta CVEs en la NVD con CVSS, descripción y referencias', category: 'Análisis', icon: ShieldAlert },
@@ -142,6 +172,10 @@ export const TOOLS: ToolDef[] = [
   { id: 'wordlistgen', name: 'Wordlist Builder', desc: 'Wordlists dirigidas desde datos del objetivo con las mutaciones que la gente realmente usa: más efectiva que rockyou', short: 'Wordlists', category: 'Generadores', icon: ListPlus },
   { id: 'pwpolicy', name: 'Password Policy Builder', desc: 'Políticas coherentes Linux/Windows según NIST 800-63B: longitud sobre complejidad, sin rotación suicida, con bloqueo', short: 'Policy', category: 'Contraseñas', icon: ClipboardList },
   { id: 'pentestreport', name: 'Pentest Report Builder', desc: 'Estructura hallazgos con severidad, evidencia, impacto y remediación y exporta un informe Markdown profesional', short: 'Report', category: 'Generadores', icon: FileText },
+  { id: 'cheatgen', name: 'Chuleta Generator', desc: 'Compón chuletas personalizadas de vim, tmux, find/grep, bash, red y git en TXT o Markdown listas para imprimir', short: 'Chuletas', category: 'Generadores', icon: ScrollText },
+  { id: 'aliases', name: 'Shell Alias Pack', desc: 'Pack de alias y funciones de calidad de vida y seguridad para bash/zsh con la explicación de qué hábito corrige cada uno', short: 'Alias', category: 'Generadores', icon: Sparkles },
+  { id: 'crontalk', name: 'Cron Translator', desc: 'Explica expresiones cron en cristiano, señala patrones sospechosos y las convierte a systemd OnCalendar', short: 'CronTalk', category: 'Generadores', icon: CalendarClock },
+  { id: 'confdiff', name: 'Config Diff', desc: 'Diff semántico de ficheros de configuración: ignora comentarios y orden, resalta directivas de seguridad que cambiaron', short: 'ConfDiff', category: 'Análisis', icon: FileDiff },
 ]
 
 export const CATEGORIES: ToolCategory[] = [

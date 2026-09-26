@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>74 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>80 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-74-2ee88a?style=flat-square" alt="74 tools" />
+  <img src="https://img.shields.io/badge/tools-80-2ee88a?style=flat-square" alt="80 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 74 herramientas
+## 🧰 Las 80 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -127,6 +127,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Windows Hardening** | ~25 controles estilo CIS con justificación, aplicación, verificación y reversión (LSA, LLMNR, SMB…) | 🟢 local |
 | **PowerShell Lab** | One-liners de administración, red, disco y blue team con la trampa de cada uno explicada | 🟢 local |
 | **Windows Registry Tweaks** | Tweaks de telemetría/privacidad/hardening con reversión y export a .reg listo para fusionar | 🟢 local |
+| **Disk & LVM Commander** | Formador de comandos de discos paso a paso: LVM (PV/VG/LV), RAID mdadm, LUKS2, dd con avisos y patrón forense, montaje y swap | 🟢 local |
+| **Linux Admin Commander** | 56 comandos de administración en 8 dominios con el porqué, trampas clásicas y los de auditoría marcados | 🟢 local |
 
 ### Análisis
 | Tool | Descripción | Red |
@@ -144,6 +146,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Log Anonymizer** | Pseudonimización consistente y reversible de IPs/usuarios/dominios para compartir logs sin exponer nada | 🟢 local |
 | **Username OSINT** | URLs de perfil en ~20 plataformas, patrón del alias, variantes y dorks de Google/GitHub — todo pasivo | 🟢 local |
 | **Sysmon Config Builder** | XML de Sysmon por perfiles con guía ofensiva/defensiva de cada evento: el punto de partida de todo SOC | 🟢 local |
+| **Config Diff** | Diff semántico de configs: ignora comentarios/orden, resalta directivas de seguridad que cambiaron | 🟢 local |
 
 ### Generadores
 | Tool | Descripción | Red |
@@ -153,6 +156,9 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Dork Arsenal** | ~35 dorks de Google, Bing, GitHub, Shodan y Censys con sustitución de objetivo y apertura directa | 🟢 local |
 | **Wordlist Builder** | Wordlists dirigidas desde datos del objetivo con las mutaciones que la gente realmente usa | 🟢 local |
 | **Pentest Report Builder** | Hallazgos con severidad/evidencia/remediación y export Markdown profesional listo para pandoc | 🟢 local |
+| **Chuleta Generator** | Compón chuletas de vim/tmux/find/grep/bash/red/git en TXT o Markdown listas para imprimir | 🟢 local |
+| **Shell Alias Pack** | 42 alias y funciones de calidad de vida y seguridad con el hábito que corrige cada uno | 🟢 local |
+| **Cron Translator** | Explica cron en cristiano, señala patrones sospechosos y convierte a systemd OnCalendar | 🟢 local |
 
 🔥 **port** = portada de uno de mis repos originales: [chmod-calculator](https://github.com/D1se0/chmod-calculator) · [revShellsGenerator](https://github.com/D1se0/revShellsGenerator-page) · [PHPDetector](https://github.com/D1se0/PHPDetector-page) · [hackingChef](https://github.com/D1se0/hackingChef-page) · [calculadora_vlsm](https://github.com/D1se0/calculadora_vlsm) · [calculadora_subnetting](https://github.com/D1se0/calculadora_subnetting) · [sql-generator](https://github.com/D1se0/sql-generator)
 

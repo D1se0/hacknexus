@@ -878,4 +878,84 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['Un informe profesional es la parte más importante de un pentest: sin documentación, no ocurrió', 'La estructura severidad→impacto→remediación es la que esperan clientes y aseguradoras', 'Los datos se quedan en tu navegador: nada del encargo sale de tu máquina'],
     tips: ['El resumen ejecutivo se redacta para quien decide, no para quien arregla: cero jerga, máximo impacto de negocio', 'Cada hallazgo con evidencia concreta (request/response) es 10 veces más defendible', 'Convierte a PDF: pandoc informe.md -o informe.pdf --pdf-engine=xelatex'],
   },
+
+  /* ── Ronda 7: formadores de comandos, chuletas y utilidades ── */
+  diskcmds: {
+    what: 'Formador de comandos de almacenamiento con 6 modos: LVM completo (wipefs → pvcreate → vgcreate → lvcreate → mkfs → mount → fstab), RAID mdadm por niveles con verificación de mínimo de discos, cifrado LUKS2 con crypttab y clave de respaldo, dd con avisos de seguridad y patrón forense con hash, montaje manual con UUID y swap con swappiness. Cada paso numerado con su por qué y los peligros marcados en rojo.',
+    params: [
+      { name: 'modo', type: 'chips', required: true, desc: 'lvm, raid, luks, dd, mount, swap' },
+      { name: 'discos', type: 'lista', desc: '/dev/... separados por coma o línea; el validador avisa si faltan discos para el RAID elegido' },
+      { name: 'nombres', type: 'texto', desc: 'VG, LV, punto de montaje, sistema de ficheros y tamaño del LV' },
+      { name: 'salida', type: 'script', desc: 'script completo + vista paso a paso con explicación' },
+    ],
+    daily: ['Añadir un disco de datos a un servidor con LVM y crecerlo sin desmontar', 'Montar la NAS por NFS/CIFS con las opciones correctas', 'Crear un USB booteable o clonar un disco con dd sin sustos'],
+    ethical: ['dd con hash integrado es el patrón de adquisición forense: imagen bit a bit verificable para cadena de custodia', 'wipefs/mkfs/dd son herramientas de DESTRUCCIÓN: la tool los marca para que el peligro sea imposible de ignorar', 'LUKS bien hecho (con clave de respaldo guardada) protege datos ante robo sin dejar a nadie fuera'],
+    tips: ['lsblk DOS VECES antes de cualquier comando destructivo: sda vs sdb es la errata que borra carreras', 'RAID no es backup: un rm -rf se replica al instante en todos los discos del array', 'El paso "ampliación futura" del modo LVM es el que más pagarás por conocer: vgextend + lvextend -r crece en caliente', 'En emergencias, la sección inferior tiene el procedimiento de las 5 catástrofes clásicas'],
+  },
+  admincmds: {
+    what: 'Recetario de 56 comandos de administración Linux organizados en 8 dominios (usuarios, paquetes, servicios, logs, red, cron, procesos, kernel), cada uno con explicación de qué hace, la trampa que lo rompe (usermod sin -a, df lleno por inodes, crons con PATH mínimo) y los de auditoría marcados en rojo. Buscador global que cruza todos los grupos.',
+    params: [
+      { name: 'grupo', type: 'chips', desc: '8 dominios temáticos con icono' },
+      { name: 'búsqueda', type: 'string', desc: 'filtra en TODOS los grupos a la vez (inode, bpf, journalctl, suid…)' },
+    ],
+    daily: ['Diagnóstico rápido: ss -tulpn, df -h + df -i, journalctl -S -1h -p warning', 'Limpieza: huérfanos de pacman, kernels viejos de apt, journals gigantes', 'Auditoría doméstica: SUID inventory, crontabs de todos los usuarios, sudoers.d'],
+    ethical: ['find / -perm -4000 es el primer comando de todo privesc: esta tool te enseña a leerlo desde el lado defensivo', 'Los comandos marcados "auditoría" son exactamente los que un atacante corre primero: conocerlos es anticiparlo', 'kernel.unprivileged_bpf_disabled=1 corta eBPF rootkits: hardening de kernel entendido, no copiado'],
+    tips: ['set -euo pipefail es la diferencia entre script y bomba de relojería: está en el grupo bash con su explicación', 'systemd-analyze security <servicio> te da un 0-10 de exposición con las directivas que faltan', 'kill -STOP congela un proceso sospechoso sin matarlo: oro en respuesta a incidentes'],
+  },
+  cheatgen: {
+    what: 'Generador de chuletas personalizadas: 6 temas curados (vim, tmux, find/grep/xargs, bash scripting, red en consola, git) con secciones y comandos explicados. Se eligen temas, formato (Markdown con tablas o TXT plano), cabecera, índice y alineación para imprimir; genera la hoja completa lista para descargar y pegar junto al monitor.',
+    params: [
+      { name: 'temas', type: 'multi', required: true, desc: 'los 6 temas con contador de comandos' },
+      { name: 'formato', type: 'select', desc: 'Markdown (tablas para pandoc/VSCode) o TXT con dos columnas' },
+      { name: 'opciones', type: 'toggles', desc: 'cabecera con fecha, índice de temas, alineación para impresión' },
+      { name: 'descargar', type: 'fichero', desc: '.md o .txt directo' },
+    ],
+    daily: ['Chuleta de vim para el compañero que juró "nunca usar vim" y ahora vive en servidores', 'Hoja de git para el equipo nuevo con SOLO lo que necesitan (deshacer > ramas exóticas)', 'Imprimir en A5 y plastificar la de red: sobrevive derrames de café'],
+    ethical: ['Todo el contenido es conocimiento operatorio estándar: nada de exploits ni payloads, pura eficiencia de terminal', 'Perfecto para formación: da a los alumnos una chuleta en vez de 40 pestañas de Stack Overflow'],
+    tips: ['La mejor chuleta es la que TÚ compones: el proceso de elegir ya enseña', 'En formato TXT, la alineación a dos columnas usa padding: pruébala en una fuente monoespaciada', 'Combínalo con Alias Pack: primero los alias que corrigen hábitos, luego la chuleta para lo demás'],
+  },
+  aliases: {
+    what: 'Generador de pack de alias de shell: 42 alias y funciones curadas en 6 categorías (calidad de vida, seguridad, red, git, sistema, dev) con la explicación de qué hábito corrige cada uno. Se eligen shell destino (bash/zsh) y categorías, y genera el bloque con comentarios listo para pegar en ~/.bashrc o ~/.zshrc.',
+    params: [
+      { name: 'shell', type: 'select', required: true, desc: 'bash o zsh (mismo formato, notas distintas)' },
+      { name: 'categorías', type: 'multi', desc: '6 grupos; seguridad y calidad de vida preseleccionadas' },
+      { name: 'salida', type: 'texto', desc: 'bloque con cabecera y un comentario de explicación por alias' },
+    ],
+    daily: ['Configurar un portátil nuevo en 2 minutos: copiar, pegar, source', 'Homogeneizar el entorno del equipo: mismos alias = mismos hábitos = menos "en mi máquina funciona"', 'Añadir rm -I y cp -i a quien SIEMPRE borra de más'],
+    ethical: ['Los alias de seguridad (rm -I, chmod --preserve-root) son defensa en profundidad en la capa de hábitos', 'myip y ports son los comandos de auto-reconocimiento más honestos: saber qué expones empieza por mirarlo'],
+    tips: ['En scripts los alias NO aplican: son solo para tu sesión interactiva (por eso los scripts no se rompen al cambiarte de .bashrc)', '\\grep llama al binario original si algún alias te estorba', 'El alias fast descompone la latencia en dns/conn/tls/total: el diagnóstico de "internet va lento" en 1 palabra'],
+  },
+  crontalk: {
+    what: 'Traductor de expresiones cron al cristiano: explica cada campo en español natural ("a las 8:30, de lunes a viernes"), señala trampas reales (dom+dow interpretado como OR, cada minuto como patrón de malware, horarios de verano, PATH mínimo) y muestra el equivalente systemd OnCalendar copiable. Incluye 8 presets comentados y FAQ de debugging.',
+    params: [
+      { name: 'expresión', type: 'string', required: true, desc: '5 campos estándar; valida y explica cada uno' },
+      { name: 'presets', type: 'chips', desc: '8 expresiones comunes con cuándo usar cada una' },
+      { name: 'OnCalendar', type: 'texto', desc: 'equivalente systemd timer copiable con un click' },
+    ],
+    daily: ['Entender el cron heredado que nadie documenta', 'Convertir crons legacy a systemd timers (con logging en journal y RandomizedDelaySec)', 'Debug del "mi cron no corre": la FAQ tiene el orden de revisión'],
+    ethical: ['Un */5 * * * * con curl a internet en tu crontab es EL patrón de criptominero: esta tool lo señala para que lo reconozcas', 'Auditar /var/spool/cron y /etc/cron.* de todos los usuarios es revisión estándar post-incidente'],
+    tips: ['El % en crontab es especial (salto de línea): escápalo con \\% o tu comando muere en silencio', 'cron no repara jobs perdidos si la máquina estaba apagada: para eso existe anacron o Persistent=true en timers', 'Prueba con */2 * * * * antes del horario definitivo: verlo correr quita más dudas que cualquier explicación'],
+  },
+  confdiff: {
+    what: 'Diff semántico de ficheros de configuración: parsea ambos lados (sshd_config, nginx, sysctl, cualquier .conf), junta líneas de continuación con \\, ignora comentarios/espacios/orden, y compara por DIRECTIVA: misma clave con otro valor = changed, clave nueva = added, clave ausente = removed. Resalta las directivas de seguridad conocidas (PermitRootLogin, server_tokens, ssl_protocols…) y cuenta todo con badges.',
+    params: [
+      { name: 'config A', type: 'textarea', required: true, desc: 'antes / fábrica / backup' },
+      { name: 'config B', type: 'textarea', required: true, desc: 'ahora / servidor en producción' },
+      { name: 'salida', type: 'tabla', desc: 'diferencias clasificadas + contador de directivas de seguridad afectadas' },
+    ],
+    daily: ['Revisar qué cambió un apt upgrade en tus units y configs', 'Comparar la config entre dos nodos que "deberían ser iguales"', 'Verificar que el hardening aplicado coincide con el esperado'],
+    ethical: ['Auditoría post-incidente: config de fábrica vs actual = exactamente lo que un atacante pudo tocar (AuthorizedKeysFile, PasswordAuthentication…)', 'El diff semántico evita el ruido del diff de texto: solo cambios REALES aparecen'],
+    tips: ['Si el resultado dice "semánticamente idénticas", el orden y los comentarios no cuentan: y eso es correcto', 'Las directivas de seguridad resaltadas salen de una lista cruzada de sshd/nginx/apache: añade las tuyas si tu servicio es otro', 'Combínalo con SSH Hardening: genera la config endurecida, aplica en una máquina, y verifica aquí qué falta'],
+  },
+  taskguide: {
+    what: 'Selector de herramientas por tarea: "quiero configurar un firewall" o "montar una VPN" devuelve las herramientas exactas de la suite con pasos por dónde empezar. Integrado bajo la comparativa de OS, con buscador y 7 categorías (red, linux, windows, auditoría, contraseñas, análisis, crear/documentar). NOTA: no es una tool del menú, sino una sección de la página Comparativa de OS.',
+    params: [
+      { name: 'búsqueda', type: 'string', desc: 'por tarea o palabra clave (firewall, vpn, ssh, wordlist, informe…)' },
+      { name: 'categoría', type: 'chips', desc: 'filtra el catálogo de ~18 tareas' },
+      { name: 'expandir', type: 'click', desc: 'cada tarea despliega pasos + botones directos a las tools' },
+    ],
+    daily: ['Onboarding: el nuevo sabe QUÉ quiere hacer pero no qué herramienta usa', 'Recuperar la tool "esa que había para lo del firewall" sin recordar el nombre', 'Planificar una auditoría: la tarea "documentar hallazgos" enlaza report + CVSS + CVE'],
+    ethical: ['Cada tarea enlaza solo a herramientas legítimas del suite: el flujo entero asume auditorías autorizadas', 'Los pasos son de mínimo privilegio: firewall antes que exposición, permisos antes que comodidad'],
+    tips: ['Si no encuentras la tarea, busca por SINÓNIMO: "túnel" y "vpn" llegan a lo mismo', 'Los botones de tool navegan directo a la herramienta: sin menús intermedios', 'Combínalo con ⌘K: el task finder es para FLUJOS, el comando palette para herramientas concretas'],
+  },
 }

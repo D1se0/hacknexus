@@ -309,46 +309,56 @@ export function Typewriter({ phrases, speed = 55 }: { phrases: string[]; speed?:
 
 /* ---------------- Live terminal (home hero) ---------------- */
 
+const TERMINAL_LINES: { text: string; kind: 'cmd' | 'out' | 'ok' | 'warn' }[] = [
+  { text: './hacknexus --mode stealth --target lab.local', kind: 'cmd' },
+  { text: `[+] cargando ${TOOLS.length} herramientas locales…`, kind: 'ok' },
+  { text: '[✓] hash suite · cracker · jwt · totp online', kind: 'ok' },
+  { text: 'hacknexus> crack md5 --wordlist rockyou.txt', kind: 'cmd' },
+  { text: '[*] 14.3M contraseñas · 2.1M h/s · GPU-less mode', kind: 'out' },
+  { text: '[✓] cracker: e10adc394… → "123456" (0.01s)', kind: 'ok' },
+  { text: 'hacknexus> pcap analyze traffic.pcap', kind: 'cmd' },
+  { text: '[!] 3 paquetes sospechosos: 4444/TCP C2', kind: 'warn' },
+  { text: '[✓] informe listo · 0 bytes enviados a servidores', kind: 'ok' },
+]
+
 export function LiveTerminal() {
-  const LINES: { text: string; kind: 'cmd' | 'out' | 'ok' | 'warn' }[] = [
-    { text: './hacknexus --mode stealth --target lab.local', kind: 'cmd' },
-    { text: `[+] cargando ${TOOLS.length} herramientas locales…`, kind: 'ok' },
-    { text: '[✓] hash suite · cracker · jwt · totp online', kind: 'ok' },
-    { text: 'hacknexus> crack md5 --wordlist rockyou.txt', kind: 'cmd' },
-    { text: '[*] 14.3M contraseñas · 2.1M h/s · GPU-less mode', kind: 'out' },
-    { text: '[✓] cracker: e10adc394… → "123456" (0.01s)', kind: 'ok' },
-    { text: 'hacknexus> pcap analyze traffic.pcap', kind: 'cmd' },
-    { text: '[!] 3 paquetes sospechosos: 4444/TCP C2', kind: 'warn' },
-    { text: '[✓] informe listo · 0 bytes enviados a servidores', kind: 'ok' },
-  ]
-  const [shown, setShown] = useState<string[]>([])
-  const [lineIdx, setLineIdx] = useState(0)
+  const [done, setDone] = useState(0) // líneas completadas (global)
+  const [chars, setChars] = useState(0) // caracteres escritos de la línea en curso
+
+  // Derivado 100% del estado acotado: la terminal NUNCA puede crecer más allá de TERMINAL_LINES
+  const LINES = TERMINAL_LINES
+  const cycle = done % LINES.length
+  const line = LINES[cycle]
+
+  const cycleEnd = done > 0 && done % LINES.length === 0 && chars === 0
+
   useEffect(() => {
-    const line = LINES[lineIdx % LINES.length]
-    let i = 0
-    const interval = setInterval(() => {
-      i += 2
-      setShown((s) => {
-        const next = [...s.slice(0, lineIdx)]
-        next[lineIdx] = line.text.slice(0, i)
-        return next
-      })
-      if (i >= line.text.length) {
-        clearInterval(interval)
-        setTimeout(() => setLineIdx((x) => x + 1), line.kind === 'cmd' ? 700 : 320)
-      }
-    }, 16)
-    return () => clearInterval(interval)
-  }, [lineIdx])
-  useEffect(() => {
-    if (lineIdx >= LINES.length) {
-      const t = setTimeout(() => {
-        setShown([])
-        setLineIdx(0)
-      }, 4200)
+    if (cycleEnd) return // pausa final: sin tecleo
+    if (chars < line.text.length) {
+      const t = setTimeout(() => setChars((c) => Math.min(c + 2, line.text.length)), 16)
       return () => clearTimeout(t)
     }
-  }, [lineIdx])
+    // línea completa → pausa y avanza
+    const t = setTimeout(() => {
+      setDone((d) => d + 1)
+      setChars(0)
+    }, line.kind === 'cmd' ? 700 : 320)
+    return () => clearTimeout(t)
+  }, [chars, line, cycleEnd])
+
+  // ciclo completo → pausa final y reinicio (condición booleana: no se re-arma sola)
+  useEffect(() => {
+    if (!cycleEnd) return
+    const t = setTimeout(() => {
+      setDone(0)
+      setChars(0)
+    }, 4200)
+    return () => clearTimeout(t)
+  }, [cycleEnd])
+
+  // líneas ya escritas: ventana deslizante de las últimas LINES.length, mapeadas por módulo
+  const start = Math.max(0, done - (LINES.length - 1))
+  const completed = Array.from({ length: Math.min(done, LINES.length - 1) }, (_, k) => LINES[(start + k) % LINES.length])
   return (
     <div className="relative overflow-hidden rounded-2xl border border-edge bg-black/80 shadow-glass">
       <div className="flex items-center justify-between border-b border-edge px-4 py-2.5">
@@ -364,24 +374,30 @@ export function LiveTerminal() {
       </div>
       <div className="scanline-band" />
       <div className="min-h-[300px] p-5 font-mono text-[12.5px] leading-[1.75]">
-        {shown.map((l, i) => {
-          const kind = LINES[i]?.kind ?? 'out'
+        {completed.map((l, i) => {
           return (
-            <div key={i} className="flex gap-2">
-              {kind === 'cmd' ? (
+            <div key={`${start + i}`} className="flex gap-2">
+              {l.kind === 'cmd' ? (
                 <span className="shrink-0 text-acento">➜ ~</span>
               ) : (
                 <span className="shrink-0 text-grey">{'│'}</span>
               )}
-              <span className={cn('break-all', kind === 'cmd' && 'text-white', kind === 'out' && 'text-grey', kind === 'ok' && 'text-ok', kind === 'warn' && 'text-warn')}>
-                {l}
+              <span className={cn('break-all', l.kind === 'cmd' && 'text-white', l.kind === 'out' && 'text-grey', l.kind === 'ok' && 'text-ok', l.kind === 'warn' && 'text-warn')}>
+                {l.text}
               </span>
             </div>
           )
         })}
         <div className="flex gap-2 text-white">
-          <span className="text-acento">➜ ~</span>
-          <span className="animate-blink text-acento">▊</span>
+          {line.kind === 'cmd' ? (
+            <span className="shrink-0 text-acento">➜ ~</span>
+          ) : (
+            <span className="shrink-0 text-grey">{'│'}</span>
+          )}
+          <span className={cn('break-all', line.kind === 'cmd' && 'text-white', line.kind === 'out' && 'text-grey', line.kind === 'ok' && 'text-ok', line.kind === 'warn' && 'text-warn')}>
+            {line.text.slice(0, chars)}
+            <span className="animate-blink text-acento">▊</span>
+          </span>
         </div>
       </div>
       <div className="grid grid-cols-4 gap-2 border-t border-edge px-5 py-3 font-mono text-[10px] text-grey">

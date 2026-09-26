@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, BookOpen, Laptop, Star } from 'lucide-react'
-import { TOOLS, CATEGORIES, CATEGORY_COLORS, type ToolDef } from '../lib/registry'
+import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, ChevronDown, BookOpen, Laptop, Star, FolderTree } from 'lucide-react'
+import { TOOLS, CATEGORIES, CATEGORY_COLORS, SUBSECTIONS, subsectionOf, type ToolDef } from '../lib/registry'
 import { cn } from '../lib/util'
 import { Typewriter } from './ui'
 
@@ -147,6 +147,35 @@ function AnimatedBackground() {
 /* ---------------- Sidebar ---------------- */
 
 function Sidebar({ route, nav, mobileOpen, setMobileOpen }: { route: string; nav: Nav; mobileOpen: boolean; setMobileOpen: (v: boolean) => void }) {
+  const [openSubs, setOpenSubs] = useState<Set<string>>(() => new Set())
+  // abre la subsección que contiene la ruta activa
+  useEffect(() => {
+    const sub = SUBSECTIONS.find((s) => s.toolIds.includes(route))
+    if (sub) setOpenSubs((prev) => new Set(prev).add(sub.id))
+  }, [route])
+
+  const toggleSub = (id: string) => setOpenSubs((prev) => {
+    const next = new Set(prev)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    return next
+  })
+
+  const renderToolButton = (t: ToolDef) => (
+    <button
+      key={t.id}
+      onClick={() => { nav(t.id); setMobileOpen(false) }}
+      className={cn(
+        'group flex w-full items-center gap-2.5 rounded-lg px-3 py-1.5 text-left text-[13px] transition-all',
+        route === t.id ? 'bg-acento/10 text-acento' : 'text-grey hover:bg-panel hover:text-ink',
+      )}
+    >
+      <t.icon size={14} className={cn('shrink-0', route === t.id ? 'text-acento' : 'text-grey group-hover:text-ink')} />
+      <span className="truncate">{t.short}</span>
+      {t.ported && <span className="ml-auto shrink-0 font-mono text-[8px] uppercase tracking-wider text-grey/50">port</span>}
+    </button>
+  )
+
   const content = (
     <div className="flex h-full flex-col overflow-y-auto">
       <button onClick={() => { nav('home'); setMobileOpen(false) }} className="flex items-center gap-2.5 border-b border-edge px-5 py-4 text-left">
@@ -189,29 +218,60 @@ function Sidebar({ route, nav, mobileOpen, setMobileOpen }: { route: string; nav
           ))}
         </div>
 
-        {CATEGORIES.map((cat) => (
-          <div key={cat} className="mb-4">
-            <div className={cn('mb-1.5 px-3 font-mono text-[10px] uppercase tracking-[0.25em]', CATEGORY_COLORS[cat])}>
-              {'// '}{cat}
+        {CATEGORIES.map((cat) => {
+          const catTools = TOOLS.filter((t) => t.category === cat)
+          const catSubs = SUBSECTIONS.filter((s) => s.category === cat)
+          const subIds = new Set(catSubs.flatMap((s) => s.toolIds))
+          const looseTools = catTools.filter((t) => !subIds.has(t.id))
+          return (
+            <div key={cat} className="mb-4">
+              <div className={cn('mb-1.5 px-3 font-mono text-[10px] uppercase tracking-[0.25em]', CATEGORY_COLORS[cat])}>
+                {'// '}{cat}
+              </div>
+              {looseTools.map(renderToolButton)}
+              {catSubs.map((sub) => {
+                const open = openSubs.has(sub.id)
+                const anyActive = sub.toolIds.includes(route)
+                return (
+                  <div key={sub.id} className="mt-1">
+                    <button
+                      onClick={() => toggleSub(sub.id)}
+                      className={cn(
+                        'flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-[12.5px] transition-all',
+                        anyActive ? 'text-acento' : 'text-grey hover:bg-panel hover:text-ink',
+                      )}
+                    >
+                      <FolderTree size={13} className="shrink-0" />
+                      <span className="truncate font-medium">{sub.label}</span>
+                      <span className="ml-auto flex shrink-0 items-center gap-1">
+                        <span className="rounded border border-edge px-1 font-mono text-[9px] text-grey/70">{sub.toolIds.length}</span>
+                        {open ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+                      </span>
+                    </button>
+                    <AnimatePresence initial={false}>
+                      {open && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.18 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="ml-3 border-l border-edge pl-2">
+                            {sub.toolIds.map((tid) => {
+                              const t = TOOLS.find((x) => x.id === tid)
+                              return t ? renderToolButton(t) : null
+                            })}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                )
+              })}
             </div>
-            {TOOLS.filter((t) => t.category === cat).map((t) => (
-              <button
-                key={t.id}
-                onClick={() => { nav(t.id); setMobileOpen(false) }}
-                className={cn(
-                  'group flex w-full items-center gap-2.5 rounded-lg px-3 py-1.5 text-left text-[13px] transition-all',
-                  route === t.id
-                    ? 'bg-acento/10 text-acento'
-                    : 'text-grey hover:bg-panel hover:text-ink',
-                )}
-              >
-                <t.icon size={14} className={cn('shrink-0', route === t.id ? 'text-acento' : 'text-grey group-hover:text-ink')} />
-                <span className="truncate">{t.short}</span>
-                {t.ported && <span className="ml-auto shrink-0 font-mono text-[8px] uppercase tracking-wider text-grey/50">port</span>}
-              </button>
-            ))}
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       <div className="border-t border-edge px-5 py-3.5">
