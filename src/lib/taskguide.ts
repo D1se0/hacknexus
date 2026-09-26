@@ -5,7 +5,7 @@ export interface TaskEntry {
   id: string
   task: string // "configurar un firewall"
   icon: string
-  category: 'red' | 'linux' | 'windows' | 'auditoría' | 'contraseñas' | 'análisis' | 'creación'
+  category: 'red' | 'linux' | 'windows' | 'auditoría' | 'contraseñas' | 'análisis' | 'creación' | 'web' | 'forense' | 'lenguajes' | 'privacidad'
   desc: string // por dónde empezar
   steps: string[]
   tools: string[] // tool ids del registry
@@ -50,9 +50,9 @@ export const TASKS: TaskEntry[] = [
   },
   {
     id: 'task-admin', task: 'administrar un sistema Linux', icon: '🐧', category: 'linux',
-    desc: '56 comandos por dominio con las trampas que rompen sistemas.',
-    steps: ['Usuarios: quién existe y con qué permisos', 'Servicios: qué corre y con qué exposición', 'Logs: journalctl con -S y -p para no ahogarte', 'Disco: df -h Y df -i (los inodes engañan)'],
-    tools: ['admincmds', 'systemdgen', 'crontalk'],
+    desc: 'systemd, cron y chuletas: la tríada del sysadmin.',
+    steps: ['Servicios: qué corre y con qué exposición (systemd gen)', 'Cron: revisa tareas periódicas y detecta malware', 'Logs: journalctl con -S y -p para no ahogarte', 'Disco: df -h Y df -i (los inodes engañan)'],
+    tools: ['systemdgen', 'crontalk', 'cheatsheets'],
     keywords: ['admin', 'sysadmin', 'usuarios', 'servicios', 'logs', 'systemd', 'cron'],
   },
   {
@@ -132,17 +132,91 @@ export const TASKS: TaskEntry[] = [
     tools: ['deobfuscate', 'hashid', 'classics', 'hackingchef'],
     keywords: ['decodificar', 'cifrado', 'base64', 'xor', 'hash', 'ofuscado'],
   },
+  {
+    id: 'task-dns-audit', task: 'auditar la seguridad DNS de un dominio', icon: '🌍', category: 'red',
+    desc: 'SPF/DMARC/DKIM/CAA: qué expone el dominio y si pueden suplantar su email.',
+    steps: ['Consulta TXT con la tool DNS y mira la barra de riesgo', 'Sin DMARC p=reject → suplantación trivial', 'Revisa CAA: quién puede emitir certificados', 'Enumera subdominios con dorks antes de tocar nada'],
+    tools: ['dns', 'dorkgen'],
+    keywords: ['dns', 'spf', 'dmarc', 'dkim', 'spoofing', 'email', 'dominio', 'caa'],
+  },
+  {
+    id: 'task-web-xss', task: 'probar XSS en una web autorizada', icon: '💥', category: 'web',
+    desc: 'contexto primero: el payload correcto depende de dónde se refleja.',
+    steps: ['Localiza el punto de inyección (URL, form, header)', 'Identifica el contexto: HTML body, atributo o JS', 'Payload del XSS Generator según contexto', 'JS Playground si necesitas probar el bypass'],
+    tools: ['xsgen', 'langjavascript', 'httpinspector'],
+    keywords: ['xss', 'payload', 'inyección', 'reflected', 'stored', 'dom'],
+  },
+  {
+    id: 'task-xxe', task: 'probar XXE o LFI a RCE', icon: '📁', category: 'web',
+    desc: 'parsers XML y php://filter: dos clásicos que siguen vivos.',
+    steps: ['Detecta XML en la app (SOAP, SAML, uploads)', 'Plantillas XXE del Arsenal (directo y OOB)', 'Si hay LFI en PHP: Filter Chain a RCE', 'TTY Upgrade cuando caiga la shell'],
+    tools: ['xmlgen', 'phpfilter', 'ttyupgrade'],
+    keywords: ['xxe', 'lfi', 'rfi', 'php filter chain', 'xml', 'oob'],
+  },
+  {
+    id: 'task-pivot', task: 'pivotar a una red interna', icon: '🔀', category: 'red',
+    desc: 'del foothold a la red profunda: túneles y SOCKS encadenados.',
+    steps: ['Dibuja el mapa: nodos, interfaces y SO', 'Elige protocolo por tramo (ssh/chisel/ligolo)', 'Copia los comandos con su ubicación exacta', 'Valida el túnel con el comando de verificación'],
+    tools: ['pivotmap', 'ttyupgrade', 'filexfer'],
+    keywords: ['pivoting', 'túnel', 'socks', 'chisel', 'ligolo', 'ssh -d', 'socat'],
+  },
+  {
+    id: 'task-bof', task: 'explotar un buffer overflow', icon: '🎯', category: 'auditoría',
+    desc: 'patrón cíclico → offset → badchars → payload con NOPs.',
+    steps: ['Genera el patrón cíclico y provoca el crash', 'Calcula el offset con el EIP invertido', 'Identifica badchars con la matriz', 'Payload final con NOP sled y retorno'],
+    tools: ['bofcalc', 'langc', 'langpython'],
+    keywords: ['bof', 'buffer overflow', 'offset', 'badchars', 'eip', 'exploit'],
+  },
+  {
+    id: 'task-passgen-audit', task: 'generar y testear contraseñas seguras', icon: '🔑', category: 'contraseñas',
+    desc: 'zxcvbn mide entropía real, no la teórica.',
+    steps: ['Genera candidatas con Passgen (diceware o aleatorias)', 'Mide la resistencia real con PassAudit', 'Compara con la wordlist que usaría un atacante', 'Fija la política con el builder'],
+    tools: ['passgen', 'passaudit', 'pwpolicy'],
+    keywords: ['contraseña', 'entropy', 'zxcvbn', 'diceware', 'password'],
+  },
+  {
+    id: 'task-learn-lang', task: 'aprender o repasar un lenguaje de programación', icon: '📚', category: 'lenguajes',
+    desc: '16 chuletas con playground: lee, ejecuta, rompe, entiende.',
+    steps: ['Elige el lenguaje (Python es la puerta de entrada)', 'Lee la chuleta: sintaxis esencial por secciones', 'Pica ▶ ejecutar en el playground y modifica el código', 'Rompe cosas a propósito y lee los errores'],
+    tools: ['langpython', 'langjavascript', 'langgo', 'langrust'],
+    keywords: ['lenguaje', 'python', 'javascript', 'java', 'c', 'programar', 'aprender', 'chuleta', 'playground'],
+  },
+  {
+    id: 'task-forense-meta', task: 'analizar metadatos de un fichero o imagen', icon: '🔍', category: 'forense',
+    desc: 'EXIF y file analyzer: geolocalización, software y firmas.',
+    steps: ['EXIF: GPS, cámara y software de la imagen', 'File Analyzer: magic bytes y entropía', 'Extrae IOCs de lo que aparezca (dominios, hashes)', 'Documenta con Pentest Report Builder'],
+    tools: ['exif', 'fileanalyzer', 'iocextract'],
+    keywords: ['metadatos', 'exif', 'imagen', 'gps', 'forense', 'magic bytes'],
+  },
+  {
+    id: 'task-anon', task: 'anonimizar datos antes de compartir', icon: '🙈', category: 'privacidad',
+    desc: 'pseudonimización consistente y reversible (solo para ti).',
+    steps: ['Log Anonymizer: IPs, usuarios y dominios → alias', 'Revisa el mapa de pseudónimos generado', 'Defang las IPs/URLs antes de pegar en foros', 'Si es un email: analiza cabeceras sin exponer remitentes'],
+    tools: ['loganonymize', 'defanger', 'mailheader'],
+    keywords: ['anonimizar', 'privacidad', 'defang', 'pseudónimo', 'logs', 'compartir'],
+  },
+  {
+    id: 'task-crack-hash', task: 'identificar y crackear un hash', icon: '🧩', category: 'análisis',
+    desc: 'primero sabe qué es, luego elige la tool.',
+    steps: ['HashID: identifica el formato (¿bcrypt? ¿MD5? ¿NTLM?)', 'Si es bcrypt: fuerza bruta pura no va a llegar', 'Wordlist dirigida + reglas con hashcat/john', 'Cracker online para formatos rápidos (MD5/SHA1)'],
+    tools: ['hashid', 'wordlistgen', 'cracker'],
+    keywords: ['hash', 'crack', 'hashcat', 'john', 'md5', 'bcrypt', 'ntlm'],
+  },
 ]
 
-export const TASK_CATS: TaskEntry['category'][] = ['red', 'linux', 'windows', 'auditoría', 'contraseñas', 'análisis', 'creación']
+export const TASK_CATS: TaskEntry['category'][] = ['red', 'web', 'linux', 'windows', 'auditoría', 'contraseñas', 'análisis', 'forense', 'lenguajes', 'privacidad', 'creación']
 
 export const TASK_CAT_LABEL: Record<TaskEntry['category'], string> = {
   red: 'Red',
+  web: 'Web',
   linux: 'Linux',
   windows: 'Windows',
   auditoría: 'Auditoría',
   contraseñas: 'Contraseñas',
   análisis: 'Análisis',
+  forense: 'Forense',
+  lenguajes: 'Lenguajes',
+  privacidad: 'Privacidad',
   creación: 'Crear/Documentar',
 }
 

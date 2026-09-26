@@ -23,6 +23,7 @@ export type ToolCategory =
   | 'Linux & sistema'
   | 'Análisis'
   | 'Generadores'
+  | 'Lenguajes'
 
 export const CATEGORY_COLORS: Record<ToolCategory, string> = {
   Criptografía: 'text-acento',
@@ -35,6 +36,7 @@ export const CATEGORY_COLORS: Record<ToolCategory, string> = {
   'Linux & sistema': 'text-bad',
   Análisis: 'text-ok',
   Generadores: 'text-[#f472b6]',
+  Lenguajes: 'text-[#fbbf24]',
 }
 
 export interface ToolDef {
@@ -74,7 +76,7 @@ export const SUBSECTIONS: SubsectionDef[] = [
     id: 'permisos-privesc-linux',
     category: 'Linux & sistema',
     label: 'Permisos y privesc',
-    toolIds: ['chmod', 'umaskgen', 'sudoersgen', 'systemdgen', 'admincmds'],
+    toolIds: ['chmod', 'umaskgen', 'sudoersgen', 'systemdgen'],
   },
   {
     id: 'win-config',
@@ -179,7 +181,6 @@ export const TOOLS: ToolDef[] = [
   { id: 'pslab', name: 'PowerShell Lab', desc: 'Recetario de one-liners de administración, red, disco, registro y blue team con la trampa de cada uno explicada', short: 'PS Lab', category: 'Linux & sistema', icon: FileTerminal },
   { id: 'regtweaks', name: 'Windows Registry Tweaks', desc: 'Tweaks de telemetría, privacidad y hardening con ruta exacta, valor, reversión y export a .reg listo para fusionar', short: 'Regedit', category: 'Linux & sistema', icon: MonitorCog },
   { id: 'diskcmds', name: 'Disk & LVM Commander', desc: 'Formador de comandos de discos paso a paso: LVM (volúmenes físicos y lógicos), RAID mdadm, LUKS, dd y swap con porqués y avisos de peligro', short: 'Discos/LVM', category: 'Linux & sistema', icon: HardDrive },
-  { id: 'admincmds', name: 'Linux Admin Commander', desc: 'Formador de comandos de administración: 56 comandos por dominio (usuarios, paquetes, servicios, logs, red, cron, procesos, kernel) con trampas', short: 'Admin Linux', category: 'Linux & sistema', icon: Terminal },
 
   // ─── Análisis ───────────────────────────────────────────────────
   { id: 'cvelookup', name: 'CVE Lookup', short: 'CVE', desc: 'Consulta CVEs en la NVD con CVSS, descripción y referencias', category: 'Análisis', icon: ShieldAlert },
@@ -211,6 +212,23 @@ export const TOOLS: ToolDef[] = [
   { id: 'usergen', name: 'Usuario Generator', desc: 'Variaciones de usernames y emails corporativos con 9 convenciones y service accounts para enumeración y spraying', short: 'Users', category: 'Análisis', icon: Users },
   { id: 'acronyms', name: 'Diccionario de Acrónimos', desc: '196 acrónimos de ciberseguridad con definición en español organizados por dominio: de APT a YARA', short: 'Acrónimos', category: 'Análisis', icon: BookMarked },
   { id: 'chronolog', name: 'Chronolog', desc: 'Timeline de tu engagement con fases, TTE (time-to-exploit), huecos sin documentar y export Markdown/CSV del writeup', short: 'Chronolog', category: 'Generadores', icon: History },
+  // ─── Lenguajes (chuleta + playground con ejecución real) ───────────
+  { id: 'langpython', name: 'CheatSheet Python 3', desc: 'Chuleta de Python con playground: ejecuta de verdad (WASM local), 6 secciones de sintaxis, data structures y seguridad', short: 'Python', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langjavascript', name: 'CheatSheet JavaScript', desc: 'Chuleta de JS con playground en tu navegador: DOM, fetch, clases, XSS conceptual y moderno ES2023+', short: 'JavaScript', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langtypescript', name: 'CheatSheet TypeScript', desc: 'Chuleta de TS con ejecución real: tipos, narrowing, genéricos y utility types compilados de verdad', short: 'TypeScript', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langjava', name: 'CheatSheet Java', desc: 'Chuleta de Java con OpenJDK real: colecciones, streams, excepciones y superficie de ataque (deserialización, JNDI)', short: 'Java', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langcsharp', name: 'CheatSheet C#', desc: 'Chuleta de C# con Mono real: LINQ, nullables y por qué el ecosistema .NET domina la post-explotación Windows', short: 'C#', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langc', name: 'CheatSheet C', desc: 'Chuleta de C con gcc real: punteros, memoria y las funciones inseguras detrás de cada buffer overflow', short: 'C', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langcpp', name: 'CheatSheet C++', desc: 'Chuleta de C++ con g++ real: RAII, smart pointers, STL y templates', short: 'C++', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langphp', name: 'CheatSheet PHP', desc: 'Chuleta de PHP 8 real: arrays, super globales, LFI/SQLi clásicos y prepared statements', short: 'PHP', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langruby', name: 'CheatSheet Ruby', desc: 'Chuleta de Ruby real: bloques, símbolos, structs y la anatomía de un módulo de Metasploit', short: 'Ruby', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langgo', name: 'CheatSheet Go', desc: 'Chuleta de Go real: structs, goroutines, channels y por qué las tools ofensivas modernas son Go', short: 'Go', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langrust', name: 'CheatSheet Rust', desc: 'Chuleta de Rust real: ownership, borrowing, match, Result y Option', short: 'Rust', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langlua', name: 'CheatSheet Lua', desc: 'Chuleta de Lua real: tables, metatables y scripting NSE de Nmap', short: 'Lua', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langbash', name: 'CheatSheet Bash', desc: 'Chuleta de Bash real: variables, pipes, conditions y one-liners de seguridad ejecutándose de verdad', short: 'Bash', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langsql', name: 'CheatSheet SQL', desc: 'Chuleta de SQL sobre SQLite real: JOINs, agregación y la inyección SQL explicada ejecutándola', short: 'SQL', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langhtml', name: 'CheatSheet HTML', desc: 'Chuleta de HTML con vista previa en vivo: formularios, semántica y anatomía del phishing', short: 'HTML', category: 'Lenguajes', icon: FileCode2 },
+  { id: 'langcss', name: 'CheatSheet CSS', desc: 'Chuleta de CSS con vista previa en vivo: flexbox, grid, animaciones y CSS exfiltration', short: 'CSS', category: 'Lenguajes', icon: FileCode2 },
   { id: 'xsgen', name: 'XSS Payload Generator', desc: '26 payloads clasificados por vector y contexto (HTML, atributo, JS, URL) con encoding y guía de caza de inyecciones', short: 'XSS', category: 'Web & payloads', icon: Bug },
   { id: 'xmlgen', name: 'XML & XXE Arsenal', desc: 'Plantillas XXE directo, OOB con evil.dtd, vía error, XInclude y XSLT hasta RCE con detección de parsers', short: 'XXE', category: 'Web & payloads', icon: FileCode2 },
   { id: 'phpfilter', name: 'PHP Filter Chain', desc: 'LFI a RCE sin subir ficheros: cadenas php://filter con iconv que sintetizan tu código (algoritmo Synacktiv)', short: 'PHPFilter', category: 'Web & payloads', icon: Filter },
@@ -232,6 +250,7 @@ export const CATEGORIES: ToolCategory[] = [
   'Linux & sistema',
   'Análisis',
   'Generadores',
+  'Lenguajes',
 ]
 
 export const toolsByCategory = (cat: ToolCategory): ToolDef[] => TOOLS.filter((t) => t.category === cat)

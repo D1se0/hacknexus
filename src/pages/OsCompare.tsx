@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Laptop, Star, Check, X, Package, ExternalLink, ShieldCheck, Terminal, BookOpen, Sparkles, Monitor, Cpu, Compass } from 'lucide-react'
 import { cn } from '../lib/util'
 import { searchTasks, TASK_CATS, TASK_CAT_LABEL, type TaskEntry } from '../lib/taskguide'
+import { findTool } from '../lib/registry'
 
 type Nav = (id: string) => void
 type Level = 'Principiante' | 'Intermedio' | 'Avanzado'
@@ -528,15 +529,19 @@ function TaskFinder({ nav }: { nav: Nav }) {
                     <div>
                       <h4 className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-acento">herramientas para esto</h4>
                       <div className="flex flex-wrap gap-1.5">
-                        {t.tools.map((tid) => (
-                          <button
-                            key={tid}
-                            onClick={() => goToTool(tid)}
-                            className="rounded border border-acento/40 bg-acento/5 px-2 py-1 font-mono text-[11px] text-acento transition-all hover:bg-acento/15"
-                          >
-                            {tid} →
-                          </button>
-                        ))}
+                        {t.tools.map((tid) => {
+                          const tool = findTool(tid)
+                          return (
+                            <button
+                              key={tid}
+                              onClick={() => goToTool(tid)}
+                              title={tool?.desc}
+                              className="rounded border border-acento/40 bg-acento/5 px-2 py-1 font-mono text-[11px] text-acento transition-all hover:bg-acento/15"
+                            >
+                              {tool?.short ?? tid} →
+                            </button>
+                          )
+                        })}
                       </div>
                     </div>
                   </div>

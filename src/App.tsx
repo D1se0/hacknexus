@@ -10,8 +10,15 @@ import Whoami from './pages/Whoami'
 import { TOOLS } from './lib/registry'
 
 const toolPages: Record<string, React.LazyExoticComponent<React.ComponentType>> = {}
+const LANG_ALIASES: Record<string, string> = {
+  langpython: 'LangPython', langjavascript: 'LangJavascript', langtypescript: 'LangTypescript',
+  langjava: 'LangJava', langcsharp: 'LangCsharp', langc: 'LangC', langcpp: 'LangCpp',
+  langphp: 'LangPhp', langruby: 'LangRuby', langgo: 'LangGo', langrust: 'LangRust',
+  langlua: 'LangLua', langbash: 'LangBash', langsql: 'LangSql', langhtml: 'LangHtml', langcss: 'LangCss',
+}
 for (const t of TOOLS) {
-  toolPages[t.id] = lazy(() => import(`./tools/${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}.tsx`))
+  const file = LANG_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`
+  toolPages[t.id] = lazy(() => import(`./tools/${file}.tsx`))
 }
 
 function currentRoute(): string {

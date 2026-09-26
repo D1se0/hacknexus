@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>92 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>107 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 92 herramientas
+## 🧰 Las 107 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -147,6 +147,11 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Username OSINT** | URLs de perfil en ~20 plataformas, patrón del alias, variantes y dorks de Google/GitHub — todo pasivo | 🟢 local |
 | **Sysmon Config Builder** | XML de Sysmon por perfiles con guía ofensiva/defensiva de cada evento: el punto de partida de todo SOC | 🟢 local |
 | **Config Diff** | Diff semántico de configs: ignora comentarios/orden, resalta directivas de seguridad que cambiaron | 🟢 local |
+
+### Lenguajes
+| Tool | Descripción | Red |
+|---|---|---|
+| **16 CheatSheets** | Python, JavaScript, TypeScript, Java, C#, C, C++, PHP, Ruby, Go, Rust, Lua, Bash, SQL, HTML y CSS — con **playground que ejecuta el código de verdad**: Python corre en tu navegador (WASM), JS en sandbox local, el resto con compiladores reales (Wandbox); HTML/CSS con vista previa en vivo | 🟡 editor viaja |
 
 ### Generadores
 | Tool | Descripción | Red |

@@ -892,16 +892,6 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['dd con hash integrado es el patrón de adquisición forense: imagen bit a bit verificable para cadena de custodia', 'wipefs/mkfs/dd son herramientas de DESTRUCCIÓN: la tool los marca para que el peligro sea imposible de ignorar', 'LUKS bien hecho (con clave de respaldo guardada) protege datos ante robo sin dejar a nadie fuera'],
     tips: ['lsblk DOS VECES antes de cualquier comando destructivo: sda vs sdb es la errata que borra carreras', 'RAID no es backup: un rm -rf se replica al instante en todos los discos del array', 'El paso "ampliación futura" del modo LVM es el que más pagarás por conocer: vgextend + lvextend -r crece en caliente', 'En emergencias, la sección inferior tiene el procedimiento de las 5 catástrofes clásicas'],
   },
-  admincmds: {
-    what: 'Recetario de 56 comandos de administración Linux organizados en 8 dominios (usuarios, paquetes, servicios, logs, red, cron, procesos, kernel), cada uno con explicación de qué hace, la trampa que lo rompe (usermod sin -a, df lleno por inodes, crons con PATH mínimo) y los de auditoría marcados en rojo. Buscador global que cruza todos los grupos.',
-    params: [
-      { name: 'grupo', type: 'chips', desc: '8 dominios temáticos con icono' },
-      { name: 'búsqueda', type: 'string', desc: 'filtra en TODOS los grupos a la vez (inode, bpf, journalctl, suid…)' },
-    ],
-    daily: ['Diagnóstico rápido: ss -tulpn, df -h + df -i, journalctl -S -1h -p warning', 'Limpieza: huérfanos de pacman, kernels viejos de apt, journals gigantes', 'Auditoría doméstica: SUID inventory, crontabs de todos los usuarios, sudoers.d'],
-    ethical: ['find / -perm -4000 es el primer comando de todo privesc: esta tool te enseña a leerlo desde el lado defensivo', 'Los comandos marcados "auditoría" son exactamente los que un atacante corre primero: conocerlos es anticiparlo', 'kernel.unprivileged_bpf_disabled=1 corta eBPF rootkits: hardening de kernel entendido, no copiado'],
-    tips: ['set -euo pipefail es la diferencia entre script y bomba de relojería: está en el grupo bash con su explicación', 'systemd-analyze security <servicio> te da un 0-10 de exposición con las directivas que faltan', 'kill -STOP congela un proceso sospechoso sin matarlo: oro en respuesta a incidentes'],
-  },
   cheatgen: {
     what: 'Generador de chuletas personalizadas: 6 temas curados (vim, tmux, find/grep/xargs, bash scripting, red en consola, git) con secciones y comandos explicados. Se eligen temas, formato (Markdown con tablas o TXT plano), cabecera, índice y alineación para imprimir; genera la hoja completa lista para descargar y pegar junto al monitor.',
     params: [
@@ -1094,5 +1084,168 @@ export const DOCS: Record<string, ToolDoc> = {
     daily: ['Documentar el ataque EN VIVO en vez de reconstruirlo al día siguiente desde el history', 'Justificar horas en informes de pentest: el TTE y los huecos son métricas que el cliente entiende', 'En CTFs: comparar tu cronología con el writeup oficial para ver dónde perdiste tiempo'],
     ethical: ['Un timeline completo es evidencia de metodología: protege la trazabilidad de lo que hiciste y cuándo', 'En pentests reales, la fase cleanup documentada demuestra que cerraste túneles y borraste artefactos', 'No publiques timelines de clientes: anonimiza hosts y rutas antes de convertirlo en writeup público'],
     tips: ['El hueco >45m suele ser "estuve atascado": anótalo como nota, es oro para aprender', 'Usa la fase nota para deducciones ("el admin reusa contraseñas") — son las que aceleran el siguiente engagement', 'El Markdown exportado pega directo en tu GitBook o en el informe sin retoques'],
+  },
+
+  /* ── Lenguajes: chuleta + playground con ejecución real ── */
+  langpython: {
+    what: 'Chuleta de Python 3 en 6 secciones (sintaxis, f-strings, estructuras, excepciones, sockets, subprocess) con playground que ejecuta Python REAL en tu navegador vía Pyodide/WASM: sin servidor, tu código no sale de la máquina. Consola con stdout/stderr capturados.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'textarea con resaltado Prism; Tab = 2 espacios' },
+      { name: 'ejecutar', type: 'button', desc: 'primera vez descarga ~10 MB del runtime (luego cacheado)' },
+      { name: 'reset', type: 'button', desc: 'restaura el ejemplo por defecto' },
+    ],
+    daily: ['Probar snippets de explotación antes de llevarlos a la terminal', 'Aprender sintaxis nueva sin montar venv ni nada', 'Verificar la salida esperada de un parseo complejo'],
+    ethical: ['El código que escribes no sale de tu navegador (WASM local)', 'Ideal para practicar con datos ficticios antes de tocar un objetivo', 'Pyodide no tiene sockets ni subprocess: los ejemplos ofensivos son didácticos'],
+    tips: ['La primera ejecución tarda: las siguientes son instantáneas', 'Los imports puros de stdlib funcionan (hashlib, json, collections…)', 'Si importas numpy/pandas, Pyodide los baja del CDN al vuelo'],
+  },
+  langjavascript: {
+    what: 'Chuleta de JavaScript (fundamentos, DOM/XSS, fetch, clases, depuración) con playground que ejecuta JS REAL en tu navegador: console.log/error/warn capturados, soporta async/await y muestra el valor retornado.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'con resaltado de sintaxis' },
+      { name: 'consola', type: 'output', desc: 'stdout estilizado con formato de objetos y arrays' },
+    ],
+    daily: ['Validar comportamiento de JS antes de inyectarlo en un test', 'Aprender destructuring, spread, optional chaining', 'Repasar la diferencia innerHTML vs textContent (XSS)'],
+    ethical: ['Ejecuta en tu navegador sin sandboxes externos', 'Sin fetch real: los ejemplos de red son didácticos', 'Perfecto para practicar sanitización de entrada'],
+    tips: ['El valor de la última expresión async aparece como ⟵', 'console.table funciona y muestra tablas en la salida', 'Puedes usar top-level await'],
+  },
+  langtypescript: {
+    what: 'Chuleta de TypeScript (anotaciones, utility types, unknown vs any, type guards) compilada y ejecutada con el compilador oficial tsc en Wandbox.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism TypeScript' },
+      { name: 'compilador', type: 'engine', desc: 'typescript-5.6.2 vía Wandbox (red externa)' },
+    ],
+    daily: ['Verificar que un tipo genérico compila antes de copiarlo al proyecto', 'Aprender narrowing y discriminated unions', 'Probar utility types sin montar proyecto'],
+    ethical: ['El código viaja a Wandbox (compilador público): no pegues secretos', 'Errores de tipo se muestran tal cual los da tsc', 'Ideal para practicar sin IDE'],
+    tips: ['Los errores de compilación aparecen en la consola en rojo', 'strict mode activo por defecto en los ejemplos', 'Combina con el playground de JavaScript para comparar'],
+  },
+  langjava: {
+    what: 'Chuleta de Java (main, tipos, colecciones, excepciones, superficie de ataque: deserialización y JNDI) ejecutada con OpenJDK 21 real en Wandbox.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism Java' },
+      { name: 'compilador', type: 'engine', desc: 'openjdk-jdk-21 vía Wandbox' },
+    ],
+    daily: ['Probar streams y colecciones sin arrancar IntelliJ', 'Repasar text blocks y var', 'Entender por qué la deserialización insegura es RCE'],
+    ethical: ['Código enviado a Wandbox: nada de datos sensibles', 'El editor usa class main (minúscula): requisito del runtime online', 'Java estándar sin librerías externas'],
+    tips: ['Si cambias a public class Main verás el error de filename clásico: léelo, es didáctico', 'El timeout de compilación es de 60s', 'Los errores de javac llegan en compiler_error y se muestran'],
+  },
+  langcsharp: {
+    what: 'Chuleta de C# (fundamentos, nullables, LINQ y el porqué del ecosistema .NET en post-explotación Windows) ejecutada con Mono 6.12 real en Wandbox.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism C#' },
+      { name: 'compilador', type: 'engine', desc: 'mono-6.12 (mcs) vía Wandbox: sintaxis clásica' },
+    ],
+    daily: ['Probar LINQ (Where/Select/GroupBy) sin Visual Studio', 'Repasar string interpolation y Dictionary', 'Entender por qué los red teams compilan tools en C#'],
+    ethical: ['Código viaja a Wandbox', 'Mono no incluye APIs modernas de .NET 8 ni interop Windows', 'Los ejemplos ofensivos son conceptuales, no ejecutables'],
+    tips: ['Mono compila con mcs: evita features de C# 12', 'Console.ReadLine() no funciona en el sandbox', 'Los errores de compilación llegan completos'],
+  },
+  langc: {
+    what: 'Chuleta de C (estructura, punteros, funciones inseguras vs seguras, format strings) compilada con gcc 13.2 real en Wandbox. La puerta de entrada a entender memory corruption.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism C' },
+      { name: 'compilador', type: 'engine', desc: 'gcc-13.2.0 vía Wandbox' },
+    ],
+    daily: ['Probar aritmética de punteros sin montar nada', 'Ver en vivo la diferencia snprintf vs sprintf', 'Prepararse para exploitation de binarios'],
+    ethical: ['Compilado en sandbox de Wandbox', 'Los overflows de los ejemplos están controlados', 'Base conceptual para pwn: práctica en tu VM para explotar'],
+    tips: ['Añade printf de direcciones con %p para ver el stack', 'Los warnings de gcc aparecen aunque compile', 'Compila con -Wall mentalmente: lee los avisos'],
+  },
+  langcpp: {
+    what: 'Chuleta de C++ (RAII, smart pointers, clases, templates, STL) compilada con g++ 13.2 real en Wandbox.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism C++' },
+      { name: 'compilador', type: 'engine', desc: 'gcc-13.2.0 (g++) vía Wandbox, C++17 mínimo' },
+    ],
+    daily: ['Probar structured bindings y range-for', 'Repasar make_unique/make_shared', 'Repasar STL (vector/map/algorithm)'],
+    ethical: ['Código viaja a Wandbox', 'Sin librerías externas (boost etc.)', 'Ideal para afianzar conceptos antes de auditar C++ real'],
+    tips: ['Los errores de templates son ilegibles: empieza simple', 'C++20 funciona parcialmente en gcc 13', 'std::cout con \\n es más rápido que endl'],
+  },
+  langphp: {
+    what: 'Chuleta de PHP 8.3 (arrays, super globales, LFI clásico, prepared statements) ejecutada con PHP CLI real en Wandbox. El lenguaje que alimenta el 70% de la web y sus bugs clásicos.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism PHP con <?php' },
+      { name: 'compilador', type: 'engine', desc: 'php-8.3.12 CLI vía Wandbox' },
+    ],
+    daily: ['Probar funciones de arrays (map/filter/reduce)', 'Ver cómo un include($_GET[x]) se convierte en LFI', 'Repasar null coalescing y arrow functions'],
+    ethical: ['El CLI no tiene servidor web: no hay request real', 'Los ejemplos de vulnerabilidad son para AUDITAR, no para explotar', 'Prepared statements son la única cura para SQLi'],
+    tips: ['echo con comillas dobles interpola variables', 'print_r y var_dump son tus amigos', 'Los avisos de deprecación aparecen en stderr'],
+  },
+  langruby: {
+    what: 'Chuleta de Ruby (sintaxis, símbolos/hashes, bloques y la anatomía de un módulo de Metasploit) ejecutada con Ruby 3.4 real en Wandbox.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism Ruby' },
+      { name: 'compilador', type: 'engine', desc: 'ruby-3.4.9 vía Wandbox' },
+    ],
+    daily: ['Aprender bloques y procs con ejemplos reales', 'Repasar Struct y símbolos', 'Entender cómo se estructura un exploit de MSF'],
+    ethical: ['Código viaja a Wandbox', 'Sin gems externas (solo stdlib)', 'El módulo MSF mostrado es estructura, no exploit funcional'],
+    tips: ['puts devuelve nil: la última expresión es lo que importa', 'Todo es objeto: 3.times funciona', 'La interpolación #{x} solo en comillas dobles'],
+  },
+  langgo: {
+    what: 'Chuleta de Go (structs, maps, goroutines, channels y el porqué de las tools ofensivas en Go) compilada y ejecutada con Go 1.23 real en Wandbox.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism Go' },
+      { name: 'compilador', type: 'engine', desc: 'go-1.23.2 vía Wandbox' },
+    ],
+    daily: ['Probar patrones de concurrencia (worker pools)', 'Repasar manejo de errores if err != nil', 'Entender por qué chisel/ligolo/nuclei son Go'],
+    ethical: ['Código viaja a Wandbox', 'Solo stdlib: no hay go get en el sandbox', 'El patrón de cross-compile GOOS=windows se explica para lab propio'],
+    tips: ['Si lanzas goroutines, espera sus resultados con WaitGroup o channels', 'gofmt mental: las llaves van en la misma línea', 'Los nil maps panean: haz make()'],
+  },
+  langrust: {
+    what: 'Chuleta de Rust (ownership, borrowing, match, Result/Option, structs/impl) compilada con Rust 1.82 real en Wandbox.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism Rust' },
+      { name: 'compilador', type: 'engine', desc: 'rust-1.82.0 vía Wandbox (debug build)' },
+    ],
+    daily: ['Luchar con el borrow checker sin instalar toolchain', 'Repasar match exhaustivo y enumeraciones', 'Entender por qué Rust domina las tools nuevas de seguridad'],
+    ethical: ['Código viaja a Wandbox', 'Solo std: no hay cargo add', 'El compilador de Rust explica los errores: léelos, son tutoriales'],
+    tips: ['Los errores de borrow checker incluyen sugerencias de fix', 'cargo clippy mental: evita unwrap() innecesarios', 'El modo debug es más lento: los timings no son representativos'],
+  },
+  langlua: {
+    what: 'Chuleta de Lua 5.4 (tables, patterns, metatables y scripting NSE de Nmap) ejecutada con Lua real en Wandbox. El lenguaje embebido de Nmap, Wireshark y Redis.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism Lua' },
+      { name: 'compilador', type: 'engine', desc: 'lua-5.4.7 vía Wandbox' },
+    ],
+    daily: ['Probar patterns de Lua (no son regex)', 'Repasar metatables y herencia', 'Estructurar un script NSE antes de escribirlo'],
+    ethical: ['Código viaja a Wandbox', 'Los scripts NSE mostrados son estructura didáctica', 'Lua es 1-indexed: el error clásico'],
+    tips: ['#t da la longitud de arrays secuenciales', 'pairs recorre todo, ipairs solo secuencial', 'La concatenación es .. (dos puntos)'],
+  },
+  langbash: {
+    what: 'Chuleta de Bash (variables, condiciones, pipes/redirección y one-liners de seguridad) ejecutada con Bash 5.2 REAL en sandbox Linux de Wandbox. Pipes, sort, uniq y grep funcionando de verdad.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism Bash' },
+      { name: 'compilador', type: 'engine', desc: 'bash-5.2 con coreutils en Wandbox' },
+    ],
+    daily: ['Probar pipelines antes de lanzarlos contra producción', 'Repasar expansiones de parámetros ${var%%.*}', 'Practicar exit codes y condicionales'],
+    ethical: ['Sandbox con namespace: whoami devuelve wandbox, no tocas nada real', 'Sin red: los one-liners de red son para tu Kali', 'Perfecto para probar sintaxis antes de un cron'],
+    tips: ['date y uname funcionan: prueba uname -a', 'El set -e al inicio de tus scripts te salva la vida', '$(comando) es la sustitución moderna'],
+  },
+  langsql: {
+    what: 'Chuleta de SQL sobre SQLite 3.46 real (DDL, DML, JOINs, agregación y la inyección SQL demostrada ejecutándola: el payload \' OR \'1\'\'1 devolviendo todas las filas).',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism SQL' },
+      { name: 'compilador', type: 'engine', desc: 'sqlite-3.46.1 en memoria vía Wandbox' },
+    ],
+    daily: ['Practicar JOINs con datos visibles', 'Entender GROUP BY/HAVING con resultados reales', 'Ver por qué concatenar input = SQLi (y por qué prepared statements curan)'],
+    ethical: ['Base de datos en memoria: se borra en cada ejecución', 'El payload de SQLi es sobre TU propia tabla de demo', 'La cura (prepared statements) está en la chuleta'],
+    tips: ['Las sentencias van separadas por ; y se ejecutan en orden', 'El resultado de SELECT sale en formato tabla pipe', 'Comillas dobles = identificadores; simples = strings'],
+  },
+  langhtml: {
+    what: 'Chuleta de HTML (esqueleto, formularios, anatomía de un phishing, contextos XSS) con vista previa REAL en un iframe sandbox: tu HTML se renderiza de verdad con estilos y scripts.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism markup' },
+      { name: 'preview', type: 'iframe', desc: 'renderizado real con sandbox allow-scripts (sin acceso a la página)' },
+    ],
+    daily: ['Probar estructura y estilos inline antes de replicarlos', 'Analizar cómo se ve un formulario de phishing y por qué engaña', 'Practicar semántica HTML5'],
+    ethical: ['El iframe es sandbox: no puede tocar cookies ni storage de HackNexus', 'La detección de phishing es para defenderse, no para clonar', 'Los formularios no envían nada (preventDefault)'],
+    tips: ['Los scripts del preview corren dentro del iframe: console.log no se ve, usa document.write', 'Cada ejecución recarga el iframe desde cero', 'Combínalo con la chuleta de XSS para entender contextos'],
+  },
+  langcss: {
+    what: 'Chuleta de CSS (selectores, flexbox, grid, animaciones y CSS exfiltration) con demo interactiva real: la pestaña playground renderiza una tarjeta completa que usa TODO el CSS de la chuleta.',
+    params: [
+      { name: 'editor', type: 'editor', required: true, desc: 'resaltado Prism CSS' },
+      { name: 'preview', type: 'iframe', desc: 'demo interactiva: hover, :active y @keyframes funcionando' },
+    ],
+    daily: ['Probar grids y flexbox sin recargar tu web', 'Repasar variables CSS y transiciones', 'Entender el ataque de exfiltración por atributos'],
+    ethical: ['El keylogger CSS mostrado es conceptual: no exfiltra nada', 'CSP es la defensa real contra CSS exfil', 'Todo corre en iframe sandbox'],
+    tips: ['Pasa el ratón por la tarjeta: transform + box-shadow animados', 'El botón usa :active: pícalo', 'Cambia --verde en :root y mira la cascada'],
   },
 }
