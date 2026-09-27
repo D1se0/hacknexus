@@ -10,14 +10,19 @@ import Whoami from './pages/Whoami'
 import { TOOLS } from './lib/registry'
 
 const toolPages: Record<string, React.LazyExoticComponent<React.ComponentType>> = {}
-const LANG_ALIASES: Record<string, string> = {
+/* Alias id → nombre exacto del fichero en src/tools (para ids cuyo CamelCase
+   no coincide con Capitalize(id), p.ej. langtrans → LangTrans.tsx). */
+const FILE_ALIASES: Record<string, string> = {
   langpython: 'LangPython', langjavascript: 'LangJavascript', langtypescript: 'LangTypescript',
   langjava: 'LangJava', langcsharp: 'LangCsharp', langc: 'LangC', langcpp: 'LangCpp',
   langphp: 'LangPhp', langruby: 'LangRuby', langgo: 'LangGo', langrust: 'LangRust',
   langlua: 'LangLua', langbash: 'LangBash', langsql: 'LangSql', langhtml: 'LangHtml', langcss: 'LangCss',
+  langtrans: 'LangTrans', bashforge: 'BashForge', psforge: 'PsForge', netsim: 'NetSim',
+  cabledocs: 'CableDocs', healthcheck: 'HealthCheck', speedtest: 'SpeedTest',
+  nfclab: 'NfcLab', duckyforge: 'DuckyForge',
 }
 for (const t of TOOLS) {
-  const file = LANG_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`
+  const file = FILE_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`
   toolPages[t.id] = lazy(() => import(`./tools/${file}.tsx`))
 }
 

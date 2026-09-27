@@ -1248,4 +1248,105 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['El keylogger CSS mostrado es conceptual: no exfiltra nada', 'CSP es la defensa real contra CSS exfil', 'Todo corre en iframe sandbox'],
     tips: ['Pasa el ratón por la tarjeta: transform + box-shadow animados', 'El botón usa :active: pícalo', 'Cambia --verde en :root y mira la cascada'],
   },
+
+  /* ── Traductor de lenguajes ── */
+  langtrans: {
+    what: 'Traductor de código entre 8 lenguajes (Python, JavaScript, TypeScript, Java, C#, Go, Ruby y PHP) con motor 100% local: analiza el código origen con un parser por lenguaje, lo normaliza a una representación intermedia (IR) de sentencias y la emite en el lenguaje destino. Muestra el % de confianza real de la traducción y qué construcciones quedaron fuera del subconjunto traducible en vez de fingir exactitud.',
+    params: [
+      { name: 'lenguaje origen', type: 'select', required: true, desc: 'de dónde parte el código; autodetección no: el origen lo eliges tú' },
+      { name: 'lenguaje destino', type: 'select', required: true, desc: 'a qué lenguaje emitir; hay swap con un clic' },
+      { name: 'código', type: 'string', required: true, desc: 'el fuente a traducir (funciones, variables, condicionales, bucles, colecciones…)' },
+    ],
+    daily: ['Portar una función de utilidad de un proyecto Python a un backend en Go sin reescribirla a mano', 'Aprender un lenguaje nuevo comparando el mismo código lado a lado', 'Convertir snippets de writeups (casi siempre Python) al lenguaje de tu stack'],
+    ethical: ['Material formativo: entender que un traductor automático NO sustituye revisión — el % de confianza lo deja claro', 'En CTFs multi-lenguaje: adaptar exploits didácticos entre Python y tu lenguaje preferido', 'Auditar la salida como si fuera código de un junior: nunca pegar traducciones en producción sin revisar'],
+    tips: ['La confianza baja cuando usas características idiomáticas (decorators, goroutines, LINQ): el IR cubre el subconjunto común a los 8 lenguajes', 'Las issues del parser te dicen qué sentencias no se tradujeron: arréglalas a mano en la salida', 'No traduce librerías: las llamadas a APIs externas pasan tal cual y hay que re-mapearlas a mano'],
+  },
+  bashforge: {
+    what: 'Constructor de scripts Bash por bloques: compones visualmente shebang con set -Eeuo pipefail, cabecera, variables con validación, arrays, argumentos CLI, prompts de secretos, checks de comandos/ficheros, condicionales, bucles, funciones, case, logging coloreado y trap de limpieza. El script se emite en vivo y cada bloque trae su explicación didáctica del porqué bash es como es.',
+    params: [
+      { name: 'bloques', type: 'lista reordenable', required: true, desc: '22 tipos de bloque; reordena con flechas y configura cada uno al pulsarlo' },
+      { name: 'parámetros del bloque', type: 'formulario', desc: 'nombre, valor, toggles… según el tipo de bloque' },
+      { name: 'salida', type: 'CopyBlock', desc: 'script completo listo para copiar o guardar como .sh' },
+    ],
+    daily: ['Montar scripts de automatización sin pelearte con la sintaxis de bash a las 2 AM', 'Aprender buenas prácticas: el modo estricto y el trap de limpieza van incluidos por defecto', 'Plantillas de recon y checks de red (nc, puertos, logs) para tu flujo de pentest'],
+    ethical: ['El modo estricto enseña hábitos que evitan scripts descontrolados en producción', 'Los checks de red y puertos sirven para auditar TU infraestructura, no para escanear la ajena', 'Cada bloque explica el riesgo (eval, variables sin comillas…) para que no heredes antipatrones'],
+    tips: ['Los avisos del compilador detectan errores clásicos: espacios en nombres de variables, read sin -r…', 'El trap con mktemp evita ficheros temporales huérfanos: cópialo tal cual a tus scripts', 'Reordena bloques antes de configurar: el orden de shebang → variables → argumentos → lógica importa'],
+  },
+  psforge: {
+    what: 'Constructor de scripts PowerShell por bloques, hermano del Bash Forge: Set-StrictMode, cabecera, variables y arrays, bloque param() con validación, Read-Host de secretos, Test-Path, condicionales, foreach, while, funciones, switch, checks de conectividad (ping, Test-NetConnection, servicios), transcript y try/catch. Salida en vivo con explicación de cada directiva.',
+    params: [
+      { name: 'bloques', type: 'lista reordenable', required: true, desc: '19 tipos de bloque con sus formularios' },
+      { name: 'parámetros del bloque', type: 'formulario', desc: 'variables, claves, hosts… según el tipo' },
+      { name: 'salida', type: 'CopyBlock', desc: 'script .ps1 listo para copiar' },
+    ],
+    daily: ['Automatizar administración Windows (servicios, red, disco) sin memorizar la sintaxis de PS', 'Preparar scripts de hardening y verificación con transcript incluido para dejar evidencia', 'Aprender PowerShell comparando cada bloque con su equivalente bash'],
+    ethical: ['El transcript y el try/catch enseñan scripts que dejan rastro y fallan de forma segura', 'Los checks de servicios/puertos son para TU parque de máquinas o el del cliente con permiso', 'El strict mode evita el comportamiento silencioso que esconde errores en scripts de auditoría'],
+    tips: ['El bloque param() con [Parameter(Mandatory)] es el estándar profesional: úsalo en vez de Read-Host cuando puedas', 'Test-NetConnection informa de ping Y puerto TCP: mejor que testear por separado', 'Set-StrictMode -Version Latest convierte variables sin definir en errores, como set -u en bash'],
+  },
+  netsim: {
+    what: 'Diseñador de topologías de red interactivo: arrastra nodos (router, switch, firewall, AP, servidores, clientes, IoT, nube, VPN…) sobre un lienzo SVG, enlázalos clic a clic eligiendo el medio (ethernet, fibra, wifi, vpn) con velocidades, y obtén análisis automático de la red (huérfanos, sin firewall, IPs duplicadas), lista de materiales (BOM), export/import JSON y export PNG en alta resolución.',
+    params: [
+      { name: 'nodos', type: 'canvas drag', required: true, desc: '13 tipos con capa (core/distribución/acceso), color e icono propios' },
+      { name: 'enlaces', type: 'clic-clic', desc: 'ethernet, fibra, wifi o vpn con velocidad y estilo visual por medio' },
+      { name: 'presets', type: 'chips', desc: 'topologías de ejemplo: hogar, pyme, laboratorio y sucursal' },
+      { name: 'export', type: 'PNG | JSON', desc: 'PNG 1800×1200 generado en local, o JSON para guardar/compartir el diseño' },
+    ],
+    daily: ['Documentar la red de un cliente antes de tocar nada: el diagrama es el primer entregable', 'Planificar una ampliación (nueva VLAN, AP extra) viendo el impacto antes de comprar hardware', 'Formar en redes: montar la topología de tu casa y entender por qué el router es single point of failure'],
+    ethical: ['El análisis señala fallos de diseño (red sin firewall, nodos colgando): documentarlos es el 80% de una auditoría de red', 'La segmentación correcta (IoT fuera de la LAN de gestión) se VE al dibujar: úsalo para convencer al cliente', 'El BOM honesto evita el overselling: dimensiona por necesidad, no por margen'],
+    tips: ['Empieza por un preset y modifícalo: más rápido que el lienzo vacío', 'El análisis de IPs duplicadas y huérfanos corre al vuelo: corrige y mira cómo cambia', 'El PNG export incluye fondo y leyenda: pega directo en informes y presentaciones'],
+  },
+  cabledocs: {
+    what: 'Documentación animada de cableado de red: pinout RJ45 con T568A y T568B (con señal animada recorriendo los 8 hilos y el par cruzado explicado), tabla de categorías Cat5e a Cat8 con velocidades y distancia máxima, tipos de cable (UTP, FTP, SFTP, coaxial, DAC) con sus trampas reales, fibra óptica con animación del haz (single vs multimode y por qué dispersa), conectores (RJ45, LC, SC, ST, MPO) y herramientas del instalador.',
+    params: [
+      { name: 'sección', type: 'scroll', required: true, desc: 'pinout, categorías, tipos, fibra, conectores y herramientas' },
+      { name: 'animaciones', type: 'auto', desc: 'la señal viaja por el cable y el haz se propaga por la fibra en vivo' },
+    ],
+    daily: ['Crimpear un latiguillo y dudar entre T568A y B: el pinout animado lo deja claro (elige UNO y sé consistente)', 'Comprar cable para una reforma: la tabla de categorías evita pagar Cat8 para 10 metros', 'Identificar qué conector necesita ese transceptor SFP: LC/SC/ST/MPO con fotos de uso'],
+    ethical: ['Saber cablear es la mitad invisible de la seguridad: un cable cruzado donde no toca o un patch panel caótico rompe segmentaciones pensadas', 'Los enlaces de cobre emanar radio: cables apantallados bien aterrizados son hardening físico real', 'Fibra vs cobre en distancia y EM: elige bien y evitas repetidores innecesarios que son puntos de acceso'],
+    tips: ['T568A vs B solo cambia los pares naranja y verde: un extremo A y otro B = cable CRUZADO (útil solo para conectar dos PCs directo)', 'Cat5e aguanta 1 GbE a 100 m y 10GbE a ~45 m: no tires Cat6 «por si acaso» sin calcular', 'En fibra multimodo la dispersión modal limita la distancia: el modo single va mucho más lejos pero los transceptores cuestan más'],
+  },
+  healthcheck: {
+    what: 'Chequeo de salud de tu equipo desde el navegador: detecta núcleos de CPU, RAM (Device Memory), batería (Battery API con nivel y estado de carga), conexión (Network Information API: tipo efectivo, RTT, downlink), almacenamiento (Storage Estimate) y GPU (renderer WebGL). Añade un benchmark real de CPU (primo counting) y un módulo manual de desgaste por antigüedad con 12 componentes, vida útil estimada, consejos por nivel de salud y plan de mantenimiento.',
+    params: [
+      { name: 'escaneo', type: 'button', required: true, desc: 'lee APIs del navegador; nada se envía a ningún servidor' },
+      { name: 'benchmark CPU', type: 'button', desc: 'calcula un score con cálculo de primos: compara tu equipo con otros' },
+      { name: 'componentes manuales', type: 'formulario', desc: 'antigüedad de disco, batería, ventiladores… para estimar desgaste' },
+    ],
+    daily: ['Saber si tu portátil aguanta otra VM más antes de comprarla (núcleos, RAM, score CPU)', 'Ver el estado real de la batería sin instalar apps raras', 'Plan de mantenimiento: qué limpiar, qué sustituir y cuándo, según antigüedad'],
+    ethical: ['El desgaste de disco es una causa silenciosa de pérdida de datos: prevenir es la mejor política de seguridad', 'Un equipo sano aplica parches y cifrado sin sufrir: la salud del hardware es parte del hardening', 'Todo el escaneo es local: demuestra qué puede saber un sitio web de tu hardware (y por qué fingerprinting funciona)'],
+    tips: ['El renderer de WebGL revela tu GPU exacta: úsalo para verificar drivers, y piensa en la huella que dejas', 'deviceMemory redondea a potencias de 2 por privacidad: es lo que cualquier web ve de ti', 'El score CPU es relativo a TU navegador: compara equipos de tu parque entre sí, no con benchmarks de internet'],
+  },
+  speedtest: {
+    what: 'Test de velocidad real desde el navegador contra los endpoints públicos de speed.cloudflare.com (CORS abierto): mide ping (10 muestras, mínimo y jitter), descarga escalonada (2→25 MB con reader streaming y muestras en vivo) y subida (3×2 MB), con velocímetro SVG animado, sparkline de muestras, resultados Mbps/MB transferidos y guía de interpretación de cada métrica.',
+    params: [
+      { name: 'iniciar test', type: 'button', required: true, desc: '3 fases: ping, descarga, subida; cancelable' },
+      { name: 'muestras', type: 'sparkline', desc: 'las mediciones parciales se dibujan en vivo' },
+    ],
+    daily: ['Comprobar si tu conexión cumple lo que pagas (y con qué ISP estás realmente)', 'Diagnosticar «va lento»: separa latencia de ancho de banda antes de llamar al proveedor', 'Verificar si tu VPN o proxy está estrangulando el tráfico (compara con y sin túnel)'],
+    ethical: ['Entender jitter y latencia explica por qué «tengo 600 Mbps» no arregla el VoIP cortado: cultura de red', 'El test genera tráfico real contra Cloudflare: hazlo con cabeza en conexiones limitadas o de clientes', 'Útil para validar que un lab remoto/VPN cumple para trabajar sin quejarse a ciegas'],
+    tips: ['El ping mostrado es el MÍNIMO de 10: es el más estable; el jitter (variación) es lo que mata las videollamadas', 'La descarga escala de 2 a 25 MB para que el TCP arranque: el primer segundo no es tu velocidad real', 'La subida suele ser mucho menor (asimétrico): mira el ratio si haces streaming o backups a la nube'],
+  },
+  nfclab: {
+    what: 'Laboratorio educativo de NFC/RFID sin hardware: 8 familias de chips (MIFARE Classic 1K/4K, Plus, DESFire, NTAG, EM4100, HID Prox, iCLASS) con frecuencia, memoria y seguridad reales; generación de UIDs con CSPRNG (formato NXP correcto: byte 04, cascada 88 en UID7); dumps simulados estructuralmente correctos (bloque 0 con BCC/SAK/ATQA, trailers con claves por defecto FFFFFFFFFFFF); codificador/decodificador Wiegand 26 (FC8+CN16 con paridades); animaciones de modulación ASK/FSK/PSK/load; y 5 escenarios de ataque con dificultad, herramienta y su defensa.',
+    params: [
+      { name: 'familia', type: 'selector', required: true, desc: 'elige el chip y genera UID + dump simulado' },
+      { name: 'Wiegand', type: 'bidireccional', desc: 'FC/CN → 26 bits y 26 bits pegados → FC/CN con validación de paridades' },
+      { name: 'escenarios', type: 'tarjetas', desc: '5 ataques reales (clonado, relay, brute force…) con defensa y aviso legal' },
+    ],
+    daily: ['Entender qué tecnología hay en tu badge corporativo antes de una auditoría física', 'Formar personal en por qué «pasar la tarjeta» no es autenticación segura', 'Diseñar la migración: el lab muestra por qué MIFARE Classic está roto y DESFire no'],
+    ethical: ['⚖ La clonación de tarjetas de acceso AJENAS es delito aunque «solo sea para ver si funciona»: esto es simulación, sin hardware', 'Los dumps son aleatorios pero estructuralmente correctos: sirven para APRENDER el formato, no para escribir tarjetas', 'El 50% de instalaciones reales cae por claves por defecto: la defensa es cambiarlas y migrar de tecnología'],
+    tips: ['El BCC del bloque 0 es XOR de los bytes del UID: verifícalo en el dump generado', 'Wiegand 26 no cifra nada: cualquier lector (-o app) puede leer FC y CN de un badge expuesto', 'La defensa real contra relay no es el cifrado sino la distancia: los sistemas UWB/número variable lo mitigan'],
+  },
+  duckyforge: {
+    what: 'Constructor de payloads DuckyScript por bloques para USB Rubber Ducky clásico y Flipper Zero (badUSB): 12 tipos de instrucción (REM, DELAY, DEFAULTDELAY, DEFAULT_CHAR_DELAY, STRING, STRINGLN, teclas especiales, combinaciones GUI/CTRL/ALT, REPEAT, ALTSTRING, suplantación VID/PID y WAIT_FOR_BUTTON_PRESS) con selección de objetivo que avisa de incompatibilidades, 4 presets didácticos reversibles, explicación de cada bloque, salida copiable y descarga payload.txt.',
+    params: [
+      { name: 'objetivo', type: 'chips', required: true, desc: 'clásico (DuckyScript v1 / Twin Duck) o Flipper Zero (con extensiones)' },
+      { name: 'bloques', type: 'lista reordenable', required: true, desc: 'compón, reordena y configura; cada bloque trae su explicación' },
+      { name: 'presets', type: 'chips', desc: 'aviso de concienciación, badUSB Flipper armado, apagado reversible y lab TCP' },
+      { name: 'salida', type: 'CopyBlock + download', desc: 'payload.txt listo para la micro-SD del Ducky o la carpeta badusb del Flipper' },
+    ],
+    daily: ['Preparar demos de concienciación para tu campaña de seguridad interna (USBs marcados y autorizados)', 'Automatizar tareas de instalación de laboratorio con «teclas» en vez de instalación manual', 'Aprender el protocolo HID: el Ducky no es más que un teclado que teclea muy rápido'],
+    ethical: ['⚖ Conectar un badUSB a equipo ajeno sin permiso escrito es delito de acceso no autorizado: los presets aquí son reversibles y didácticos a propósito', 'En pentests físicos autorizados, documenta cada payload y deja mecanismo de reversión', 'La contramedida real es usbguard/políticas HID + formación: enseña el payload de awareness a tus usuarios'],
+    tips: ['El DELAY 3000 inicial es sagrado: es lo que tarda el SO en montar el «teclado»', 'Los bloques marcados F son exclusivos de Flipper: el builder te avisa si tu objetivo es clásico', 'WAIT_FOR_BUTTON_PRESS es tu seguro: el payload no arranca hasta que TÚ lo armas desde el menú'],
+  },
 }

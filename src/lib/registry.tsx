@@ -10,6 +10,7 @@ import {
   UserSearch, ListPlus, ClipboardList, MonitorCog, FileCog, FileText,
   Terminal, Sparkles, FileDiff, History,
   Filter, FileCode2, Route, MonitorPlay, FileInput, Users, BookMarked,
+  Languages, SquareTerminal, Cable, HeartPulse, Nfc, Keyboard,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -237,6 +238,27 @@ export const TOOLS: ToolDef[] = [
   { id: 'netcalc', name: 'Network Admin Calc', desc: '7 calculadoras de red: TTL→SO, MTU/MSS, wildcards ACL Cisco, plan de VLANs, ToS/DSCP, transferencias y CIDR', short: 'NetCalc', category: 'Red', icon: Calculator },
   { id: 'ttyupgrade', name: 'TTY Upgrade', desc: 'De reverse shell tonta a terminal interactiva: python pty, script, socat, rlwrap con pasos y troubleshooting', short: 'TTY', category: 'Web & payloads', icon: MonitorPlay },
   { id: 'filexfer', name: 'File Transfer Arsenal', desc: '14 métodos de transferencia atacante↔víctima con comandos exactos: HTTP, nc, scp, certutil, PowerShell, SMB…', short: 'Transfer', category: 'Web & payloads', icon: FileInput },
+
+  // ─── Traductor de lenguajes ─────────────────────────────────────
+  { id: 'langtrans', name: 'Language Translator', desc: 'Traduce código entre Python, JS, TS, Java, C#, Go, Ruby y PHP con análisis del subconjunto común y % de confianza honesto', short: 'Trans', category: 'Lenguajes', icon: Languages },
+
+  // ─── Forges de scripting ────────────────────────────────────────
+  { id: 'bashforge', name: 'Bash Script Forge', desc: 'Compón scripts Bash por bloques con modo estricto, argumentos, bucles, checks de red y logging coloreado — cada pieza explicada', short: 'BashForge', category: 'Linux & sistema', icon: Terminal },
+  { id: 'psforge', name: 'PowerShell Forge', desc: 'Compón scripts PowerShell por bloques: strict mode, params, try/catch, transcripción y checks de red — cada pieza explicada', short: 'PSForge', category: 'Linux & sistema', icon: SquareTerminal },
+
+  // ─── Redes: diseño y doc técnica ───────────────────────────────
+  { id: 'netsim', name: 'Network Topology Designer', desc: 'Diseña topologías arrastrando nodos, enlázalos por medio (ethernet/fibra/wifi/vpn), analiza huérfanos y BOM, y exporta PNG/JSON', short: 'NetSim', category: 'Red', icon: Network },
+  { id: 'cabledocs', name: 'Cable Docs Animadas', desc: 'Pinout RJ45 T568A/B animado, categorías Cat5e–Cat8, tipos de cable con trampas, fibra y conectores LC/SC/ST/MPO explicados', short: 'Cables', category: 'Red', icon: Cable },
+  { id: 'speedtest', name: 'Internet Speed Test', desc: 'Test de latencia, jitter, descarga y subida con velocímetro animado contra speed.cloudflare.com — interpretación guiada', short: 'Speed', category: 'Red', icon: Gauge },
+
+  // ─── Salud del equipo ──────────────────────────────────────────
+  { id: 'healthcheck', name: 'Team Health Check', desc: 'Escaneo real de tu equipo (CPU, RAM, batería, red, GPU) con benchmark, desgaste estimado por antigüedad y plan de mantenimiento', short: 'Health', category: 'Análisis', icon: HeartPulse },
+
+  // ─── NFC / RFID ────────────────────────────────────────────────
+  { id: 'nfclab', name: 'NFC / RFID Lab', desc: 'Laboratorio educativo de tarjetas de proximidad: familias de chips, UIDs y dumps simulados, Wiegand 26, modulaciones y ataques con su defensa', short: 'NFC', category: 'Ingeniería Inversa', icon: Nfc },
+
+  // ─── DuckyScript ───────────────────────────────────────────────
+  { id: 'duckyforge', name: 'DuckyScript Builder', desc: 'Compón payloads badUSB por bloques para Rubber Ducky y Flipper Zero con presets didácticos, compatibilidad por objetivo y avisos éticos', short: 'Ducky', category: 'Web & payloads', icon: Keyboard },
 ]
 
 export const CATEGORIES: ToolCategory[] = [
