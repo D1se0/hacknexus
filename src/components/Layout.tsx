@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, ChevronDown, BookOpen, Laptop, Star, FolderTree, UserRound, Compass } from 'lucide-react'
+import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, BookOpen, Laptop, Star, FolderTree, UserRound, Compass, HardDrive, Network, KeyRound, Monitor, Swords, Crosshair, Route } from 'lucide-react'
 import { TOOLS, CATEGORIES, CATEGORY_COLORS, SUBSECTIONS, subsectionOf, type ToolDef } from '../lib/registry'
 import { cn } from '../lib/util'
 import { Typewriter } from './ui'
@@ -148,6 +148,18 @@ function AnimatedBackground() {
 
 /* ---------------- Sidebar ---------------- */
 
+/* Icono propio para cada subgrupo desplegable: identifica el grupo de un
+   vistazo sin leer la etiqueta. Fallback: FolderTree. */
+const SUB_ICONS: Record<string, React.ElementType> = {
+  'discos-almacenamiento': HardDrive,
+  'red-servicios-linux': Network,
+  'permisos-privesc-linux': KeyRound,
+  'win-config': Monitor,
+  postex: Route,
+  explotacion: Swords,
+  'privesc-recursos': Crosshair,
+}
+
 function Sidebar({ route, nav, mobileOpen, setMobileOpen }: { route: string; nav: Nav; mobileOpen: boolean; setMobileOpen: (v: boolean) => void }) {
   const [openSubs, setOpenSubs] = useState<Set<string>>(() => new Set())
   // abre la subsección que contiene la ruta activa
@@ -236,21 +248,41 @@ function Sidebar({ route, nav, mobileOpen, setMobileOpen }: { route: string; nav
               {catSubs.map((sub) => {
                 const open = openSubs.has(sub.id)
                 const anyActive = sub.toolIds.includes(route)
+                const SubIcon = SUB_ICONS[sub.id] ?? FolderTree
                 return (
-                  <div key={sub.id} className="mt-1">
+                  <div key={sub.id} className="mt-1.5">
                     <button
                       onClick={() => toggleSub(sub.id)}
                       className={cn(
-                        'flex w-full items-center gap-2 rounded-lg px-3 py-1.5 text-left text-[12.5px] transition-all',
-                        anyActive ? 'text-acento' : 'text-grey hover:bg-panel hover:text-ink',
+                        'group flex w-full items-center gap-2.5 rounded-xl border px-2.5 py-2 text-left text-[12.5px] transition-all',
+                        anyActive
+                          ? 'border-acento/50 bg-acento/10 text-acento shadow-glow'
+                          : open
+                            ? 'border-edge bg-panel text-ink'
+                            : 'border-edge/60 bg-black/20 text-grey hover:border-edge hover:bg-panel hover:text-ink',
                       )}
                     >
-                      <FolderTree size={13} className="shrink-0" />
-                      <span className="truncate font-medium">{sub.label}</span>
-                      <span className="ml-auto flex shrink-0 items-center gap-1">
-                        <span className="rounded border border-edge px-1 font-mono text-[9px] text-grey/70">{sub.toolIds.length}</span>
-                        {open ? <ChevronDown size={12} /> : <ChevronRight size={12} />}
+                      <span
+                        className={cn(
+                          'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border transition-colors',
+                          anyActive ? 'border-acento/50 bg-acento/15 text-acento' : 'border-edge bg-black/30 text-grey group-hover:text-ink',
+                        )}
+                      >
+                        <SubIcon size={12} />
                       </span>
+                      <span className="min-w-0 flex-1 truncate font-semibold">{sub.label}</span>
+                      {anyActive && <span className="h-1.5 w-1.5 shrink-0 animate-pulse rounded-full bg-acento" />}
+                      <span
+                        className={cn(
+                          'shrink-0 rounded-full px-1.5 py-0.5 font-mono text-[9px] tabular-nums',
+                          anyActive ? 'bg-acento/20 text-acento' : 'bg-black/40 text-grey/70',
+                        )}
+                      >
+                        {sub.toolIds.length}
+                      </span>
+                      <motion.span animate={{ rotate: open ? 90 : 0 }} transition={{ duration: 0.18 }} className="shrink-0">
+                        <ChevronRight size={12} />
+                      </motion.span>
                     </button>
                     <AnimatePresence initial={false}>
                       {open && (
@@ -258,10 +290,10 @@ function Sidebar({ route, nav, mobileOpen, setMobileOpen }: { route: string; nav
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: 'auto', opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
-                          transition={{ duration: 0.18 }}
+                          transition={{ duration: 0.2 }}
                           className="overflow-hidden"
                         >
-                          <div className="ml-3 border-l border-edge pl-2">
+                          <div className="relative ml-3 mt-1 space-y-0.5 border-l-2 border-acento/25 pl-2">
                             {sub.toolIds.map((tid) => {
                               const t = TOOLS.find((x) => x.id === tid)
                               return t ? renderToolButton(t) : null

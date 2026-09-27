@@ -24,6 +24,7 @@ const FILE_ALIASES: Record<string, string> = {
   redos: 'Redos', cronapt: 'CronApt', hashvisual: 'HashVisual', wifilter: 'WiFilter',
   bytecode: 'Bytecode', firmware: 'Firmware', blegatt: 'BleGatt', stegoaudio: 'StegoAudio',
   x509: 'X509', malwaretime: 'MalwareTime',
+  wifilab: 'WifiLab', wifi80211: 'Wifi80211', wifiplanner: 'WifiPlanner', wifiaudit: 'WifiAudit',
 }
 for (const t of TOOLS) {
   const file = FILE_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`

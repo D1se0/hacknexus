@@ -1,8 +1,8 @@
 import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
-import { BadgeCheck, AlertTriangle, CheckCircle2, FileKey2 } from 'lucide-react'
+import { BadgeCheck, AlertTriangle, CheckCircle2, FileKey2, ShieldAlert } from 'lucide-react'
 import { ToolHeader, Button, Badge, Reveal, CopyBlock } from '../components/ui'
-import { decodePem, parseCertificate, type CertInfo } from '../lib/x509'
+import { decodePem, parseCertificate, hasPrivateKey, type CertInfo } from '../lib/x509'
 
 const SAMPLE = `-----BEGIN CERTIFICATE-----
 MIIB2zCCAWGgAwIBAgIUKYRLvN5PZ1+2W0LZz2V3 example: pega aquí un PEM real
@@ -12,11 +12,22 @@ const FLAG_TONE = { ok: 'ok', aviso: 'warn', peligro: 'bad' } as const
 
 export default function X509() {
   const [pem, setPem] = useState('')
-  const cert: CertInfo | null = useMemo(() => {
-    if (!pem.trim()) return null
-    const der = decodePem(pem)
-    return der ? parseCertificate(der) : null
+
+  const parsed = useMemo<{ cert: CertInfo | null; err: string | null; privateKey: boolean }>(() => {
+    if (!pem.trim()) return { cert: null, err: null, privateKey: false }
+    const privateKey = hasPrivateKey(pem)
+    try {
+      const der = decodePem(pem)
+      if (!der) {
+        return { cert: null, err: 'No se ha encontrado un bloque de certificado base64 válido. Comprueba que empieza por -----BEGIN CERTIFICATE----- y que no se ha cortado al pegar.', privateKey }
+      }
+      return { cert: parseCertificate(der), err: null, privateKey }
+    } catch (e) {
+      // NUNCA dejar que el parseo tumbe la página: mostramos el error en un panel
+      return { cert: null, err: `Error al parsear el certificado: ${(e as Error).message}. Puede estar truncado, corrupto o no ser un X.509.`, privateKey }
+    }
   }, [pem])
+  const { cert, err, privateKey } = parsed
 
   return (
     <div className="min-w-0">
@@ -50,7 +61,16 @@ export default function X509() {
         </Reveal>
 
         <div className="min-w-0 space-y-4">
-          {!cert && !pem && (
+          {privateKey && (
+            <p className="flex items-start gap-2 rounded-lg border border-bad/40 bg-bad/10 px-4 py-3 font-mono text-xs leading-relaxed text-bad">
+              <ShieldAlert size={15} className="mt-0.5 shrink-0" />
+              Has pegado una CLAVE PRIVADA ({'BEGIN PRIVATE KEY'}): eso SÍ es secreto. Solo analiza aquí el bloque del CERTIFICADO; si la clave privada se ha filtrado, revoca el certificado y rota la clave.
+            </p>
+          )}
+          {err && (
+            <p className="rounded-lg border border-bad/40 bg-bad/10 px-4 py-3 font-mono text-xs leading-relaxed text-bad">{err}</p>
+          )}
+          {!cert && !err && !pem && (
             <Reveal>
               <div className="card p-8 text-center">
                 <BadgeCheck size={28} className="mx-auto text-acento" />
@@ -63,7 +83,7 @@ export default function X509() {
           )}
 
           {cert?.error && (
-            <p className="rounded-lg border border-bad/40 bg-bad/10 px-4 py-3 font-mono text-xs text-bad">{cert.error}</p>
+            <p className="rounded-lg border border-warn/40 bg-warn/10 px-4 py-3 font-mono text-xs leading-relaxed text-warn">⚠ {cert.error}</p>
           )}
 
           {cert && !cert.error && (

@@ -17,14 +17,20 @@ const TAG_NAMES: Record<number, string> = {
   0x17: 'UTCTime', 0x18: 'GeneralizedTime', 0x23: 'URI', 0x30: 'SEQUENCE', 0x31: 'SET', 0xa3: '[3] exts', 0xa0: '[0] version',
 }
 
-export const parseDer = (bytes: Uint8Array, pos = 0, end = bytes.length): DerNode[] => {
+export const parseDer = (bytes: Uint8Array, pos = 0, end = bytes.length, depth = 0): DerNode[] => {
   const nodes: DerNode[] = []
   let p = pos
-  while (p + 2 <= end && nodes.length < 200) {
+  while (p + 2 <= end && nodes.length < 500) {
     const node = readTlv(bytes, p, end)
     if (!node) break
+    if (node.next <= p) break // sin progreso: protege de bucles infinitos
     nodes.push(node)
     p = node.next
+  }
+  if (depth < 10) {
+    for (const n of nodes) {
+      if (n.tag & 0x20) n.children = parseDer(bytes, n.start, n.end, depth + 1)
+    }
   }
   return nodes
 }
@@ -52,12 +58,26 @@ const readTlv = (bytes: Uint8Array, pos: number, end: number): DerNode | null =>
 const utf8 = (b: Uint8Array): string => new TextDecoder().decode(b)
 const hex = (b: Uint8Array, sep = ''): string => Array.from(b, (x) => x.toString(16).padStart(2, '0')).join(sep)
 
+export const hasPrivateKey = (pem: string): boolean => /BEGIN (RSA |EC |ENCRYPTED )?PRIVATE KEY/.test(pem)
+
 export const decodePem = (pem: string): Uint8Array | null => {
   const m = pem.match(/-----BEGIN CERTIFICATE-----([\s\S]*?)-----END CERTIFICATE-----/)
-  const b64 = (m ? m[1] : pem).replace(/[^A-Za-z0-9+/=]/g, '')
+  const b64 = (m ? m[1] : pem).replace(/[^A-Za-z0-9+/=]/g, '').replace(/=+$/, '')
   if (b64.length < 32) return null
-  const bin = atob(b64)
-  return Uint8Array.from(bin, (c) => c.charCodeAt(0))
+  try {
+    // rellena a múltiplo de 4: los PEMs mal copiados pierden el padding
+    const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4)
+    const bin = atob(padded)
+    return Uint8Array.from(bin, (c) => c.charCodeAt(0))
+  } catch {
+    try {
+      // último intento: sin padding
+      const bin = atob(b64)
+      return Uint8Array.from(bin, (c) => c.charCodeAt(0))
+    } catch {
+      return null
+    }
+  }
 }
 
 /* ───────── OIDs ───────── */
@@ -218,7 +238,9 @@ export const parseCertificate = (bytes: Uint8Array): CertInfo => {
     if (extsWrapper?.tag === 0xa3) {
       const extsSeq = extsWrapper.children[0]
       for (const ext of extsSeq?.children ?? []) {
-        const extSeq = ext.children[0] ?? ext
+        // ext es el SEQUENCE de la extensión; si el nodo llegó sin hijos (primitivo
+        // por un parser conservador), baja a su primer hijo pero nunca al propio OID
+        const extSeq = ext.tag === 0x30 ? ext : (ext.children.find((c) => c.tag === 0x30) ?? ext)
         if (extSeq.children.length < 2) continue
         let ci = 0
         const oid = readOid(bytes.subarray(extSeq.children[0].start, extSeq.children[0].end))
@@ -229,13 +251,13 @@ export const parseCertificate = (bytes: Uint8Array): CertInfo => {
         if (!octet) continue
         let value = ''
         if (oid === '2.5.29.19') { // basicConstraints
-          const inner = readTlv(bytes, octet.start + (bytes[octet.start] === 0x30 ? 0 : 1), octet.end)
-          const bcSeq = inner?.tag === 0x30 ? inner : readTlv(bytes, octet.start, octet.end)
-          const bc = bcSeq && bcSeq.tag === 0x30 ? bcSeq : null
-          const caFlag = bc?.children[0]
+          const bc = readTlv(bytes, octet.start, octet.end)
+          const bcSeq = bc && bc.tag === 0x30 ? bc : readTlv(bytes, octet.start + 1, octet.end)
+          const caFlag = bcSeq?.tag === 0x30 ? bcSeq.children[0] : undefined
           info.isCA = caFlag ? bytes[caFlag.start] !== 0 : false
-          const pathlen = bc?.children[1] ? utf8(bytes.subarray(bc.children[1].start, bc.children[1].end)) : null
-          value = `CA:${info.isCA ? 'TRUE' : 'FALSE'}${pathlen ? `, pathlen=${pathlen}` : ''}`
+          const pathlenNode = bcSeq?.tag === 0x30 ? bcSeq.children[1] : undefined
+          const pathlen = pathlenNode ? String(bytes[pathlenNode.start]) : null
+          value = `CA:${info.isCA ? 'TRUE' : 'FALSE'}${pathlen !== null ? `, pathlen=${pathlen}` : ''}`
         } else if (oid === '2.5.29.17') { // SAN
           const inner = readTlv(bytes, octet.start, octet.end)
           const gnSeq = inner?.tag === 0x30 ? inner : readTlv(bytes, octet.start + 1, octet.end)

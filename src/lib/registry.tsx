@@ -12,6 +12,7 @@ import {
   Filter, FileCode2, Route, MonitorPlay, FileInput, Users, BookMarked,
   Languages, SquareTerminal, Cable, HeartPulse, Nfc, Keyboard,
   Hourglass, AlarmClock, LayoutGrid, Microchip, Bluetooth, BadgeCheck,
+  RadioTower, Antenna, ScanLine,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -280,6 +281,12 @@ export const TOOLS: ToolDef[] = [
 
   // ─── Ronda 12: ofensiva con detección ─────────────────────────
   { id: 'cronapt', name: 'Cron/AT Persistence Lab', desc: 'Simulador de persistencia T1053 para tu lab: genera la tarea, su rollback y las detecciones que la cazan (Sigma, YARA, hunting)', short: 'CronAPT', category: 'Linux & sistema', icon: AlarmClock },
+
+  // ─── Ronda 13: hacking WiFi ────────────────────────────────────
+  { id: 'wifilab', name: 'WiFi Attack Lab', desc: 'Los 7 pasos de una auditoría 802.11 en tu laboratorio: comandos con placeholders personalizables, qué esperar en cada salida, la trampa típica y cómo se detecta cada acción', short: 'WiFiLab', category: 'Red', icon: RadioTower },
+  { id: 'wifi80211', name: 'Decodificador 802.11', desc: 'Pega un frame en hex y desglosa la cabecera MAC bit a bit: flags, direcciones según toDS/fromDS, seq/frag e Information Elements con el RSN completo (WPA2/WPA3/PMF)', short: '802.11', category: 'Red', icon: Antenna },
+  { id: 'wifiplanner', name: 'WiFi Channel Planner', desc: 'Planifica canales 2.4/5/6 GHz con el solapamiento real del espectro: mapa de congestión con tus APs vecinos, mejores canales, grupos de 80 MHz con avisos DFS y PSC de 6 GHz', short: 'ChPlanner', category: 'Red', icon: Radar },
+  { id: 'wifiaudit', name: 'WiFi Security Auditor', desc: 'Puntúa tu red sobre 100 (cifrado, PMF, passphrase, WPS, admin) con hardening priorizado por esfuerzo y matriz de amenazas: evil twin, karma, deauth, KRACK, Dragonblood', short: 'Auditor', category: 'Red', icon: ScanLine },
 ]
 
 export const CATEGORIES: ToolCategory[] = [

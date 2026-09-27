@@ -1469,4 +1469,51 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['⚖ Persistencia SOLO en laboratorio propio: en pentest real debe estar explícitamente en el alcance y documentada con su limpieza', 'El payload marker existe a propósito: valida tu detección sin tocar nada agresivo', 'T1053.003 (cron) y T1053.006 (systemd) con subtécnica exacta en los tags de la regla Sigma'],
     tips: ['Cron ejecuta con entorno mínimo: PATH distinto, sin perfil — payload que depende del entorno falla silenciosamente', 'La detección fuerte es temporal: cambio en cron* + proceso hijo de crond + conexión saliente en la misma ventana', 'auditctl -w /etc/cron.d/ -p wa: el File Integrity Monitoring es la red cuando nadie revisa a mano'],
   },
+
+  /* ── Ronda 13: hacking WiFi ── */
+  wifilab: {
+    what: 'Constructor de comandos de auditoría 802.11 para TU laboratorio, organizado en los 7 pasos reales de un pentest WiFi: modo monitor, descubrimiento pasivo, captura del 4-way handshake, deauth didáctico (1 paquete), ataque PMKID sin clientes, crack offline con hashcat/aircrack y restauración del sistema. Cada paso explica el porqué técnico, muestra los comandos exactos con tus datos sustituidos (interfaz, BSSID, canal, SSID, cliente, wordlist, máscara), qué esperar en la salida, la trampa típica que hace fallar a todo el mundo y CÓMO SE DETECTA esa acción (perspectiva blue team). Incluye tabla de hardware que sí inyecta con sus trampas por revisión.',
+    params: [
+      { name: 'interfaz', type: 'texto', required: true, desc: 'tu wlanX; genera los comandos con wlanXmon' },
+      { name: 'BSSID / canal / SSID', type: 'texto', desc: 'datos de TU red de laboratorio, sustituidos en todos los pasos' },
+      { name: 'wordlist / máscara', type: 'texto', desc: 'para el paso de crack: ruta de diccionario o máscara hashcat -a 3' },
+      { name: 'lab-completo.sh', type: 'export', desc: 'los 7 pasos concatenados con comentarios, listos para revisar antes de ejecutar' },
+    ],
+    daily: ['Montar tu primer lab WiFi completo: router viejo + adaptador con modo monitor + esta guía paso a paso', 'Entender QUÉ hace exactamente cada herramienta (airmon-ng, airodump-ng, hcxdumptool) antes de ejecutarla a ciegas', 'Aprender la perspectiva defensiva: cada paso dice qué vería un WIPS o el log del AP'],
+    ethical: ['⚖ Auditar WiFi ajeno sin permiso escrito es delito (acceso a sistemas informáticos + interferencias), aunque sea el vecino', 'El paso de deauth está limitado a 1 paquete a propósito: lo mínimo ético para entender el ataque en TU red', 'La detección es parte del aprendizaje: un pentest profesional reporta tanto el acceso como la trazabilidad'],
+    tips: ['El chipset manda más que el software: AR9271 y RT3070 para empezar; ojo con las revisiones (TL-WN722N v1 ✅ v2 ❌)', 'PMKID es la vía limpia cuando hay clientes: no necesita deauth ni espera', 'hashcat -m 22000 es el formato unificado actual: el -m 2500 de los tutoriales viejos está deprecado'],
+  },
+  wifi80211: {
+    what: 'Decodificador de frames 802.11 desde hex, 100% local: parsea el Frame Control bit a bit (versión, tipo, subtipo — beacon, probe, deauth, QoS data…), los 8 flags con su significado real (retry, protected frame, power management…), las 3 direcciones con etiquetas que cambian según toDS/fromDS (DA/SA/BSSID), duración, seq/frag, y los Information Elements de beacons y probes: SSID, rates, canal, país, HT/VHT, vendor OUIs y el RSN completo con suites de cifrado, AKM (PSK/SAE/802.1X/OWE) y estado de PMF. Incluye 4 frames de ejemplo listos para diseccionar.',
+    params: [
+      { name: 'frame hex', type: 'texto', required: true, desc: 'bytes del MAC header en hex, con o sin espacios/colon (acepta truncados)' },
+      { name: 'flags', type: 'visual', desc: 'los 8 bits del byte 1 del FC encendidos/apagados con explicación' },
+      { name: 'IEs', type: 'tabla', desc: 'cada Information Element con id, nombre, longitud y detalle decodificado' },
+    ],
+    daily: ['Entender qué es EXACTAMENTE ese beacon, probe o deauth que ves en Wireshark sin adivinar', 'Verificar la seguridad que anuncia una red leyendo su RSN: ¿WPA3 de verdad, PMF required o puro marketing?', 'Comparar un frame normal con uno sospechoso: retransmisiones masivas, deauths con reason codes raros'],
+    ethical: ['Decodificar frames es leer el protocolo, no atacar: es la base del análisis inalámbrico defensivo', 'El frame de deauth del ejemplo es didáctico: entenderlo es lo que permite detectarlo y bloquearlo con PMF', 'Capturar el aire ajeno pasivamente no está penado en la mayoría de jurisdicciones, pero DECODIFICAR contenido de terceros sí puede serlo: quédate en metadatos'],
+    tips: ['El Frame Control son solo 2 bytes y ya te dicen tipo, subtipo y si va cifrado: lo primero que mira un analista', 'En frames de gestión, addr2 = quien transmite: es el campo que delata un evil twin (misma SSID, otra MAC)', 'IE 61 (HT Operation) confirma el canal real operativo, que a veces no coincide con el IE 3 anunciado'],
+  },
+  wifiplanner: {
+    what: 'Planificador de canales WiFi con el solapamiento real del espectro, no el de los tutoriales. 2.4 GHz: modela el ancho de 20 MHz sobre el paso de 5 MHz (canales a menos de 4 de distancia se pisan), calcula el mapa de congestión por canal a partir de TUS APs vecinos con su potencia relativa, sugiere los 3 mejores y genera plan automático 1/6/11 para tus APs propios. 5 GHz: los 25 canales con su estado DFS (radar, banda meteorológica), los 6 grupos de 80 MHz con avisos de CAC y la recomendación UNII-1/UNII-3. 6 GHz: los 15 PSC que los clientes escanean primero y por qué esa banda nace sin el juego de Tetris de 2.4.',
+    params: [
+      { name: 'APs vecinos', type: 'lista editable', required: true, desc: 'SSID, canal y potencia de lo que ves en airodump-ng' },
+      { name: 'mapa de congestión', type: 'gráfico', desc: 'score 0-10 por canal 1-13 con co-canal y solape parcial separados' },
+      { name: 'banda', type: 'select', desc: '2.4 / 5 / 6 GHz: cada una con su plan y sus trampas' },
+    ],
+    daily: ['Elegir el canal de tu router con datos en vez de dejarse el 6 por defecto como todo el vecindario', 'Diagnosticar por qué tu WiFi va lento a ciertas horas: mira el mapa de congestión antes de culpar al ISP', 'Planificar el despliegue de varios APs sin autocanibalizarte (y saber cuándo pasar todo a 5/6 GHz)'],
+    ethical: ['Escanear y planificar tu propia red (o con autorización) es gestión de espectro legítima', 'Cambiar el canal de TU router no afecta a nadie: compartir el medio es el diseño de CSMA/CA', 'La regla de oro que enseña: canales pegados (6 y 9) son PEOR que co-canal — no hagas al vecino lo que no quieres para ti'],
+    tips: ['En 2.4 GHz solo 1/6/11 no solapan: todo lo demás es compromising', 'DFS 52-144 da espectro limpio pero si el AP oye radar: salto de canal y ~60 s de CAC en silencio', 'En 6 GHz colócate SIEMPRE en un PSC: si no, tu AP es invisible para la mayoría de clientes'],
+  },
+  wifiaudit: {
+    what: 'Auditor de seguridad para TU red WiFi que puntúa la configuración sobre 100 con nota A+ a F: calidad del cifrado (WEP→WPA3), autenticación (open/PSK/SAE/802.1X), PMF 802.11w, entropía real de la passphrase (con penalización por patrones humanos tipo rockyou), WPS, panel de administración y firmware. Desglose de cada check con su explicación, checklist de hardening priorizada por esfuerzo (de minutos a una tarde), cazadores de falsas seguridades (SSID oculto, filtro MAC) y matriz de 7 amenazas (evil twin, karma, deauth, crack offline, Pixie Dust, KRACK, Dragonblood) con cómo se detectan y su defensa.',
+    params: [
+      { name: 'configuración', type: 'formulario', required: true, desc: 'cifrado, auth, PMF, passphrase, WPS, admin, firmware, segmentación' },
+      { name: 'score', type: 'gráfico', desc: 'anillo animado 0-100 con grade y desglose de puntos por check' },
+      { name: 'hardening', type: 'checklist', desc: '7 acciones priorizadas con el porqué, los pasos y el esfuerzo' },
+    ],
+    daily: ['Auditar tu red de casa antes de que lo haga otro: 10 minutos que cierran el 90% del riesgo', 'Justificar cambios al que manda en el router: el score con desglose es el argumento, no la opinión', 'Entrenar el ojo de auditor: saber qué mirar y en qué orden en cualquier despliegue WiFi'],
+    ethical: ['Diseñada para redes PROPIAS o con autorización escrita: es una herramienta de defensa', 'La passphrase se evalúa en local con entropía y patrones: nunca sale del navegador', 'El hardening es el objetivo: cada check fallido es exactamente lo que explota un atacante con herramientas públicas'],
+    tips: ['Dos controles tapan el 90% de la matriz: PMF required y passphrase de 16+ aleatorios', 'WPS con Pixie Dust cae en minutos en muchos chips aunque la passphrase sea perfecta: desactívalo', 'SSID oculto y filtro MAC son falsa seguridad: el SSID viaja en los probes de tus clientes y una MAC se clona en 5 segundos'],
+  },
 }

@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>126 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>130 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-126-2ee88a?style=flat-square" alt="126 tools" />
+  <img src="https://img.shields.io/badge/tools-130-2ee88a?style=flat-square" alt="130 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 126 herramientas
+## 🧰 Las 130 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -101,6 +101,10 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Internet Speed Test** | Test real de latencia, jitter, descarga y subida contra speed.cloudflare.com con velocímetro animado, nota, matriz de usos e historial | 🔵 speed.cloudflare.com |
 | **Wireshark Display Filters** | Constructor visual de display filters: catálogo por protocolo, presets de caza (escaneos, exfil DNS, credenciales) y validación en vivo | 🟢 local |
 | **BLE GATT Explorer** | Servicios y characteristics Bluetooth con su riesgo real (tracking, DFU sin firma), conversor UUID y decoder de advertising | 🟢 local |
+| **WiFi Attack Lab** | Los 7 pasos de una auditoría 802.11 en tu laboratorio: comandos con placeholders personalizables, qué esperar en cada salida, la trampa típica y cómo se detecta cada acción | 🟢 local |
+| **Decodificador 802.11** | Pega un frame en hex y desglosa la cabecera MAC bit a bit: flags, direcciones según toDS/fromDS e Information Elements con el RSN completo (WPA2/WPA3/PMF) | 🟢 local |
+| **WiFi Channel Planner** | Planifica canales 2.4/5/6 GHz con el solapamiento real del espectro: mapa de congestión con tus APs vecinos, mejores canales, grupos de 80 MHz con avisos DFS y PSC de 6 GHz | 🟢 local |
+| **WiFi Security Auditor** | Puntúa tu red sobre 100 (cifrado, PMF, passphrase, WPS, admin) con hardening priorizado por esfuerzo y matriz de amenazas: evil twin, karma, deauth, KRACK, Dragonblood | 🟢 local |
 
 ### Forense
 | Tool | Descripción | Red |
