@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Gauge, Play, RotateCcw, Info, Download, Upload, Timer } from 'lucide-react'
+import { Gauge, Play, RotateCcw, Info, Download, Upload, Timer, Trash2, CheckCircle2, XCircle, TrendingUp } from 'lucide-react'
 import { ToolHeader, Badge, Reveal, Button, useToast } from '../components/ui'
 
 /* ───────── modelo de fases ───────── */
@@ -22,6 +22,61 @@ const TEST_URLS = {
 }
 
 const fmt = (v: number | null, d = 1): string => (v === null ? '—' : v.toFixed(d))
+
+/* ───────── veredicto, usos e historial ───────── */
+
+interface HistoryEntry {
+  t: number
+  ping: number
+  jitter: number
+  down: number
+  up: number
+}
+
+const HISTORY_KEY = 'hacknexus-speedtest-v1'
+const loadHistory = (): HistoryEntry[] => {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY)
+    return raw ? (JSON.parse(raw) as HistoryEntry[]) : []
+  } catch {
+    return []
+  }
+}
+
+const gradeFor = (r: PhaseResult): { grade: string; color: string; note: string } => {
+  const down = r.downMbps ?? 0
+  const up = r.upMbps ?? 0
+  const ping = r.ping ?? 999
+  const jitter = r.jitter ?? 999
+  let s = 0
+  s += down >= 600 ? 40 : down >= 300 ? 36 : down >= 100 ? 30 : down >= 50 ? 22 : down >= 25 ? 15 : down >= 10 ? 8 : 3
+  s += up >= 300 ? 30 : up >= 100 ? 26 : up >= 30 ? 20 : up >= 10 ? 13 : up >= 5 ? 8 : 3
+  s += ping <= 10 ? 20 : ping <= 25 ? 17 : ping <= 50 ? 12 : ping <= 80 ? 7 : ping <= 150 ? 3 : 0
+  s += jitter <= 2 ? 10 : jitter <= 5 ? 8 : jitter <= 15 ? 5 : jitter <= 30 ? 2 : 0
+  if (s >= 92) return { grade: 'A+', color: '#2ee88a', note: 'Excelente: fibra simétrica de gama alta o mejor' }
+  if (s >= 82) return { grade: 'A', color: '#2ee88a', note: 'Muy buena: holgada para cualquier uso doméstico y telemétrico' }
+  if (s >= 70) return { grade: 'B', color: '#38bdf8', note: 'Buena: cubre 4K y teletrabajo sin despeinarse' }
+  if (s >= 55) return { grade: 'C', color: '#fbbf24', note: 'Correcta: sirve, pero se nota cuando compartes la línea' }
+  if (s >= 40) return { grade: 'D', color: '#f97316', note: 'Justa: la subida o la latencia te van a limitar' }
+  return { grade: 'E', color: '#f43f5e', note: 'Limitada: revisa los consejos de abajo antes de culpar al contrato' }
+}
+
+const useCases = (r: PhaseResult): { name: string; ok: boolean; req: string }[] => {
+  const down = r.downMbps ?? 0
+  const up = r.upMbps ?? 0
+  const ping = r.ping ?? 999
+  const jitter = r.jitter ?? 999
+  return [
+    { name: 'Videollamadas HD', ok: ping < 150 && up >= 1.5 && jitter < 40, req: '↓1.5 · ping<150ms' },
+    { name: 'Gaming competitivo', ok: ping <= 50 && jitter <= 10, req: 'ping<50 · jitter<10ms' },
+    { name: 'Streaming 4K', ok: down >= 25, req: '↓25 Mbps' },
+    { name: 'Cloud gaming', ok: down >= 35 && ping <= 40 && jitter <= 5, req: '↓35 · ping<40ms' },
+    { name: 'Streaming en vivo', ok: up >= 6 && jitter < 30, req: '↑6 Mbps · estable' },
+    { name: 'Backup a la nube', ok: up >= 20, req: '↑20 Mbps' },
+    { name: 'Teletrabajo + VPN', ok: down >= 10 && up >= 5 && ping <= 80, req: '↓10 ↑5 · ping<80ms' },
+    { name: 'Descargas pesadas', ok: down >= 100, req: '↓100 Mbps' },
+  ]
+}
 
 /* ───────── velocímetro SVG ───────── */
 
@@ -184,6 +239,8 @@ export default function SpeedTest() {
   const [samples, setSamples] = useState<Record<'ping' | 'download' | 'upload', number[]>>({ ping: [], download: [], upload: [] })
   const [final, setFinal] = useState<PhaseResult | null>(null)
   const [err, setErr] = useState<string | null>(null)
+  const [history, setHistory] = useState<HistoryEntry[]>(loadHistory)
+  const [delta, setDelta] = useState<number | null>(null)
 
   const onPhase = useCallback((p: Phase) => { setPhase(p); if (p === 'idle') setLive(0) }, [])
   const { run, abort } = useSpeedTest(onPhase)
@@ -199,6 +256,13 @@ export default function SpeedTest() {
         setSamples((s) => ({ ...s, [p === 'upload' ? 'upload' : p]: [...s[p === 'upload' ? 'upload' : p], mbps] }))
       })
       setFinal(r)
+      const prev = history
+      const avgDown = prev.length ? prev.reduce((a, h) => a + h.down, 0) / prev.length : 0
+      const entry: HistoryEntry = { t: Date.now(), ping: r.ping ?? 0, jitter: r.jitter ?? 0, down: r.downMbps ?? 0, up: r.upMbps ?? 0 }
+      const nh = [entry, ...prev].slice(0, 12)
+      setHistory(nh)
+      setDelta(avgDown > 0 ? Math.round(((entry.down - avgDown) / avgDown) * 100) : null)
+      try { localStorage.setItem(HISTORY_KEY, JSON.stringify(nh)) } catch { /* noop */ }
       toast('Test completado')
     } catch (e) {
       setErr(`No se pudo completar el test: ${(e as Error).message}. Revisa la conexión o si un firewall bloquea speed.cloudflare.com.`)
@@ -311,6 +375,71 @@ export default function SpeedTest() {
                 ))}
               </div>
             </div>
+
+            {final && (
+              <div className="card p-5">
+                <h3 className="mb-3 font-mono text-xs font-bold uppercase tracking-widest text-grey">veredicto</h3>
+                <div className="flex items-center gap-4">
+                  <div
+                    className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border-2 font-mono text-2xl font-extrabold"
+                    style={{ borderColor: gradeFor(final).color, color: gradeFor(final).color, background: `${gradeFor(final).color}14` }}
+                  >
+                    {gradeFor(final).grade}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-[12.5px] font-semibold text-white">{gradeFor(final).note}</p>
+                    <p className="mt-1 flex flex-wrap gap-x-3 font-mono text-[10.5px] text-grey">
+                      <span>simetría ↓/↑: <b className="text-ink">{(final.downMbps && final.upMbps ? (final.upMbps / final.downMbps) * 100 : 0).toFixed(0)}%</b></span>
+                      {delta !== null && (
+                        <span className={delta >= 0 ? 'text-ok' : 'text-bad'}>
+                          <TrendingUp size={10} className="mr-0.5 inline" />{delta >= 0 ? '+' : ''}{delta}% vs tu media
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-1.5">
+                  {useCases(final).map((u) => (
+                    <div
+                      key={u.name}
+                      className={`flex items-center gap-1.5 rounded-lg border px-2 py-1.5 font-mono text-[10.5px] ${u.ok ? 'border-ok/30 bg-ok/5 text-ok' : 'border-edge bg-black/20 text-grey/60'}`}
+                      title={u.req}
+                    >
+                      {u.ok ? <CheckCircle2 size={11} className="shrink-0" /> : <XCircle size={11} className="shrink-0" />}
+                      <span className="truncate">{u.name}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {history.length > 0 && (
+              <div className="card p-5">
+                <div className="mb-3 flex items-center justify-between">
+                  <h3 className="font-mono text-xs font-bold uppercase tracking-widest text-grey">historial ({history.length})</h3>
+                  <button
+                    onClick={() => { setHistory([]); setDelta(null); try { localStorage.removeItem(HISTORY_KEY) } catch { /* noop */ } }}
+                    title="borrar historial"
+                    className="rounded p-1 text-grey transition-colors hover:text-bad"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                </div>
+                <div className="space-y-1">
+                  {history.slice(0, 6).map((h, i) => (
+                    <div key={h.t} className="flex items-center justify-between rounded-lg border border-edge/60 bg-black/20 px-3 py-1.5 font-mono text-[11px]">
+                      <span className="text-grey">{new Date(h.t).toLocaleString('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })}</span>
+                      <span className="flex gap-2.5">
+                        <span className="text-ok">↓{h.down.toFixed(0)}</span>
+                        <span className="text-[#a78bfa]">↑{h.up.toFixed(0)}</span>
+                        <span className="text-info">{h.ping.toFixed(0)}ms</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-2 font-mono text-[9.5px] text-grey/50">guardado solo en tu navegador (localStorage) · i = más reciente</p>
+              </div>
+            )}
 
             <div className="card p-5">
               <h3 className="mb-2 flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-widest text-grey">

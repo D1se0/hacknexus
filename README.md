@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>116 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>126 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-116-2ee88a?style=flat-square" alt="116 tools" />
+  <img src="https://img.shields.io/badge/tools-126-2ee88a?style=flat-square" alt="126 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 116 herramientas
+## 🧰 Las 126 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -53,6 +53,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Multi-Encoders** | Base16/32/58/62/64/85, hex, bin, octal, morse, URL, HTML, Unicode | 🟢 local |
 | **Emoji & ZW Encoder** | Codifica mensajes en emojis y texto invisible zero-width | 🟢 local |
 | **Cifrados Clásicos** | César/ROT13/ROT47, Vigenère, Atbash, XOR + criptoanálisis automático por frecuencias | 🟢 local |
+| **Hash Visual Fingerprint** | Convierte cualquier hash en un identicon determinista y compara dos de un vistazo con % de similitud (efecto avalancha hecho imagen) | 🟢 local |
+| **X.509 Decoder** | Pega un PEM y desglosa SAN, EKU, keyUsage y BasicConstraints con flags de sospecha: CA:TRUE inesperada, SHA1, wildcards, auto-firmados | 🟢 local |
 
 ### Contraseñas
 | Tool | Descripción | Red |
@@ -77,6 +79,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **TTY Upgrade** | De reverse shell tonta a terminal interactiva: python pty, script, socat, rlwrap con pasos y troubleshooting | 🟢 local |
 | **File Transfer Arsenal** | 14 métodos de transferencia atacante↔víctima con comandos exactos: HTTP, nc, scp, certutil, PowerShell, SMB… | 🟢 local |
 | **DuckyScript Builder** | Compón payloads badUSB por bloques para Rubber Ducky y Flipper Zero: presets didácticos reversibles, suplantación VID/PID y avisos de compatibilidad | 🟢 local |
+| **Cron/AT Persistence Lab** | Simulador de persistencia T1053 para tu lab: genera la tarea, su rollback y las detecciones que la cazan (Sigma, YARA, hunting) | 🟢 local |
 
 ### Red
 | Tool | Descripción | Red |
@@ -95,7 +98,9 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Network Admin Calc** | 7 calculadoras: TTL→SO, MTU/MSS, wildcards ACL Cisco, plan de VLANs, ToS/DSCP, transferencias y CIDR | 🟢 local |
 | **Network Topology Designer** | Diseña topologías arrastrando nodos (13 tipos) y enlazándolos por medio (ethernet/fibra/wifi/vpn), con análisis de huérfanos/duplicados, BOM de materiales y export PNG/JSON | 🟢 local |
 | **Cable Docs Animadas** | Pinout RJ45 T568A/B con señal animada, categorías Cat5e–Cat8, tipos de cable con trampas, fibra single/multimodo y conectores LC/SC/ST/MPO | 🟢 local |
-| **Internet Speed Test** | Test real de latencia, jitter, descarga y subida contra speed.cloudflare.com con velocímetro animado y guía de interpretación | 🔵 speed.cloudflare.com |
+| **Internet Speed Test** | Test real de latencia, jitter, descarga y subida contra speed.cloudflare.com con velocímetro animado, nota, matriz de usos e historial | 🔵 speed.cloudflare.com |
+| **Wireshark Display Filters** | Constructor visual de display filters: catálogo por protocolo, presets de caza (escaneos, exfil DNS, credenciales) y validación en vivo | 🟢 local |
+| **BLE GATT Explorer** | Servicios y characteristics Bluetooth con su riesgo real (tracking, DFU sin firma), conversor UUID y decoder de advertising | 🟢 local |
 
 ### Forense
 | Tool | Descripción | Red |
@@ -106,6 +111,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Esteganografía LSB** | Oculta/extrae mensajes en el bit menos significativo de píxeles PNG (canvas) | 🟢 local |
 | **Log Forensics** | auth.log/syslog y EVTX-XML: fuerza bruta, top IPs, usuarios, histograma horario, eventos sospechosos (sudo peligroso, 4720, 1102…) y export JSON | 🟢 local |
 | **File Carver** | Carving por magic bytes: recupera PNG/JPG/GIF/PDF/ZIP/RAR/7z/GZIP embebidos en dumps, con preview, SHA-256 y búsqueda ASCII/UTF-16 | 🟢 local |
+| **Stego Audio** | Esteganografía LSB sobre WAV/PCM real con parser RIFF propio, capacidad en bytes, waveform y espectrograma por FFT propia | 🟢 local |
 
 ### Ingeniería Inversa
 | Tool | Descripción | Red |
@@ -113,6 +119,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Binary Inspector** | Parsea PE/ELF: headers, secciones con entropía, imports por DLL, exports, packers (UPX/entropía), Go/Rust/.NET y anti-debug — sin ejecutar nada | 🟢 local |
 | **Deobfuscator** | Descodificación multi-capa automática (hex→base64→URL→escapes…), crackeo XOR single-byte por frecuencia, ROT-N y métricas de ofuscación JS | 🟢 local |
 | **NFC / RFID Lab** | Laboratorio educativo de tarjetas de proximidad sin hardware: 8 familias de chips, UIDs y dumps simulados, Wiegand 26 bidireccional, modulaciones animadas y ataques con su defensa | 🟢 local |
+| **Bytecode Inspector** | Descompilador didáctico: parsea .class de Java real (constant pool, fields, methods) y cabecera de .pyc, con strings sospechosos | 🟢 local |
+| **Firmware Inspector** | Parsea imágenes ESP8266/ESP32 (header, segmentos, app description) e Intel HEX de Arduino, y extrae strings sospechosos del binario | 🟢 local |
 
 ### Phishing
 | Tool | Descripción | Red |
@@ -166,6 +174,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Usuario Generator** | Variaciones de usernames y emails corporativos con 9 convenciones y service accounts para enumeración y spraying | 🟢 local |
 | **Diccionario de Acrónimos** | 196 acrónimos de ciberseguridad con definición en español organizados por dominio: de APT a YARA | 🟢 local |
 | **Team Health Check** | Escaneo real de tu equipo desde el navegador (CPU, RAM, batería, red, GPU) con benchmark, desgaste estimado por antigüedad y plan de mantenimiento | 🟢 local |
+| **Regex ReDOS Analyzer** | Detecta backtracking catastrófico en regex: análisis estructural + medición real del matching en worker con entradas crecientes | 🟢 local |
+| **Payload Time Machine** | Museo interactivo del malware: 35 años de ataques con su impacto, técnicas MITRE que popularizó y la lección de defensa que dejó | 🟢 local |
 
 ### Lenguajes
 | Tool | Descripción | Red |
@@ -193,6 +203,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 Además de las herramientas, la suite incluye dos secciones de conocimiento:
 
 - **[Documentación](https://d1se0.github.io/hacknexus/#/docs)** — cada herramienta con una ficha ultradetallada: qué hace exactamente, parámetros y entradas, usos reales del día a día, aplicaciones en hacking ético y tips. Con buscador global.
+- **[¿Qué herramienta necesito?](https://d1se0.github.io/hacknexus/#/advisor)** — orientador por necesidades: dime qué quieres conseguir (hardening, OSINT, captura, informe…) y te llevo directo a las tools adecuadas con los pasos de inicio. Para quien no se sabe el catálogo de memoria.
 - **[Comparativa de OS de hacking ético](https://d1se0.github.io/hacknexus/#/os-compare)** — Kali, Arch (+BlackArch), Parrot, Ubuntu, Windows Server/AD, RHEL, Tails, Qubes y más: estadísticas animadas, pros/contras, veredicto honesto, ruta de aprendizaje recomendada y **repos de entornos customizados**, incluidos los del autor:
   - [kali-environment-install](https://github.com/D1se0/kali-environment-install) · [environment-kali-nordic](https://github.com/D1se0/environment-kali-nordic) · [guía del entorno Kali](https://d1se0.github.io/blog_hacking/view.html?enviroment=kalilinux)
   - [Arch_i3_d1se0_Environment](https://github.com/D1se0/Arch_i3_d1se0_Environment) · [environment-ubuntu-installer](https://github.com/D1se0/environment-ubuntu-installer)

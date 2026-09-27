@@ -93,19 +93,37 @@ export default function LangLab({ langId }: { langId: string }) {
           <InfoBanner>
             <b>{lang.name}</b> — {lang.tagline} <span className="text-grey">· Motor: {lang.engineNote}</span>
           </InfoBanner>
-          {lang.sections.map((s, i) => (
-            <Reveal key={s.title} delay={i * 0.03}>
-              <div className="card p-5">
-                <div className="mb-1 flex items-center gap-2">
-                  <span className="font-mono text-[10px] text-grey">0{i + 1}</span>
-                  <h3 className="font-mono text-sm font-bold text-white">{s.title}</h3>
-                  <CopyBtn text={s.snippet} className="ml-auto" />
+
+          {/* índice de secciones */}
+          <div className="flex flex-wrap gap-1.5 rounded-lg border border-edge bg-black/20 p-3">
+            <span className="mr-1 self-center font-mono text-[10px] uppercase tracking-wider text-grey">índice</span>
+            {lang.sections.map((s, i) => (
+              <button
+                key={s.title}
+                onClick={() => document.getElementById(`sec-${langId}-${i}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })}
+                className="rounded-full border border-edge px-2.5 py-1 font-mono text-[10px] text-grey transition-colors hover:border-acento/50 hover:text-acento"
+              >
+                {i + 1}· {s.title}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid items-start gap-3 xl:grid-cols-2">
+            {lang.sections.map((s, i) => (
+              <Reveal key={s.title} delay={Math.min(i * 0.02, 0.2)} className={cn(i === 0 && 'xl:col-span-2')}>
+                <div id={`sec-${langId}-${i}`} className="card h-full p-5">
+                  <div className="mb-1 flex items-center gap-2">
+                    <span className="rounded border border-acento/30 px-1.5 py-0.5 font-mono text-[10px] font-bold text-acento">{String(i + 1).padStart(2, '0')}</span>
+                    <h3 className="font-mono text-sm font-bold text-white">{s.title}</h3>
+                    <CopyBtn text={s.snippet} className="ml-auto" />
+                  </div>
+                  <p className="mb-3 text-xs leading-relaxed text-grey">{s.desc}</p>
+                  <CodeView code={s.snippet} language={lang.prism} maxH="20rem" />
                 </div>
-                <p className="mb-3 text-xs text-grey">{s.desc}</p>
-                <CodeView code={s.snippet} language={lang.prism} maxH="22rem" />
-              </div>
-            </Reveal>
-          ))}
+              </Reveal>
+            ))}
+          </div>
+
           <button
             onClick={() => setTab('playground')}
             className="flex w-full items-center justify-center gap-2 rounded-lg border border-acento/40 py-3 font-mono text-sm text-acento transition-colors hover:bg-acento/10"

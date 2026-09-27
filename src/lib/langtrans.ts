@@ -90,7 +90,7 @@ const splitTop = (s: string, sep: string): string[] => {
 
 /* Normaliza una expresión al "neutro" del IR */
 const canonBuiltins = (e: string): string => {
-  let x = e
+  let x = e ?? ''
   const map: [RegExp, string][] = [
     [/\blen\(/g, 'LEN('], [/\bstrlen\(/g, 'LEN('],
     [/\bstr\(/g, 'STR('], [/\bString\(/g, 'STR('], [/\.toString\(\)/g, ''], [/\bto_s\b/g, ''],
@@ -112,6 +112,7 @@ const canonBuiltins = (e: string): string => {
 
 /* f-strings python / interpolación ruby y php → canónico ${expr} */
 const canonArg = (e: string): string => {
+  if (!e) return ''
   let x = canonBuiltins(e)
   // f"..." python
   x = x.replace(/\bf(["'])((?:[^\\]|\\.)*?)\1/g, (_m, _q, content: string) =>
@@ -257,7 +258,11 @@ function parsePython(src: string): Parsed {
       const cur = indentOf(rawLine)
       if (cur < indent) break
       if (cur > indent) { issues.push({ line: idx + 1, text: 'indentación inesperada: línea ignorada' }); idx++; continue }
+      // parsePyLine solo avanza idx en sentencias de bloque (def/for/while/if);
+      // las simples no lo hacen: si no avanzó, avanza aquí (evita bucle infinito)
+      const before = idx
       body.push(parsePyLine(line, indent))
+      if (idx === before) idx++
     }
     return body
   }
@@ -296,7 +301,10 @@ function parseBraces(src: string, lang: TransLang): Parsed {
       if (/^<\?php$/.test(line) || /^#!/.test(line) || /^(package|using|import|namespace|from\s+\w+\s+import)\b/.test(line)) { idx++; continue }
       if (/^(?:(?:public|private|protected|internal)\s+)*(?:(?:final|abstract|sealed|static)\s+)*(?:class|interface|struct|enum)\s+\w+[^{]*\{$/.test(line)) { idx++; continue }
       if (lang === 'ruby' && /^(elsif|else)\b/.test(line)) break // cadena del if
+      // parseLine solo avanza idx en sentencias de bloque; si no avanzó, avanza aquí (evita bucle infinito)
+      const before = idx
       body.push(parseLine(line))
+      if (idx === before) idx++
     }
     return body
   }
@@ -333,7 +341,7 @@ function parseBraces(src: string, lang: TransLang): Parsed {
           idx++
           let endv = canonArg(condm[3])
           if (condm[2] === '<=') endv = `(${endv} + 1)`
-          return { k: 'forr', v: initm[1], start: canonArg(initm[2 + 1]), end: endv, body: parseBlock() }
+          return { k: 'forr', v: initm[1], start: canonArg(initm[2]), end: endv, body: parseBlock() }
         }
       }
     }
@@ -521,6 +529,45 @@ const emitTemplate = (expr: string, to: TransLang): string => {
   }
 }
 
+/* expansión de canónicos con paréntesis balanceados: soporta anidación (INT(INPUT(x)))
+   que los regex planos no pueden convertir. Respeta comillas al buscar el cierre. */
+const CANON_KINDS = 'LEN|STR|INT|FLOAT|FLOOR|UP|LOW|ABS|INPUT'
+const expandCanon = (s: string, f: (kind: string, inner: string) => string): string => {
+  for (;;) {
+    const m = s.match(new RegExp(`\\b(${CANON_KINDS})\\(`))
+    if (!m || m.index === undefined) return s
+    let depth = 0
+    let inStr: string | null = null
+    let end = -1
+    for (let i = m.index + m[0].length - 1; i < s.length; i++) {
+      const c = s[i]
+      if (inStr) { if (c === inStr) inStr = null; continue }
+      if (c === '"' || c === "'") { inStr = c; continue }
+      if (c === '(') depth++
+      else if (c === ')') { depth--; if (depth === 0) { end = i; break } }
+    }
+    if (end < 0) return s
+    const inner = expandCanon(s.slice(m.index + m[0].length, end), f)
+    s = s.slice(0, m.index) + f(m[1], inner) + s.slice(end + 1)
+  }
+}
+
+type CanonMap = Record<string, (v: string) => string>
+const JS_CANON: CanonMap = {
+  LEN: (v) => `(${v}).length`, STR: (v) => `String(${v})`, INT: (v) => `parseInt(${v})`, FLOAT: (v) => `parseFloat(${v})`,
+  FLOOR: (v) => `Math.floor(${v})`, UP: (v) => `(${v}).toUpperCase()`, LOW: (v) => `(${v}).toLowerCase()`, ABS: (v) => `Math.abs(${v})`, INPUT: (v) => `(prompt(${v}) ?? "")`,
+}
+const CANON_MAPS: Record<TransLang, CanonMap> = {
+  python: { LEN: (v) => `len(${v})`, STR: (v) => `str(${v})`, INT: (v) => `int(${v})`, FLOAT: (v) => `float(${v})`, FLOOR: (v) => `math.floor(${v})`, UP: (v) => `(${v}).upper()`, LOW: (v) => `(${v}).lower()`, ABS: (v) => `abs(${v})`, INPUT: (v) => `input(${v})` },
+  javascript: JS_CANON,
+  typescript: JS_CANON,
+  java: { LEN: (v) => `(${v}).length()`, STR: (v) => `String.valueOf(${v})`, INT: (v) => `Integer.parseInt(${v})`, FLOAT: (v) => `Float.parseFloat(${v})`, FLOOR: (v) => `(int) Math.floor(${v})`, UP: (v) => `(${v}).toUpperCase()`, LOW: (v) => `(${v}).toLowerCase()`, ABS: (v) => `Math.abs(${v})`, INPUT: (v) => `input(${v})` },
+  csharp: { LEN: (v) => `(${v}).Length`, STR: (v) => `Convert.ToString(${v})`, INT: (v) => `int.Parse(${v})`, FLOAT: (v) => `double.Parse(${v})`, FLOOR: (v) => `Math.Floor(${v})`, UP: (v) => `(${v}).ToUpper()`, LOW: (v) => `(${v}).ToLower()`, ABS: (v) => `Math.Abs(${v})`, INPUT: (v) => `Input(${v})` },
+  go: { LEN: (v) => `len(${v})`, STR: (v) => `fmt.Sprintf("%v", ${v})`, INT: (v) => `strconv.Atoi(${v})`, FLOAT: (v) => `strconv.ParseFloat(${v}, 64)`, FLOOR: (v) => `math.Floor(${v})`, UP: (v) => `strings.ToUpper(${v})`, LOW: (v) => `strings.ToLower(${v})`, ABS: (v) => `math.Abs(${v})`, INPUT: (v) => `input(${v})` },
+  ruby: { LEN: (v) => `(${v}).length`, STR: (v) => `(${v}).to_s`, INT: (v) => `(${v}).to_i`, FLOAT: (v) => `(${v}).to_f`, FLOOR: (v) => `(${v}).floor`, UP: (v) => `(${v}).upcase`, LOW: (v) => `(${v}).downcase`, ABS: (v) => `(${v}).abs`, INPUT: (v) => (v ? `input(${v})` : 'gets.chomp') },
+  php: { LEN: (v) => `strlen(${v})`, STR: (v) => `strval(${v})`, INT: (v) => `intval(${v})`, FLOAT: (v) => `floatval(${v})`, FLOOR: (v) => `floor(${v})`, UP: (v) => `strtoupper(${v})`, LOW: (v) => `strtolower(${v})`, ABS: (v) => `abs(${v})`, INPUT: (v) => `readline(${v})` },
+}
+
 const emitCanon = (expr: string, to: TransLang): string => {
   let x = emitTemplate(expr, to)
   switch (to) {
@@ -530,90 +577,8 @@ const emitCanon = (expr: string, to: TransLang): string => {
     default: x = x.replace(/\bNULL\b/g, 'null')
   }
   if (to === 'php') x = x.replace(/\$(\w+)/g, '$$$1') // (idempotente)
-  // args de replace = [match, g1…gn, offset, string] → pasamos [match, g1…gn] como array
-  const sub = (re: RegExp, rep: string | ((m: string[]) => string)): void => {
-    x = x.replace(re, (...args: unknown[]) => (typeof rep === 'string' ? rep : rep(args.slice(0, -2).map(String))))
-  }
-  switch (to) {
-    case 'python':
-      sub(/LEN\(([^()]*)\)/g, (m) => `len(${m[1]})`)
-      sub(/STR\(([^()]*)\)/g, (m) => `str(${m[1]})`)
-      sub(/INT\(([^()]*)\)/g, (m) => `int(${m[1]})`)
-      sub(/FLOAT\(([^()]*)\)/g, (m) => `float(${m[1]})`)
-      sub(/FLOOR\(([^()]*)\)/g, (m) => `math.floor(${m[1]})`)
-      sub(/UP\(([^()]*)\)/g, (m) => `(${m[1]}).upper()`)
-      sub(/LOW\(([^()]*)\)/g, (m) => `(${m[1]}).lower()`)
-      sub(/ABS\(([^()]*)\)/g, (m) => `abs(${m[1]})`)
-      sub(/INPUT\(([^()]*)\)/g, (m) => `input(${m[1]})`)
-      break
-    case 'javascript':
-    case 'typescript':
-      sub(/LEN\(([^()]*)\)/g, (m) => `(${m[1]}).length`)
-      sub(/STR\(([^()]*)\)/g, (m) => `String(${m[1]})`)
-      sub(/INT\(([^()]*)\)/g, (m) => `parseInt(${m[1]})`)
-      sub(/FLOAT\(([^()]*)\)/g, (m) => `parseFloat(${m[1]})`)
-      sub(/FLOOR\(([^()]*)\)/g, (m) => `Math.floor(${m[1]})`)
-      sub(/UP\(([^()]*)\)/g, (m) => `(${m[1]}).toUpperCase()`)
-      sub(/LOW\(([^()]*)\)/g, (m) => `(${m[1]}).toLowerCase()`)
-      sub(/ABS\(([^()]*)\)/g, (m) => `Math.abs(${m[1]})`)
-      sub(/INPUT\(([^()]*)\)/g, (m) => `(prompt(${m[1]}) ?? "")`)
-      break
-    case 'java':
-      sub(/LEN\(([^()]*)\)/g, (m) => `(${m[1]}).length()`)
-      sub(/STR\(([^()]*)\)/g, (m) => `String.valueOf(${m[1]})`)
-      sub(/INT\(([^()]*)\)/g, (m) => `Integer.parseInt(${m[1]})`)
-      sub(/FLOAT\(([^()]*)\)/g, (m) => `Float.parseFloat(${m[1]})`)
-      sub(/FLOOR\(([^()]*)\)/g, (m) => `(int) Math.floor(${m[1]})`)
-      sub(/UP\(([^()]*)\)/g, (m) => `(${m[1]}).toUpperCase()`)
-      sub(/LOW\(([^()]*)\)/g, (m) => `(${m[1]}).toLowerCase()`)
-      sub(/ABS\(([^()]*)\)/g, (m) => `Math.abs(${m[1]})`)
-      sub(/INPUT\(([^()]*)\)/g, (m) => `input(${m[1]})`)
-      break
-    case 'csharp':
-      sub(/LEN\(([^()]*)\)/g, (m) => `(${m[1]}).Length`)
-      sub(/STR\(([^()]*)\)/g, (m) => `Convert.ToString(${m[1]})`)
-      sub(/INT\(([^()]*)\)/g, (m) => `int.Parse(${m[1]})`)
-      sub(/FLOAT\(([^()]*)\)/g, (m) => `double.Parse(${m[1]})`)
-      sub(/FLOOR\(([^()]*)\)/g, (m) => `Math.Floor(${m[1]})`)
-      sub(/UP\(([^()]*)\)/g, (m) => `(${m[1]}).ToUpper()`)
-      sub(/LOW\(([^()]*)\)/g, (m) => `(${m[1]}).ToLower()`)
-      sub(/ABS\(([^()]*)\)/g, (m) => `Math.Abs(${m[1]})`)
-      sub(/INPUT\(([^()]*)\)/g, (m) => `Input(${m[1]})`)
-      break
-    case 'go':
-      sub(/LEN\(([^()]*)\)/g, (m) => `len(${m[1]})`)
-      sub(/STR\(([^()]*)\)/g, (m) => `fmt.Sprintf("%v", ${m[1]})`)
-      sub(/FLOOR\(([^()]*)\)/g, (m) => `math.Floor(${m[1]})`)
-      sub(/UP\(([^()]*)\)/g, (m) => `strings.ToUpper(${m[1]})`)
-      sub(/LOW\(([^()]*)\)/g, (m) => `strings.ToLower(${m[1]})`)
-      sub(/ABS\(([^()]*)\)/g, (m) => `math.Abs(${m[1]})`)
-      sub(/INPUT\(([^()]*)\)/g, (m) => `input(${m[1]})`)
-      break
-    case 'ruby':
-      sub(/LEN\(([^()]*)\)/g, (m) => `(${m[1]}).length`)
-      sub(/STR\(([^()]*)\)/g, (m) => `(${m[1]}).to_s`)
-      sub(/INT\(([^()]*)\)/g, (m) => `(${m[1]}).to_i`)
-      sub(/FLOAT\(([^()]*)\)/g, (m) => `(${m[1]}).to_f`)
-      sub(/FLOOR\(([^()]*)\)/g, (m) => `(${m[1]}).floor`)
-      sub(/UP\(([^()]*)\)/g, (m) => `(${m[1]}).upcase`)
-      sub(/LOW\(([^()]*)\)/g, (m) => `(${m[1]}).downcase`)
-      sub(/ABS\(([^()]*)\)/g, (m) => `(${m[1]}).abs`)
-      sub(/INPUT\(\)/g, 'gets.chomp')
-      sub(/INPUT\(([^()]*)\)/g, (m) => `input(${m[1]})`)
-      break
-    case 'php':
-      sub(/LEN\(([^()]*)\)/g, (m) => `strlen(${m[1]})`)
-      sub(/STR\(([^()]*)\)/g, (m) => `strval(${m[1]})`)
-      sub(/INT\(([^()]*)\)/g, (m) => `intval(${m[1]})`)
-      sub(/FLOAT\(([^()]*)\)/g, (m) => `floatval(${m[1]})`)
-      sub(/FLOOR\(([^()]*)\)/g, (m) => `floor(${m[1]})`)
-      sub(/UP\(([^()]*)\)/g, (m) => `strtoupper(${m[1]})`)
-      sub(/LOW\(([^()]*)\)/g, (m) => `strtolower(${m[1]})`)
-      sub(/ABS\(([^()]*)\)/g, (m) => `abs(${m[1]})`)
-      sub(/INPUT\(([^()]*)\)/g, (m) => `input_${m[1]}`)
-      break
-  }
-  return x
+  const map = CANON_MAPS[to]
+  return expandCanon(x, (kind, inner) => map[kind]?.(inner) ?? inner)
 }
 
 /* helpers de lectura por teclado para lenguajes que no tienen input() directo */
@@ -624,7 +589,7 @@ const INPUT_HELPERS: Partial<Record<TransLang, (ind: string) => string>> = {
   csharp: (ind) =>
     `${ind}static string Input(string msg) {${ind}    Console.Write(msg);${ind}    return Console.ReadLine() ?? "";${ind}}${ind}`,
   go: (ind) =>
-    `${ind}func input(msg string) string {${ind}\tfmt.Print(msg)${ind}\tvar s string${ind}\tfmt.Scanln(&s)${ind}\treturn s${ind}}${ind}`,
+    `${ind}func input(msg string) string {\n${ind}\tfmt.Print(msg)\n${ind}\tvar s string\n${ind}\tfmt.Scanln(&s)\n${ind}\treturn s\n${ind}}\n`,
   ruby: (ind) =>
     `${ind}def input(msg)${ind}  print msg${ind}  gets.chomp${ind}end${ind}`,
 }
@@ -886,6 +851,7 @@ export function translate(src: string, from: TransLang, to: TransLang): Translat
     const imps = ['fmt']
     if (/math\.(Floor|Abs)/.test(joined)) imps.push('math')
     if (/strings\.(ToUpper|ToLower)/.test(joined)) imps.push('strings')
+    if (/strconv\./.test(joined)) imps.push('strconv')
     bodyLines.push('package main', '', 'import (', ...imps.map((i) => `\t"${i}"`), ')', '')
     bodyLines.push('func main() {', ...main, '}')
     if (ctx.usesInput) bodyLines.push('', ...(INPUT_HELPERS.go?.('') ?? '').split('\n').filter(Boolean))

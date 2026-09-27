@@ -1,9 +1,7 @@
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Laptop, Star, Check, X, Package, ExternalLink, ShieldCheck, Terminal, BookOpen, Sparkles, Monitor, Cpu, Compass } from 'lucide-react'
+import { Laptop, Star, Check, X, Package, ExternalLink, ShieldCheck, Terminal, BookOpen, Sparkles, Monitor, Cpu } from 'lucide-react'
 import { cn } from '../lib/util'
-import { searchTasks, TASK_CATS, TASK_CAT_LABEL, type TaskEntry } from '../lib/taskguide'
-import { findTool } from '../lib/registry'
 
 type Nav = (id: string) => void
 type Level = 'Principiante' | 'Intermedio' | 'Avanzado'
@@ -449,112 +447,12 @@ function OsModal({ os, onClose }: { os: OsDef; onClose: () => void }) {
   )
 }
 
+
 function GithubIcon() {
   return (
     <svg viewBox="0 0 24 24" className="mt-0.5 h-5 w-5 shrink-0 fill-grey transition-colors group-hover:fill-acento" aria-hidden>
       <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.19 1.76 1.19 1.03 1.75 2.69 1.25 3.34.95.1-.74.4-1.25.72-1.54-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11.1 11.1 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.25 5.67.41.35.77 1.04.77 2.1 0 1.52-.01 2.74-.01 3.11 0 .31.21.68.8.56A10.52 10.52 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
     </svg>
-  )
-}
-
-/* ---------- Página ---------- */
-
-/* ---------------- Guía rápida: "quiero hacer X" → herramientas ---------------- */
-
-function TaskFinder({ nav }: { nav: Nav }) {
-  const [q, setQ] = useState('')
-  const [cat, setCat] = useState<TaskEntry['category'] | 'todas'>('todas')
-  const [openId, setOpenId] = useState<string | null>(null)
-
-  const tasks = useMemo(() => {
-    let list = searchTasks(q)
-    if (cat !== 'todas') list = list.filter((t) => t.category === cat)
-    return list
-  }, [q, cat])
-
-  const goToTool = (id: string) => { window.location.hash = '/' + id }
-
-  return (
-    <div className="mt-10">
-      <div className="mb-4 flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-acento/30 bg-acento/10 text-acento"><Compass size={18} /></div>
-        <div>
-          <h2 className="text-lg font-bold text-white">¿Qué quieres hacer hoy?</h2>
-          <p className="text-xs text-grey">Dime la tarea y te llevo directo a las herramientas adecuadas</p>
-        </div>
-      </div>
-
-      <div className="mb-3 flex flex-wrap items-center gap-2">
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder="buscar tarea… (firewall, vpn, ssh, wordlist, informe)"
-          className="min-w-[220px] flex-1 rounded-lg border border-edge bg-black/40 px-3 py-2 font-mono text-xs text-ink outline-none placeholder:text-grey/50 focus:border-acento/50"
-        />
-      </div>
-      <div className="mb-4 flex flex-wrap gap-1.5">
-        {(['todas', ...TASK_CATS] as const).map((c) => (
-          <button
-            key={c}
-            onClick={() => setCat(c as TaskEntry['category'] | 'todas')}
-            className={`rounded-full border px-3 py-1 font-mono text-[10px] transition-colors ${cat === c ? 'border-acento/60 bg-acento/15 text-acento' : 'border-edge text-grey hover:border-acento/40 hover:text-ink'}`}
-          >
-            {c === 'todas' ? 'todas' : TASK_CAT_LABEL[c as TaskEntry['category']]}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid gap-2 md:grid-cols-2">
-        {tasks.map((t) => {
-          const open = openId === t.id
-          return (
-            <div key={t.id} className={cn('card rounded-lg p-4 transition-all', open && 'md:col-span-2')}>
-              <button onClick={() => setOpenId(open ? null : t.id)} className="w-full text-left">
-                <div className="flex items-center gap-2">
-                  <span className="text-lg">{t.icon}</span>
-                  <span className="text-sm font-semibold text-white">{t.task}</span>
-                  <span className="ml-auto rounded-full border border-edge px-2 py-0.5 font-mono text-[9px] text-grey">{TASK_CAT_LABEL[t.category]}</span>
-                </div>
-                <p className="mt-1 text-xs text-grey">{t.desc}</p>
-              </button>
-              {open && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="overflow-hidden">
-                  <div className="mt-3 grid gap-4 border-t border-edge pt-3 md:grid-cols-2">
-                    <div>
-                      <h4 className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-acento">por dónde empezar</h4>
-                      <ol className="space-y-1 text-xs text-grey">
-                        {t.steps.map((s, i) => <li key={s}><span className="text-acento">{i + 1}.</span> {s}</li>)}
-                      </ol>
-                    </div>
-                    <div>
-                      <h4 className="mb-1.5 font-mono text-[10px] uppercase tracking-wider text-acento">herramientas para esto</h4>
-                      <div className="flex flex-wrap gap-1.5">
-                        {t.tools.map((tid) => {
-                          const tool = findTool(tid)
-                          return (
-                            <button
-                              key={tid}
-                              onClick={() => goToTool(tid)}
-                              title={tool?.desc}
-                              className="rounded border border-acento/40 bg-acento/5 px-2 py-1 font-mono text-[11px] text-acento transition-all hover:bg-acento/15"
-                            >
-                              {tool?.short ?? tid} →
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </div>
-          )
-        })}
-        {tasks.length === 0 && (
-          <div className="rounded border border-edge py-6 text-center font-mono text-xs text-grey md:col-span-2">sin tareas para "{q}" — prueba con firewall, vpn, osint…</div>
-        )}
-      </div>
-    </div>
   )
 }
 
@@ -705,9 +603,6 @@ export default function OsCompare({ nav }: { nav: Nav }) {
           ))}
         </div>
       </div>
-
-      {/* guía rápida de tareas */}
-      <TaskFinder nav={nav} />
 
       {/* disclaimer */}
       <div className="mt-10 flex items-start gap-3 rounded-lg border border-warn/30 bg-warn/5 px-4 py-3 text-xs text-warn/90">

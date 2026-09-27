@@ -6,6 +6,7 @@ import { findTool } from './lib/registry'
 import Home from './pages/Home'
 import Docs from './pages/Docs'
 import OsCompare from './pages/OsCompare'
+import Advisor from './pages/Advisor'
 import Whoami from './pages/Whoami'
 import { TOOLS } from './lib/registry'
 
@@ -20,6 +21,9 @@ const FILE_ALIASES: Record<string, string> = {
   langtrans: 'LangTrans', bashforge: 'BashForge', psforge: 'PsForge', netsim: 'NetSim',
   cabledocs: 'CableDocs', healthcheck: 'HealthCheck', speedtest: 'SpeedTest',
   nfclab: 'NfcLab', duckyforge: 'DuckyForge',
+  redos: 'Redos', cronapt: 'CronApt', hashvisual: 'HashVisual', wifilter: 'WiFilter',
+  bytecode: 'Bytecode', firmware: 'Firmware', blegatt: 'BleGatt', stegoaudio: 'StegoAudio',
+  x509: 'X509', malwaretime: 'MalwareTime',
 }
 for (const t of TOOLS) {
   const file = FILE_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`
@@ -48,7 +52,7 @@ export default function App() {
 
   const tool = findTool(route)
   useEffect(() => {
-    const special: Record<string, string> = { whoami: 'Whoami — D1se0', docs: 'Documentación', 'os-compare': 'Comparativa de OS de Hacking Ético' }
+    const special: Record<string, string> = { whoami: 'Whoami — D1se0', docs: 'Documentación', 'os-compare': 'Comparativa de OS de Hacking Ético', advisor: '¿Qué herramienta necesito?' }
     document.title = tool
       ? `${tool.name} — HackNexus`
       : special[route]
@@ -77,6 +81,8 @@ export default function App() {
               <Docs nav={nav} />
             ) : route === 'os-compare' ? (
               <OsCompare nav={nav} />
+            ) : route === 'advisor' ? (
+              <Advisor />
             ) : tool ? (
               <Suspense
                 fallback={

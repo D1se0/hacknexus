@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Terminal, Plus, Trash2, ChevronUp, ChevronDown, BookOpen, AlertTriangle } from 'lucide-react'
-import { ToolHeader, Field, TextInput, TextArea, Button, Badge, Reveal, CopyBlock } from '../components/ui'
+import { ToolHeader, Field, TextInput, TextArea, Button, Badge, Reveal } from '../components/ui'
+import { CodeBlock } from '../components/highlight'
 import { BLOCK_DEFS, KIND_ORDER, DEFAULT_SCRIPT, buildScript, newBlock, type ForgeBlock, type BlockKind } from '../lib/bashforge'
 
 export default function BashForge() {
@@ -133,7 +134,7 @@ export default function BashForge() {
         {/* ─── salida ─── */}
         <div className="min-w-0 space-y-4">
           <Reveal delay={0.05}>
-            <CopyBlock text={result.script} label={`script.sh · ${result.lines} líneas`} maxH="max-h-[560px]" />
+            <CodeBlock code={result.script} lang="bash" label={`script.sh · ${result.lines} líneas`} maxH="max-h-[560px]" />
           </Reveal>
 
           {result.warnings.length > 0 && (

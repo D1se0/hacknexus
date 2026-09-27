@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, ChevronDown, BookOpen, Laptop, Star, FolderTree, UserRound } from 'lucide-react'
+import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, ChevronDown, BookOpen, Laptop, Star, FolderTree, UserRound, Compass } from 'lucide-react'
 import { TOOLS, CATEGORIES, CATEGORY_COLORS, SUBSECTIONS, subsectionOf, type ToolDef } from '../lib/registry'
 import { cn } from '../lib/util'
 import { Typewriter } from './ui'
@@ -13,6 +13,7 @@ const SPECIAL_PAGES: { id: string; name: string; desc: string; icon: React.Eleme
   { id: 'whoami', name: 'Whoami', desc: 'Perfil del autor: analíticas, CVEs, certificaciones y contenido', icon: UserRound },
   { id: 'docs', name: 'Documentación', desc: 'Docs detalladas de cada herramienta: qué hace, parámetros y usos', icon: BookOpen },
   { id: 'os-compare', name: 'Comparativa de OS', desc: 'Kali, Arch, Parrot, RHEL… con repos de entornos customizados', icon: Laptop },
+  { id: 'advisor', name: '¿Qué tool uso?', desc: 'Dime qué quieres conseguir y te llevo a la herramienta adecuada', icon: Compass },
 ]
 
 /* ---------------- Command Palette ⌘K ---------------- */

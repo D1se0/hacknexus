@@ -11,6 +11,7 @@ import {
   Terminal, Sparkles, FileDiff, History,
   Filter, FileCode2, Route, MonitorPlay, FileInput, Users, BookMarked,
   Languages, SquareTerminal, Cable, HeartPulse, Nfc, Keyboard,
+  Hourglass, AlarmClock, LayoutGrid, Microchip, Bluetooth, BadgeCheck,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -259,6 +260,26 @@ export const TOOLS: ToolDef[] = [
 
   // ─── DuckyScript ───────────────────────────────────────────────
   { id: 'duckyforge', name: 'DuckyScript Builder', desc: 'Compón payloads badUSB por bloques para Rubber Ducky y Flipper Zero con presets didácticos, compatibilidad por objetivo y avisos éticos', short: 'Ducky', category: 'Web & payloads', icon: Keyboard },
+
+  // ─── Ronda 12: análisis avanzado e ingeniería inversa ───────────
+  { id: 'redos', name: 'Regex ReDOS Analyzer', desc: 'Detecta backtracking catastrófico en regex: análisis estructural + medición real del matching en worker con entradas crecientes', short: 'ReDOS', category: 'Análisis', icon: Hourglass },
+  { id: 'wifilter', name: 'Wireshark Display Filters', desc: 'Constructor visual de display filters: catálogo por protocolo, presets de caza (escaneos, exfil DNS, credenciales) y validación en vivo', short: 'WiFilter', category: 'Red', icon: Filter },
+  { id: 'malwaretime', name: 'Payload Time Machine', desc: 'Museo interactivo del malware: 35 años de ataques con su impacto, técnicas MITRE que popularizó y la lección de defensa que dejó', short: 'TimeMachine', category: 'Análisis', icon: History },
+
+  // ─── Ronda 12: cripto y PKI ────────────────────────────────────
+  { id: 'hashvisual', name: 'Hash Visual Fingerprint', desc: 'Convierte cualquier hash en un identicon determinista y compara dos de un vistazo: certificados, binarios o claves sin leer hex', short: 'Identicon', category: 'Criptografía', icon: LayoutGrid },
+  { id: 'x509', name: 'X.509 Decoder', desc: 'Pega un PEM y desglosa SAN, EKU, keyUsage, BasicConstraints y flags de sospecha: CA:TRUE inesperada, SHA1, wildcards y auto-firmados', short: 'X509', category: 'Criptografía', icon: BadgeCheck },
+
+  // ─── Ronda 12: ingeniería inversa de binarios y firmware ───────
+  { id: 'bytecode', name: 'Bytecode Inspector', desc: 'Descompilador didáctico: parsea .class de Java real (constant pool, fields, methods) y cabecera de .pyc, con strings sospechosos', short: 'Bytecode', category: 'Ingeniería Inversa', icon: Binary },
+  { id: 'firmware', name: 'Firmware Inspector', desc: 'Parsea imágenes ESP8266/ESP32 (header, segmentos, app description) e Intel HEX de Arduino, y extrae strings sospechosos del binario', short: 'Firmware', category: 'Ingeniería Inversa', icon: Microchip },
+
+  // ─── Ronda 12: hardware y radio ────────────────────────────────
+  { id: 'blegatt', name: 'BLE GATT Explorer', desc: 'Servicios y characteristics Bluetooth Low Energy con su riesgo real, conversor UUID 16↔128 y decodificador de advertising', short: 'BLE', category: 'Red', icon: Bluetooth },
+  { id: 'stegoaudio', name: 'Stego Audio', desc: 'Esteganografía LSB sobre WAV/PCM real: incrusta y extrae mensajes, con waveform y espectrograma calculados por FFT propia', short: 'StegoWAV', category: 'Forense', icon: Waves },
+
+  // ─── Ronda 12: ofensiva con detección ─────────────────────────
+  { id: 'cronapt', name: 'Cron/AT Persistence Lab', desc: 'Simulador de persistencia T1053 para tu lab: genera la tarea, su rollback y las detecciones que la cazan (Sigma, YARA, hunting)', short: 'CronAPT', category: 'Linux & sistema', icon: AlarmClock },
 ]
 
 export const CATEGORIES: ToolCategory[] = [

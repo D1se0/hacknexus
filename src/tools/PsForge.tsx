@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FileTerminal, Plus, Trash2, ChevronUp, ChevronDown, BookOpen, AlertTriangle } from 'lucide-react'
-import { ToolHeader, Field, TextInput, TextArea, Button, Badge, Reveal, CopyBlock } from '../components/ui'
+import { ToolHeader, Field, TextInput, TextArea, Button, Badge, Reveal } from '../components/ui'
+import { CodeBlock } from '../components/highlight'
 import { PS_BLOCK_DEFS, PS_KIND_ORDER, PS_DEFAULT_SCRIPT, buildPsScript, newPsBlock, type PSBlock, type PSBlockKind } from '../lib/psforge'
 
 export default function PsForge() {
@@ -122,7 +123,7 @@ export default function PsForge() {
         {/* ─── salida ─── */}
         <div className="min-w-0 space-y-4">
           <Reveal delay={0.05}>
-            <CopyBlock text={result.script} label={`script.ps1 · ${result.lines} líneas`} maxH="max-h-[560px]" />
+            <CodeBlock code={result.script} lang="powershell" label={`script.ps1 · ${result.lines} líneas`} maxH="max-h-[560px]" />
           </Reveal>
 
           {result.warnings.length > 0 && (

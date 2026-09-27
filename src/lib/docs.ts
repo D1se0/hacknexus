@@ -1349,4 +1349,124 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['⚖ Conectar un badUSB a equipo ajeno sin permiso escrito es delito de acceso no autorizado: los presets aquí son reversibles y didácticos a propósito', 'En pentests físicos autorizados, documenta cada payload y deja mecanismo de reversión', 'La contramedida real es usbguard/políticas HID + formación: enseña el payload de awareness a tus usuarios'],
     tips: ['El DELAY 3000 inicial es sagrado: es lo que tarda el SO en montar el «teclado»', 'Los bloques marcados F son exclusivos de Flipper: el builder te avisa si tu objetivo es clásico', 'WAIT_FOR_BUTTON_PRESS es tu seguro: el payload no arranca hasta que TÚ lo armas desde el menú'],
   },
+
+  /* ── Ronda 12: análisis avanzado ── */
+  redos: {
+    what: 'Analizador de ReDoS (Regex Denial of Service) en dos fases: análisis estático de la estructura del patrón (cuantificadores anidados, alternancias solapadas, .* cuantificado) y medición dinámica real del matching en un Web Worker aislado: corre el regex contra entradas cada vez más grandes (256 → 67M chars) y clasifica el crecimiento como lineal, polinómico o exponencial, con timeout por muestra para no colgar tu navegador.',
+    params: [
+      { name: 'regex', type: 'string', required: true, desc: 'patrón a analizar (sintaxis JavaScript)' },
+      { name: 'flags / unit / suffix', type: 'formulario', desc: 'flags del regex, carácter que se repite y sufijo que hace fallar el match (el input crafted)' },
+      { name: 'análisis estático', type: 'automático', desc: 'banderas estructurales con severidad y explicación del porqué explota' },
+    ],
+    daily: ['Auditar los regex de validación de TU app antes de desplegar (email, teléfonos, DNI)', 'Revisar parsers de logs o WAFs caseros: los patrones de detección son candidatos perfectos', 'Elegir entre dos regex equivalentes midiendo cuál escala mejor'],
+    ethical: ['Demostrar en formación por qué un input de 50 KB puede tumbar un servidor sin ancho de banda', 'Incluir en el pentest la revisión de regex de entrada: es una vulnerabilidad CWE-1333 real', 'La medición dinámica es inofensiva: corre contra TU navegador, no contra producción'],
+    tips: ['El backtracking exponencial solo explota con input crafted: (a+)+$ contra "aaaaaaaaaaaaaaaaaaaa!" — el sufijo que falla es clave', 'La cura general: eliminar la ambigüedad (un solo camino de match), acotar con {n,m} o usar motores RE2/linear-time', 'TimeOut en la app SIEMPRE: el ReDoS perfecto no existe, pero el input acotado limita el daño'],
+  },
+  wifilter: {
+    what: 'Constructor de display filters de Wireshark con catálogo de campos por protocolo (frame, eth, ip, tcp, udp, dns, http, tls, icmp, arp) explicado uno a uno, presets de caza listos (patrones de escaneo, exfil por DNS TXT, credenciales HTTP en claro, SNI de dominios raros), composición visual con && / || y validación en vivo de la sintaxis (paréntesis, comillas, errores clásicos de confundir display filter con BPF).',
+    params: [
+      { name: 'protocolo + campo', type: 'selectores', required: true, desc: 'catálogo con descripción y ejemplo de cada campo' },
+      { name: 'operador + valor', type: 'formulario', desc: '==, !=, contains, matches, >, < …' },
+      { name: 'presets', type: 'tarjetas', desc: '8 filtros de caza con el porqué de cada uno' },
+    ],
+    daily: ['Recordar la sintaxis exacta del campo sin googlearla (¿tcp.stream eq o ==?)', 'Filtrar tu propia captura: separar ruido de señal durante un análisis', 'Documentar hallazgos: el filtro exacto que reproduce el hallazgo va en el informe'],
+    ethical: ['El display filter es el instrumento del defensor: captura en TU red, filtra y documenta', 'Los presets de caza (SYN scan, exfil DNS) son detección blue team lista para tu SOC', 'Captura solo lo autorizado: el análisis de tráfico ajeno es ilegal aunque sea pasivo'],
+    tips: ['Display filter ≠ capture filter (BPF): "tcp port 80" es BPF; "tcp.port == 80" es display — la tool te avisa si los mezclas', 'tcp.stream eq N aísla UNA conversación completa: follow-up perfecto del Flow Graph', 'Para"empieza por" usa matches con ^ o contains; ==* no existe'],
+  },
+  malwaretime: {
+    what: 'Museo interactivo del malware: 17 piezas desde el Morris Worm (1988) hasta LockBit, organizadas en 4 eras (prehistoria, explosión, cibercrimen, estado-nación) con filtros por tipo. Cada pieza: impacto real con números, las técnicas MITRE ATT&CK que encarnó, la lección de defensa que sigue viva y un dato que sorprende — historia del ofensivo contada como catálogo de detección.',
+    params: [
+      { name: 'era', type: 'timeline', required: true, desc: '4 eras clicables (1988-1998, 2000-2008, 2007-2016, 2010-hoy)' },
+      { name: 'tipo', type: 'chips', desc: 'gusano, ransomware, botnet, APT, stealer, wiper, troyano' },
+      { name: 'ficha', type: 'expansible', desc: 'MITRE, lección y dato curioso por pieza' },
+    ],
+    daily: ['Formación: explicar por qué existe cada control (el parcheo nace de Code Red, el 3-2-1 de CryptoLocker)', 'Preparar el "war story" de una charla: cada técnica moderna tiene un ancestro de 20 años', 'Estudiar qué técnicas MITRE persisten desde hace décadas: las que NO mueren son las que debes detectar mejor'],
+    ethical: ['Historia para defender: cada pieza enseña el control que la habría frenado, no el exploit', 'El museo no contiene payloads ni IOCs vivos: es conocimiento conceptual', 'Perfecto para justificar presupuestos: el coste de NotPetya (10B$) convence mejor que un gráfico'],
+    tips: ['El patrón perpetuo: entrada no confiable + ejecución + propagación. Zero trust y mínima superficie desde 1988', 'Los gusanos mueren por parcheo, los APT por visibilidad, el ransomware por backups inmutables', 'Emotet respondía hilos de email REALES robados: la ingeniería social importa más que el exploit'],
+  },
+
+  /* ── Ronda 12: cripto y PKI ── */
+  hashvisual: {
+    what: 'Convierte cualquier hash en un identicon determinista: el hash alimenta un PRNG (xmur3 + mulberry32) que dibuja una retícula simétrica en espejo con color propio. Mismo hash → misma imagen siempre. Comparador de dos hashes lado a lado con % de celdas iguales, y modo texto que hashea con SHA-256 (WebCrypto) antes de dibujar.',
+    params: [
+      { name: 'hash A / hash B', type: 'inputs', required: true, desc: 'hex de 32-128 chars (si no parece hash, se usa el texto como semilla)' },
+      { name: 'similitud', type: 'automático', desc: '% de celdas iguales + veredicto (idénticos / visualmente cercanos / distintos)' },
+      { name: 'hashear texto', type: 'botón', desc: 'SHA-256 local de cualquier texto y su identicon' },
+    ],
+    daily: ['Verificar a golpe de vista que el SHA-256 de una ISO descargada coincide con el del fabricante', 'Comparar claves públicas SSH o certificados sin leer 64 caracteres hex', 'Detectar typos al pegar hashes a mano: el dibujo cambia drásticamente'],
+    ethical: ['El efecto avalancha hecho imagen: 1 bit cambiado del input cambia ~mitad del dibujo — didáctica de cripto perfecta', 'En formación: comparar el identicon de "password1" vs "password2" muestra por qué SHA no debe usarse sin salt', 'Nunca sustituye la comparación del hex completo: es ayuda visual, no prueba'],
+    tips: ['Dos hashes distintos comparten ~50% de celdas por azar: >70% de parecido visual solo indica "misma familia", no igualdad', 'La simetría en espejo es la clave: tu cerebro procesa patrones simétricos mucho mejor que hex', 'Útil para "spot the difference" en repos: hash del mismo fichero en dos ramas'],
+  },
+  x509: {
+    what: 'Decoder X.509 completo con parser ASN.1/DER propio: desglosa version, serial, algoritmo de firma, issuer/subject (RDN con OIDs), validez (UTCTime/GeneralizedTime), clave pública (algoritmo + bits RSA), y extensiones críticas: SAN (DNS/IP/email/URI, con detección de wildcards), EKU (serverAuth, codeSigning, any), keyUsage bit a bit, BasicConstraints (CA:TRUE + pathlen) y SKI/AKI. Flags de sospecha automáticas: CA:TRUE en cert de servidor, SHA1/MD5, RSA < 2048, validez > 825 días, auto-firmados, SAN vacía, expirados.',
+    params: [
+      { name: 'PEM', type: 'textarea', required: true, desc: '-----BEGIN CERTIFICATE----- … o base64 DER en crudo' },
+      { name: 'flags', type: 'automático', desc: 'peligro/aviso/ok con explicación de por qué importa' },
+      { name: 'export', type: 'CopyBlock', desc: 'JSON completo del certificado parseado' },
+    ],
+    daily: ['Inspeccionar el cert de un servidor antes de confianza (openssl s_client → pegar aquí)', 'Ver para qué SIRVE una clave (EKU): ¿serverAuth? ¿codeSigning? ¿any?', 'Revisar la cadena de tu propia PKI interna: ¿algún intermedio con CA:TRUE de más?'],
+    ethical: ['El ataque clásico que esto detecta: un cert "de servidor" con CA:TRUE permite emitir certs para CUALQUIER dominio — game over de la confianza', 'Wildcards: si filtran esa clave, cae todo *.dominio de golpe — riesgo que el cliente suele no entender', 'MD5/SHA1 y RSA<2048 siguen vivos en PKI interna de fábricas y SCADA: documentarlos es el primer paso'],
+    tips: ['Los navegadores modernos IGNORAN el CN: sin SAN el cert no valida hostname, aunque el CN esté bien', 'Validéz > 398 días = incumple CA/Browser Forum: válido en PKI privada, sospechoso en pública', 'El PEM no es secreto: contiene solo la clave PÚBLICA. La privada (BEGIN PRIVATE KEY) jamás la pegues'],
+  },
+
+  /* ── Ronda 12: ingeniería inversa ── */
+  bytecode: {
+    what: 'Inspector de bytecode didáctico, 100% local y de solo lectura. Java: parsea el .class REAL — magic CAFEBABE, major/minor → versión JDK, constant pool completa con tags (Utf8, Class, Methodref, InvokeDynamic…), flags de acceso, this/super, interfaces, fields y methods con descriptores JVM y atributos. Python: cabecera del .pyc — magic → versión de CPython, flags hash-based vs timestamp, mtime/tamaño del fuente. Extracción de strings con patrones sospechosos marcados.',
+    params: [
+      { name: '.class / .pyc', type: 'drop', required: true, desc: 'arrastra el fichero; el magic de los primeros bytes decide el parser' },
+      { name: 'constant pool', type: 'tabla', desc: 'entradas navegables con tag y valor' },
+      { name: 'strings', type: 'lista', desc: 'rutas, URLs y comandos en claro dentro del binario' },
+    ],
+    daily: ['Ver qué declara REALMENTE un .jar de terceros antes de añadirlo a tu build (supply chain)', 'Entender los descriptores JVM: Ljava/lang/String; y ([I)V dejan de ser jeroglíficos', 'Inspeccionar __pycache__ de un módulo: qué nombres y docstrings deja expuestos'],
+    ethical: ['La lección central: el bytecode es el programa — ofuscar nombres no oculta la lógica ni los strings', 'Antes de ejecutar un binario desconocido: inspección estática aquí, ejecución NUNCA en tu equipo principal', 'Para decompilar de verdad: jadx (Java) o pycdc/uncompyle6 (Python) — esto es el primer vistazo'],
+    tips: ['InvokeDynamic en el constant pool = lambdas/records modernos de Java', 'Los .pyc hash-based (flags & 1) validan el fuente por hash PEP 552: mtime ya no existe', 'Strings marcadas en rojo: URLs, /etc/shadow, /dev/tcp, base64 — lo primero que busca un analista'],
+  },
+  firmware: {
+    what: 'Inspector de imágenes de firmware, 100% local y sin ejecutar nada. ESP8266/ESP32: parsea la imagen flash real — magic 0xE9, chip (ESP32/S2/S3/C3/C6…), modo/tamaño/frecuencia de flash, entry point, segmentos con load address y preview, y la app description de ESP-IDF (nombre de proyecto, versión, fecha de compilación). Arduino AVR: parser Intel HEX completo con validación de checksums por registro, segmentos de flash y entry point. Extracción de strings con patrones sospechosos marcados.',
+    params: [
+      { name: '.bin ESP', type: 'drop', required: true, desc: 'imagen de flash (esptool.py image_info versión web)' },
+      { name: '.hex Arduino', type: 'drop', desc: 'Intel HEX con validación de checksums' },
+      { name: 'strings', type: 'lista', desc: 'URLs, credenciales WiFi, rutas /etc/, comandos embebidos' },
+    ],
+    daily: ['Auditar el firmware de TU router/cámara IoT antes de confiar en él (el .bin está en la web del fabricante)', 'Ver qué URLs de update/contacta un dispositivo: C2 legítimo vs sospechoso', 'Encontrar credenciales hardcodeadas en gadgets baratos: WPA key, tokens, telnet'],
+    ethical: ['El análisis estático de firmware propio o documentado públicamente es investigación legítima', 'Los patrones marcados son los de un audit IoT real: /dev/tcp y wget en un firmware doméstico son banderas rojas', 'Nada se ejecuta: parse de bytes + strings. El sandbox eres tú'],
+    tips: ['La app description (magic 0xABCD5432) delata proyecto, versión de ESP-IDF y fecha: fingerprinting perfecto', 'Segmentos en 0x3FF… = RAM de datos; 0x400… = código mapeado de flash', 'Un .hex con checksums inválidos = fichero corrupto O manipulado: nunca flashear sin investigar'],
+  },
+
+  /* ── Ronda 12: radio y audio ── */
+  blegatt: {
+    what: 'Explorer de GATT (Bluetooth Low Energy): catálogo de los servicios SIG que importan (GAP, Device Information, Battery, Heart Rate, Automation IO, Nordic DFU…) con sus characteristics, propiedades y el RIESGO REAL de cada uno — fuga de identidad, tracking pasivo, lectura de OTPs por notificaciones, control físico sin pairing, takeover via DFU sin firma. Conversor UUID 16↔128 bits y decodificador de advertising BLE (len/type/value) que revela nombre y Manufacturer Data.',
+    params: [
+      { name: 'búsqueda', type: 'texto', required: true, desc: 'filtra servicios, characteristics y riesgos' },
+      { name: 'UUID', type: 'conversor', desc: '16-bit ↔ 128-bit (base 0000xxxx-…-00805F9B34FB)' },
+      { name: 'advertising hex', type: 'decoder', desc: 'pega el payload del paquete y ve cada campo decodificado' },
+    ],
+    daily: ['Saber qué expone TU smartwatch/auriculares antes de conectarlos a todas partes', 'Filtrar el escaneo de nRF Connect con el catálogo: qué servicio es cada 0x18xx', 'Auditar el IoT de tu oficina: nombres de usuario en Device Names, DFU abierto, serials legibles'],
+    ethical: ['El advertising es lo que TODO device BLE emite a 10 metros: decodificarlo es entender el protocolo, no atacar', 'El riesgo real es físico: candados y dispensadores GATT-write-sin-pairing se han demostrado hackeables', 'La defensa que enseña: LE Secure Connections + bonding, DFU firmado y sin PII en el Device Name'],
+    tips: ['Pairing "Just Works" NO protege contra MITM: sin verificación numérica no hay autenticidad', 'El Manufacturer Data sobrevive a la MAC aleatoria: por eso el tracking BLE es tan fácil', '0xFE59 (Nordic DFU) visible en tu gadget = puerta de flasheo total si el firmware no valida firmas'],
+  },
+  stegoaudio: {
+    what: 'Esteganografía LSB sobre WAV/PCM real, todo local: parser RIFF propio (PCM 16-bit), incrustación de mensajes en el bit menos significativo de las muestras con cabecera HXST + longitud, extracción simétrica, y capacidad calculada en bytes. Visualización del audio con waveform y espectrograma calculado por FFT radix-2 propia (ventana de Hann) dibujado en canvas — el mensaje se ve (y no se ve) en el dominio de la frecuencia.',
+    params: [
+      { name: '.wav PCM 16-bit', type: 'drop', required: true, desc: 'máx 16 MB; convierte con ffmpeg -acodec pcm_s16le' },
+      { name: 'mensaje', type: 'texto', desc: 'se incrusta en LSBs consecutivos; capacidad ≈ nº de muestras bits' },
+      { name: 'espectrograma', type: 'canvas', desc: 'FFT propia, paleta verde-terminal' },
+    ],
+    daily: ['Entender la esteganografía de audio con un caso real y visible (no solo teoría)', 'Verificar si un WAV tuyo lleva payload: extracción LSB en 1 clic', 'Comprobar en el espectrograma qué "textura" esconde mejor un mensaje'],
+    ethical: ['Mismo marco ético que Stego LSB: ocultar datos puede ser legítimo (watermarking) o no; el análisis es la defensa', 'La detección real es estadística: chi-cuadrado y RS-analysis del LSB — este laboratorio te enseña el vector para defenderlo', 'El audio portador debe ser tuyo: distribuir mensajes ocultos a terceros tiene el mismo marco legal que cualquier contenido'],
+    tips: ['El LSB cambia la amplitud 1/32768: inaudible, pero analizable estadísticamente', 'La cabecera HXST hace el ciclo completo verificable: incrusta → descarga → sube → extrae sin salir del navegador', 'El audio con ruido de fondo (música compleja) esconde mejor que el silencio o las notas puras'],
+  },
+
+  /* ── Ronda 12: ofensiva con detección ── */
+  cronapt: {
+    what: 'Simulador de persistencia con cron/at para laboratorio (MITRE T1053): configura mecanismo (crontab de usuario, /etc/cron.d, cron.daily, systemd timer, at one-shot), expresión, usuario y payload didáctico, y genera los artefactos completos: línea de cron, script de instalación, ROLLBACK documentado, y las detecciones que lo cazan: regla Sigma (YAML) con tags ATT&CK, regla YARA para el payload y 6 queries de hunting (crontab, list-timers, journalctl, FIM con auditd).',
+    params: [
+      { name: 'mecanismo', type: 'select', required: true, desc: '5 mecanismos con su porqué y su detección natural' },
+      { name: 'payload', type: 'select', desc: 'marker (inofensivo, recomendado), shell o downloader de laboratorio' },
+      { name: 'C2', type: 'IP:puerto', desc: 'tu listener de laboratorio, sustituido en los artefactos' },
+    ],
+    daily: ['Entrenar detección: genera el marker, instala en TU VM, y verifica que tu SIEM/Sigma dispara', 'Comparar 5 mecanismos de persistencia y por qué cada uno deja huella distinta', 'El rollback documentado es el entregable que falta en el 90% de los pentests con persistencia'],
+    ethical: ['⚖ Persistencia SOLO en laboratorio propio: en pentest real debe estar explícitamente en el alcance y documentada con su limpieza', 'El payload marker existe a propósito: valida tu detección sin tocar nada agresivo', 'T1053.003 (cron) y T1053.006 (systemd) con subtécnica exacta en los tags de la regla Sigma'],
+    tips: ['Cron ejecuta con entorno mínimo: PATH distinto, sin perfil — payload que depende del entorno falla silenciosamente', 'La detección fuerte es temporal: cambio en cron* + proceso hijo de crond + conexión saliente en la misma ventana', 'auditctl -w /etc/cron.d/ -p wa: el File Integrity Monitoring es la red cuando nadie revisa a mano'],
+  },
 }
