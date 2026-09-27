@@ -25,6 +25,10 @@ const FILE_ALIASES: Record<string, string> = {
   bytecode: 'Bytecode', firmware: 'Firmware', blegatt: 'BleGatt', stegoaudio: 'StegoAudio',
   x509: 'X509', malwaretime: 'MalwareTime',
   wifilab: 'WifiLab', wifi80211: 'Wifi80211', wifiplanner: 'WifiPlanner', wifiaudit: 'WifiAudit',
+  graphql: 'GraphQL', cmdinject: 'CommandInjection', pathtraversal: 'PathTraversal', nosql: 'NoSql',
+  deser: 'Deserialization', oauth: 'OAuth', websockets: 'WebSockets', clickjack: 'Clickjacking',
+  cachepoison: 'CachePoison', disclosure: 'Disclosure', pp: 'PrototypePollution', smuggler: 'Smuggler',
+  twofa: 'TwoFA', logic: 'BusinessLogic', jwks: 'Jwks',
 }
 for (const t of TOOLS) {
   const file = FILE_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`

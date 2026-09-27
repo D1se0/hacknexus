@@ -13,6 +13,7 @@ import {
   Languages, SquareTerminal, Cable, HeartPulse, Nfc, Keyboard,
   Hourglass, AlarmClock, LayoutGrid, Microchip, Bluetooth, BadgeCheck,
   RadioTower, Antenna, ScanLine,
+  PackageOpen, FolderInput, MousePointerClick, PlugZap, Smartphone, Ghost, Variable, Boxes, Scale, Eye,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -98,6 +99,12 @@ export const SUBSECTIONS: SubsectionDef[] = [
     category: 'Web & payloads',
     label: 'Explotación',
     toolIds: ['bofcalc', 'phpfilter', 'xsgen', 'xmlgen', 'payloads'],
+  },
+  {
+    id: 'ofensiva-web',
+    category: 'Web & payloads',
+    label: 'Ofensiva web avanzada',
+    toolIds: ['graphql', 'cmdinject', 'pathtraversal', 'nosql', 'deser', 'oauth', 'websockets', 'clickjack', 'cachepoison', 'disclosure', 'pp', 'smuggler', 'twofa', 'logic', 'jwks'],
   },
   {
     id: 'privesc-recursos',
@@ -281,6 +288,23 @@ export const TOOLS: ToolDef[] = [
 
   // ─── Ronda 12: ofensiva con detección ─────────────────────────
   { id: 'cronapt', name: 'Cron/AT Persistence Lab', desc: 'Simulador de persistencia T1053 para tu lab: genera la tarea, su rollback y las detecciones que la cazan (Sigma, YARA, hunting)', short: 'CronAPT', category: 'Linux & sistema', icon: AlarmClock },
+
+  // ─── Ronda 14: ofensiva web avanzada ──────────────────────────
+  { id: 'graphql', name: 'GraphQL Lab', desc: 'Builder de operaciones con plantillas de ataque (introspección, IDOR, SQLi/NoSQLi, alias storm, DoS), traductor query ↔ JSON para POST y trucos de batching', short: 'GraphQL', category: 'Web & payloads', icon: Braces },
+  { id: 'cmdinject', name: 'Command Injection Forge', desc: 'Payloads de inyección de comandos por SO y objetivo: ejecución visible, ciego time-based, OOB por DNS, lectura de ficheros y reverse shells de lab con su detección', short: 'CmdInj', category: 'Web & payloads', icon: Terminal },
+  { id: 'pathtraversal', name: 'Path Traversal Forge', desc: 'Traversals por SO, profundidad y codificación (url, double, overlong, mixto): targets valiosos, contextos (upload, zip slip, proxy) y qué te dice cada respuesta', short: 'Traversal', category: 'Web & payloads', icon: FolderInput },
+  { id: 'nosql', name: 'NoSQL Injection Forge', desc: 'Operadores Mongo ($ne, $gt, $regex, $where) y array smuggling urlencoded en JSON y URL listos para lanzar, con el criterio de confirmación de cada uno', short: 'NoSQL', category: 'Web & payloads', icon: Database },
+  { id: 'deser', name: 'Deserialization Arsenal', desc: 'Deserialización insegura por lenguaje (PHP, pickle, Java, .NET ViewState, Node) con gadgets, magic bytes para detectar el formato y sondas OOB', short: 'Deser', category: 'Web & payloads', icon: PackageOpen },
+  { id: 'oauth', name: 'OAuth 2.0 / OIDC Lab', desc: 'Generador de flujos con PKCE real (WebCrypto), desglose de parámetros, parser del callback con token exchange y 7 ataques: state, redirect_uri, mix-up, scopes', short: 'OAuth', category: 'Web & payloads', icon: KeyRound },
+  { id: 'websockets', name: 'WebSocket Attack Lab', desc: 'Decodificador de frames RFC 6455 bit a bit con demo de máscara, generador de cliente/CSWSH y matriz de ataques: hijacking, manipulación, DoS', short: 'WS', category: 'Web & payloads', icon: PlugZap },
+  { id: 'clickjack', name: 'Clickjacking Forge', desc: 'PoC de clickjacking con preview en vivo: iframe invisible alineado por offsets y opacidad, 6 variantes del ataque y cómo auditar la defensa', short: 'Clickjack', category: 'Web & payloads', icon: MousePointerClick },
+  { id: 'cachepoison', name: 'Cache Poisoning & Deception', desc: 'Envenena la caché (headers sin clave, fat GET, header hiding) y engáñala para que guarde datos autenticados: técnicas con curl, rutas y metodología', short: 'Cache', category: 'Web & payloads', icon: Ghost },
+  { id: 'disclosure', name: 'Information Disclosure Hunter', desc: '12 vectores de fuga (.git, .env, actuator, source maps, CORS, buckets) priorizados por impacto con script de reconocimiento automático', short: 'Disclosure', category: 'Web & payloads', icon: Eye },
+  { id: 'pp', name: 'Prototype Pollution Lab', desc: 'Sondas por vector (query, JSON, constructor) y sinks que convierten la polución en XSS o RCE: NODE_OPTIONS, innerHTML, bypass de filtros', short: 'Proto', category: 'Web & payloads', icon: Variable },
+  { id: 'smuggler', name: 'HTTP Request Smuggler', desc: 'Peticiones desincronizadas CL.TE/TE.CL/TE.TE byte a byte con quién interpreta qué, loop de detección y objetivos: probe, captura de cabeceras, rutas internas', short: 'Smuggler', category: 'Web & payloads', icon: Boxes },
+  { id: 'twofa', name: '2FA / OTP Lab', desc: 'TOTP vivo con QR para tu laboratorio, recovery codes con entropía real, 8 debilidades del segundo factor con su prueba y brute force single-packet', short: '2FA', category: 'Web & payloads', icon: Smartphone },
+  { id: 'logic', name: 'Business Logic Hunter', desc: '8 patrones de lógica de negocio con su prueba (precios negativos, races, saltos de flujo, reembolsos) y checklist de hunting por dominio', short: 'Logic', category: 'Web & payloads', icon: Scale },
+  { id: 'jwks', name: 'JWK Set Inspector', desc: 'Analiza la postura de un JWKS: kty/alg/use, longitud RSA, curvas EC, claves privadas filtradas, RSA1_5 roto, rotación dormida y hunting por kid', short: 'JWKS', category: 'Web & payloads', icon: Lock },
 
   // ─── Ronda 13: hacking WiFi ────────────────────────────────────
   { id: 'wifilab', name: 'WiFi Attack Lab', desc: 'Los 7 pasos de una auditoría 802.11 en tu laboratorio: comandos con placeholders personalizables, qué esperar en cada salida, la trampa típica y cómo se detecta cada acción', short: 'WiFiLab', category: 'Red', icon: RadioTower },

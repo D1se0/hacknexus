@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>130 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>145 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-130-2ee88a?style=flat-square" alt="130 tools" />
+  <img src="https://img.shields.io/badge/tools-145-2ee88a?style=flat-square" alt="145 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 130 herramientas
+## 🧰 Las 145 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -80,6 +80,21 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **File Transfer Arsenal** | 14 métodos de transferencia atacante↔víctima con comandos exactos: HTTP, nc, scp, certutil, PowerShell, SMB… | 🟢 local |
 | **DuckyScript Builder** | Compón payloads badUSB por bloques para Rubber Ducky y Flipper Zero: presets didácticos reversibles, suplantación VID/PID y avisos de compatibilidad | 🟢 local |
 | **Cron/AT Persistence Lab** | Simulador de persistencia T1053 para tu lab: genera la tarea, su rollback y las detecciones que la cazan (Sigma, YARA, hunting) | 🟢 local |
+| **GraphQL Lab** | Builder de operaciones con plantillas de ataque (introspección, IDOR, SQLi/NoSQLi, alias storm, DoS), traductor query ↔ JSON para POST y trucos de batching | 🟢 local |
+| **Command Injection Forge** | Payloads por SO y objetivo: ejecución visible, ciego time-based, OOB por DNS, lectura de ficheros y reverse shells de lab con su detección | 🟢 local |
+| **Path Traversal Forge** | Traversals por SO, profundidad y codificación (url, double, overlong, mixto): targets valiosos, contextos y qué te dice cada respuesta | 🟢 local |
+| **NoSQL Injection Forge** | Operadores Mongo ($ne, $gt, $regex, $where) y array smuggling urlencoded en JSON y URL listos para lanzar, con criterio de confirmación | 🟢 local |
+| **Deserialization Arsenal** | Deserialización insegura por lenguaje (PHP, pickle, Java, .NET, Node) con gadgets, magic bytes para detectar el formato y sondas OOB | 🟢 local |
+| **OAuth 2.0 / OIDC Lab** | Generador de flujos con PKCE real (WebCrypto), parser del callback con token exchange y 7 ataques: state, redirect_uri, mix-up, scopes | 🟢 local |
+| **WebSocket Attack Lab** | Decodificador de frames RFC 6455 bit a bit con demo de máscara, generador de cliente/CSWSH y matriz de ataques | 🟢 local |
+| **Clickjacking Forge** | PoC con preview en vivo: iframe invisible alineado por offsets y opacidad, 6 variantes del ataque y cómo auditar la defensa | 🟢 local |
+| **Cache Poisoning & Deception** | Envenena la caché (headers sin clave, fat GET, header hiding) y engáñala para que guarde datos autenticados: curl PoC y metodología | 🟢 local |
+| **Information Disclosure Hunter** | 12 vectores de fuga (.git, .env, actuator, source maps, CORS, buckets) priorizados por impacto con script de reconocimiento | 🟢 local |
+| **Prototype Pollution Lab** | Sondas por vector (query, JSON, constructor) y sinks que convierten la polución en XSS o RCE: NODE_OPTIONS, innerHTML, bypass de filtros | 🟢 local |
+| **HTTP Request Smuggler** | Peticiones desincronizadas CL.TE/TE.CL/TE.TE byte a byte con quién interpreta qué, loop de detección y defensas | 🟢 local |
+| **2FA / OTP Lab** | TOTP vivo con QR para tu laboratorio, recovery codes con entropía real, 8 debilidades del segundo factor y brute force single-packet | 🟢 local |
+| **Business Logic Hunter** | 8 patrones con su prueba (precios negativos, races, saltos de flujo, reembolsos) y checklist de hunting por dominio | 🟢 local |
+| **JWK Set Inspector** | Analiza la postura de un JWKS: kty/alg/use, módulo RSA, claves privadas filtradas, RSA1_5 roto, rotación dormida y hunting por kid | 🟢 local |
 
 ### Red
 | Tool | Descripción | Red |
