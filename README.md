@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>107 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>116 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-91-2ee88a?style=flat-square" alt="80 tools" />
+  <img src="https://img.shields.io/badge/tools-116-2ee88a?style=flat-square" alt="116 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 107 herramientas
+## 🧰 Las 116 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -70,6 +70,13 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Payload Arsenal** | SQLi por motor, XSS evasión, SSRF (cloud metadata), LFI/php://filters, wordlists de fuzzing | 🟢 local |
 | **HTTP Request Builder** | Peticiones raw estilo netcat/Burp con cookies, auth y export a curl | 🟢 local |
 | **Web Fuzzer** | Fuzzing concurrente de rutas con códigos, tamaño, words/lines y detección de 401/403 | 🟡 target |
+| **XSS Payload Generator** | 26 payloads por vector y contexto (HTML, atributo, JS, URL) con encoding y guía de caza de inyecciones | 🟢 local |
+| **XML & XXE Arsenal** | Plantillas XXE directo, OOB con evil.dtd, vía error, XInclude y XSLT hasta RCE con detección de parsers | 🟢 local |
+| **PHP Filter Chain** | LFI a RCE sin subir ficheros: cadenas php://filter con iconv que sintetizan tu código (algoritmo Synacktiv) | 🟢 local |
+| **Buffer Overflow Calc** | Patrón cíclico estilo Metasploit, offset desde EIP, badchars y payload con NOP sled + shellcode + retorno | 🟢 local |
+| **TTY Upgrade** | De reverse shell tonta a terminal interactiva: python pty, script, socat, rlwrap con pasos y troubleshooting | 🟢 local |
+| **File Transfer Arsenal** | 14 métodos de transferencia atacante↔víctima con comandos exactos: HTTP, nc, scp, certutil, PowerShell, SMB… | 🟢 local |
+| **DuckyScript Builder** | Compón payloads badUSB por bloques para Rubber Ducky y Flipper Zero: presets didácticos reversibles, suplantación VID/PID y avisos de compatibilidad | 🟢 local |
 
 ### Red
 | Tool | Descripción | Red |
@@ -84,6 +91,11 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **IPv6 Toolkit** | Expande/comprime, tipo, prefijos, EUI-64, reverse ip6.arpa y **generador de MACs** por fabricante | 🟢 local |
 | **Curl Builder** | Construye curl con headers, auth, proxy y equivalente Python requests | 🟢 local |
 | **WiFi Map** | Mapa con la **base de datos real de WiGLE** (1.000M+ redes observadas por la comunidad) con tus credenciales guardadas solo en tu navegador, más el mapa local: ~130 redes demo procedurales, tus puntos persistentes, clusters, geolocalización y export CSV/JSON | 🔵 tiles Esri + API WiGLE |
+| **Pivot Map** | Mapa interactivo de pivoting: nodos arrastrables, enlaces por protocolo (ssh/chisel/ligolo/socat/plink/sshuttle), ruta por BFS y los comandos exactos por tramo | 🟢 local |
+| **Network Admin Calc** | 7 calculadoras: TTL→SO, MTU/MSS, wildcards ACL Cisco, plan de VLANs, ToS/DSCP, transferencias y CIDR | 🟢 local |
+| **Network Topology Designer** | Diseña topologías arrastrando nodos (13 tipos) y enlazándolos por medio (ethernet/fibra/wifi/vpn), con análisis de huérfanos/duplicados, BOM de materiales y export PNG/JSON | 🟢 local |
+| **Cable Docs Animadas** | Pinout RJ45 T568A/B con señal animada, categorías Cat5e–Cat8, tipos de cable con trampas, fibra single/multimodo y conectores LC/SC/ST/MPO | 🟢 local |
+| **Internet Speed Test** | Test real de latencia, jitter, descarga y subida contra speed.cloudflare.com con velocímetro animado y guía de interpretación | 🔵 speed.cloudflare.com |
 
 ### Forense
 | Tool | Descripción | Red |
@@ -100,6 +112,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 |---|---|---|
 | **Binary Inspector** | Parsea PE/ELF: headers, secciones con entropía, imports por DLL, exports, packers (UPX/entropía), Go/Rust/.NET y anti-debug — sin ejecutar nada | 🟢 local |
 | **Deobfuscator** | Descodificación multi-capa automática (hex→base64→URL→escapes…), crackeo XOR single-byte por frecuencia, ROT-N y métricas de ofuscación JS | 🟢 local |
+| **NFC / RFID Lab** | Laboratorio educativo de tarjetas de proximidad sin hardware: 8 familias de chips, UIDs y dumps simulados, Wiegand 26 bidireccional, modulaciones animadas y ataques con su defensa | 🟢 local |
 
 ### Phishing
 | Tool | Descripción | Red |
@@ -129,6 +142,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Windows Registry Tweaks** | Tweaks de telemetría/privacidad/hardening con reversión y export a .reg listo para fusionar | 🟢 local |
 | **Disk & LVM Commander** | Formador de comandos de discos paso a paso: LVM (PV/VG/LV), RAID mdadm, LUKS2, dd con avisos y patrón forense, montaje y swap | 🟢 local |
 | **Linux Admin Commander** | 56 comandos de administración en 8 dominios con el porqué, trampas clásicas y los de auditoría marcados | 🟢 local |
+| **Bash Script Forge** | Compón scripts Bash por bloques: modo estricto, argumentos, bucles, checks de red, logging coloreado y trap de limpieza — cada pieza explicada | 🟢 local |
+| **PowerShell Forge** | Igual que Bash Forge pero en PS: strict mode, param(), try/catch, transcripción y checks de red/servicios con la explicación de cada directiva | 🟢 local |
 
 ### Análisis
 | Tool | Descripción | Red |
@@ -147,11 +162,16 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Username OSINT** | URLs de perfil en ~20 plataformas, patrón del alias, variantes y dorks de Google/GitHub — todo pasivo | 🟢 local |
 | **Sysmon Config Builder** | XML de Sysmon por perfiles con guía ofensiva/defensiva de cada evento: el punto de partida de todo SOC | 🟢 local |
 | **Config Diff** | Diff semántico de configs: ignora comentarios/orden, resalta directivas de seguridad que cambiaron | 🟢 local |
+| **GTFOBins Explorer** | Base de datos COMPLETA de GTFOBins: 458 binarios UNIX con todos sus comandos de abuso por contexto (sudo, SUID, capabilities) | 🟢 local |
+| **Usuario Generator** | Variaciones de usernames y emails corporativos con 9 convenciones y service accounts para enumeración y spraying | 🟢 local |
+| **Diccionario de Acrónimos** | 196 acrónimos de ciberseguridad con definición en español organizados por dominio: de APT a YARA | 🟢 local |
+| **Team Health Check** | Escaneo real de tu equipo desde el navegador (CPU, RAM, batería, red, GPU) con benchmark, desgaste estimado por antigüedad y plan de mantenimiento | 🟢 local |
 
 ### Lenguajes
 | Tool | Descripción | Red |
 |---|---|---|
 | **16 CheatSheets** | Python, JavaScript, TypeScript, Java, C#, C, C++, PHP, Ruby, Go, Rust, Lua, Bash, SQL, HTML y CSS — con **playground que ejecuta el código de verdad**: Python corre en tu navegador (WASM), JS en sandbox local, el resto con compiladores reales (Wandbox); HTML/CSS con vista previa en vivo | 🟡 editor viaja |
+| **Language Translator** | Traduce código entre Python, JS, TS, Java, C#, Go, Ruby y PHP: parser → IR → emisor, con % de confianza honesto e issues de lo que queda fuera del subconjunto común | 🟢 local |
 
 ### Generadores
 | Tool | Descripción | Red |
@@ -186,7 +206,7 @@ Además de las herramientas, la suite incluye dos secciones de conocimiento:
 
 ## ⚖️ Uso ético
 
-HackNexus es una herramienta para **pentesting autorizado, CTFs, laboratorios y aprendizaje**. Usarla contra sistemas sin permiso explícito es **ilegal**. El autor no se responsabiliza del mal uso.consulta siempre la legislación de tu jurisdicción.
+HackNexus es una herramienta para **pentesting autorizado, CTFs, laboratorios y aprendizaje**. Usarla contra sistemas sin permiso explícito es **ilegal**. El autor no se responsabiliza del mal uso — consulta siempre la legislación de tu jurisdicción.
 
 ## 🛠️ Stack
 
