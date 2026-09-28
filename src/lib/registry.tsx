@@ -338,6 +338,12 @@ export const TOOLS: ToolDef[] = [
   { id: 'zipbomb', name: 'Zip Bomb Lab', desc: 'La matemática de 42.zip sin armas reales: bombs anidadas capadas con deflate-raw, árbol de amplificación con BigInt, analizador de ZIP sospechosos sin descomprimir y catálogo de bombs históricas', short: 'ZipBomb', category: 'Forense', icon: PackageOpen },
   { id: 'steganalysis', name: 'Steganalysis', desc: 'Radiografía LSB de imágenes: visor de los 8 planos de bits por canal RGB, ataque chi-cuadrado de Westfeld-Pfitzmann con P-values reales y correlación de vecinos — detecta tinta invisible en píxeles', short: 'Stego', category: 'Forense', icon: ScanLine },
   { id: 'wayback', name: 'Wayback Time Machine', desc: 'OSINT pasivo con la CDX API de archive.org: timeline del dominio, subdominios históricos candidatos a takeover, rutas interesantes indexadas y acceso a cada snapshot — sin tocar el target', short: 'Wayback', category: 'Forense', icon: History },
+
+  // ─── Ronda 19: canales encubiertos, biometría y hardware ────
+  { id: 'audiomodem', name: 'AudioModem', desc: 'Exfiltración por el aire sin red: FSK audible con Web Audio API, receptor Goertzel en vivo por micrófono, corrección Hamming(8,4) y preámbulo sincronizador — el canal de los air-gaps', short: 'AudioModem', category: 'Red', icon: AudioLines },
+  { id: 'biometrics', name: 'Keystroke Biometrics', desc: 'Biometría conductual del teclado: dwell y flight time, perfil estadístico de tu escritura y detector de bots por ritmo — el MFA invisible de los bancos, capturado y analizado en local', short: 'Biometrics', category: 'Análisis', icon: Keyboard },
+  { id: 'passkeys', name: 'Passkeys Lab', desc: 'Anatomía de WebAuthn: decodificador CBOR de attestationObject, flags del authenticatorData, clave pública COSE, clientDataJSON y ceremonia real de registro — la passkey disseccionada byte a byte', short: 'Passkeys', category: 'Criptografía', icon: Fingerprint },
+  { id: 'flipperterm', name: 'Flipper Terminal', desc: 'Terminal para Flipper Zero vía Web Serial API con simulador educativo completo: comandos subghz/ir/nrf/rfid/nfc, parser de capturas de radio y lecciones de fixed-code vs rolling code', short: 'Flipper', category: 'Red', icon: Cable },
 ]
 
 export const CATEGORIES: ToolCategory[] = [

@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>164 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>168 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-164-2ee88a?style=flat-square" alt="164 tools" />
+  <img src="https://img.shields.io/badge/tools-168-2ee88a?style=flat-square" alt="168 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 164 herramientas
+## 🧰 Las 168 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -58,6 +58,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Asymmetric Crypto Playground** | Diffie-Hellman y RSA ejecutándose con BigInt, factorización real de n pequeño y modpow paso a paso | 🟢 local |
 | **BIP39 Seed Lab** | Mnemonics reales interoperables: generar, validar checksum, anatomía bit a bit, reparar por fuerza bruta y seed PBKDF2 | 🟢 local |
 | **X.509 Decoder** | Pega un PEM y desglosa SAN, EKU, keyUsage y BasicConstraints con flags de sospecha: CA:TRUE inesperada, SHA1, wildcards, auto-firmados | 🟢 local |
+| **Passkeys Lab** | Anatomía WebAuthn: decodificador CBOR del attestationObject, flags UP/UV/BS/AT, clave pública COSE y ceremonia real de registro — el phishing-resistant disseccionado | 🟢 local |
 
 ### Contraseñas
 | Tool | Descripción | Red |
@@ -127,6 +128,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **WiFi Channel Planner** | Planifica canales 2.4/5/6 GHz con el solapamiento real del espectro: mapa de congestión con tus APs vecinos, mejores canales, grupos de 80 MHz con avisos DFS y PSC de 6 GHz | 🟢 local |
 | **WiFi Security Auditor** | Puntúa tu red sobre 100 (cifrado, PMF, passphrase, WPS, admin) con hardening priorizado por esfuerzo y matriz de amenazas: evil twin, karma, deauth, KRACK, Dragonblood | 🟢 local |
 | **Anonymity Lab** | Diagnóstico en vivo de tu exposición (IP, fuga WebRTC real vía RTCPeerConnection, huella en bits, coherencia por país de salida) y recetas exactas para cambiar IP/MAC de verdad: macchanger, Tor NEWNYM, WireGuard con kill switch, protocolo de identidad nueva | 🔵 ipwho.is + 🟢 local |
+| **AudioModem** | Exfiltración por el aire sin red: FSK audible con Web Audio API, receptor Goertzel en vivo por micrófono, Hamming(8,4) y preámbulo sincronizador — el canal de los air-gaps | 🟢 local |
+| **Flipper Terminal** | Terminal para Flipper Zero vía Web Serial con simulador educativo completo: subghz/ir/nrf/rfid/nfc, parser de capturas y lecciones de fixed-code vs rolling code | 🟢 local |
 
 ### Forense
 | Tool | Descripción | Red |
@@ -198,6 +201,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Defanger / Refanger** | Neutraliza o restaura IPs, dominios, URLs y emails para compartir IOCs | 🟢 local |
 | **UUID & IDs** | UUID v4, NanoID, ObjectId y ULID + validador/decodificador con timestamps | 🟢 local |
 | **MITRE ATT&CK Navigator** | Matriz enterprise filtrable por táctica/ID, marca cobertura de tu ejercicio y exporta capa JSON para el Navigator oficial | 🟢 local |
+| **Keystroke Biometrics** | Biometría conductual del teclado: dwell/flight time, perfil por digrafo y detector de bots por ritmo (CV) — el MFA invisible de los bancos, 100% local | 🟢 local |
 | **Windows Event IDs** | Qué significa cada evento del log Security/System y cómo convertirlo en detección (queries PS incluidas) | 🟢 local |
 | **Ports & Services** | ~65 puertos con ángulo de pentest, grupos (web/AD/db…) y notas de escaneo | 🟢 local |
 | **IOC Extractor** | IPs, dominios, hashes, CVEs, wallets y técnicas MITRE desde cualquier texto, con contexto y enlaces VT/AbuseIPDB | 🟢 local |

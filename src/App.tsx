@@ -44,6 +44,10 @@ const FILE_ALIASES: Record<string, string> = {
   zipbomb: 'ZipBombLab',
   steganalysis: 'Steganalysis',
   wayback: 'WaybackMachine',
+  audiomodem: 'AudioModem',
+  biometrics: 'Biometrics',
+  passkeys: 'PasskeysLab',
+  flipperterm: 'FlipperTerm',
 }
 for (const t of TOOLS) {
   const file = FILE_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`

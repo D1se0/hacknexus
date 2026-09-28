@@ -1940,4 +1940,53 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['Solo se consulta archive.org: el target no recibe tráfico y todo es público e indexado', 'El índice que ves es el que ve un atacante: audita TU dominio y limpia la deuda pública', 'Usar rutas históricas contra sistemas sin autorización sigue siendo delito aunque sean «viejas»'],
     tips: ['Los subdominios con firstY≠lastY y rango antiguo son los mejores candidatos a takeover: cruza con DNS', 'matchType=domain trae hasta 20k registros y es lento: host para el host exacto', 'Received de los .eml y snapshots de la CDX comparten lema: lo antiguo es lo que nadie protege', 'archive.org aplica rate limit: si sale 429, espera unos segundos en vez de machacar'],
   },
+  audiomodem: {
+    what: 'Módem acústico FSK completo con la Web Audio API: emisor que modula bits en dos tonos audibles (perfiles 50/100/200 baud) con fase continua, trama con preámbulo 0101… ×8 + SOH + longitud + payload Hamming(8,4) + checksum XOR, receptor Goertzel en vivo sobre el micrófono con búsqueda de preámbulo tolerante a 2 bits, y loopback interno PCM→demodulador con ruido blanco para ver la cadena completa sin hardware.',
+    params: [
+      { name: 'mensaje', type: 'texto', required: true, desc: 'máx 255 bytes por trama; se transmite ×3 para sincronizar' },
+      { name: 'perfil', type: 'select', desc: '50/100/200 baud con frecuencias 1.8-2.4 kHz audibles' },
+      { name: 'transmitir', type: 'altavoz', desc: 'reproduce el PCM por la salida de audio real' },
+      { name: 'recibir', type: 'micrófono', desc: 'Goertzel en vivo con indicador de energía y checksum' },
+      { name: 'loopback', type: 'local', desc: 'modula + añade ruido + demodula sin tocar el hardware' },
+    ],
+    daily: ['Entender de primera mano cómo cruza datos un air-gap (Stuxnet, aIR-Jumper) y por qué se tapean altavoces y micrófonos en entornos críticos', 'Laboratorio de DSP: ver Goertzel, FSK y códigos correctores funcionando sin SDK ni hardware', 'Enviar un mensaje entre dos móviles de la sala sin red ninguna — solo aire'],
+    ethical: ['El canal acústico es de difusión: cualquiera con micrófono en la sala recibe lo mismo — no es confidencial', 'Usarlo para exfiltrar datos de sistemas ajenos es delito; sirve para demostrar por qué se prohíben altavoces en entornos seguros', 'Todo se genera y demodula en local: ninguna señal sale de tu navegador más allá del altavoz'],
+    tips: ['El preámbulo 0101… permite alinear el reloj de símbolo: sin él, cada ventana empezaría a mitad de símbolo y el canal sería ruido', 'Goertzel cuesta O(N) por tono: para 2 frecuencias concretas gana a la FFT, por eso lo usan los DTMF desde hace 40 años', 'Hamming(8,4) corrige 1 bit por nibble pero duplica el payload: compromiso didáctico, no estándar', 'Con auriculares evitas el eco: el micrófono del mismo dispositivo capta el altavoz y duplica las tramas'],
+  },
+  biometrics: {
+    what: 'Biometría conductual del teclado 100% local: captura de keydown/keyup con performance.now(), cálculo de dwell (duración de la pulsación) y flight (vuelo entre teclas), perfil estadístico por tecla y por digrafo (media, desviación, WPM, coeficiente de variación), detector de bots por ritmo (CV < 6% o flight < 30 ms = metrónomo imposible para dedos humanos) con puntuación 0-100, y demo humano simulado vs bot simulado para ver saltar el detector.',
+    params: [
+      { name: 'captura', type: 'textarea', required: true, desc: 'keydown/keyup en vivo; nada sale del navegador' },
+      { name: 'perfil', type: 'análisis', desc: 'dwell/flight por tecla y digrafo, WPM, CV y ritmo' },
+      { name: 'veredicto', type: 'bot/humano', desc: 'puntuación 0-100 con umbral sospechoso/bot' },
+      { name: 'demo', type: 'simulada', desc: 'sesión humana (variabilidad natural) vs bot (constante)' },
+    ],
+    daily: ['Entender cómo los bancos detectan que «te robaron la sesión» a los 30 segundos aunque el atacante tenga tu contraseña', 'Probar tu propio patrón: escribe una frase y compara tu CV con el de un bot', 'Educación en privacidad: estos datos son biometría (GDPR art. 9) y no deberían salir de tu dispositivo'],
+    ethical: ['Todo el análisis ocurre en tu navegador: los keystroke dynamics nunca se transmiten ni se guardan', 'No escribas contraseñas reales en la captura: la demo es para observar métricas, no secretos', 'Implementar esto contra usuarios sin consentimiento explícito viola el GDPR (dato biométrico de categoría especial)'],
+    tips: ['El coeficiente de variación del flight-time es el detector de bots más barato que existe: humano 30-60%, script < 5%', 'El ritmo depende del PAR de teclas, no solo de la persona: los sistemas serios normalizan por digrafo (free-text vs fixed-text)', 'Una sesión corta (< 10 pares) no permite veredicto: la biometría conductual necesita datos', 'Como toda biometría, el patrón puede grabarse y replicarse: el «qué escribes» sigue importando más que el «cómo»'],
+  },
+  passkeys: {
+    what: 'Laboratorio de anatomía WebAuthn: decodificador CBOR (RFC 8949) que diseciona el attestationObject byte a byte — fmt, attStmt, authData con rpIdHash, flags (UP/UV/BE/BS/AT/ED), signCount, AAGUID, credentialId y clave pública COSE (kty/alg/curva/x-y) —, parser de clientDataJSON con challenge y origin, generador de attestation sintética tipo «none» con la misma estructura exacta que emite tu navegador, y ceremonia real navigator.credentials.create() si el entorno la soporta.',
+    params: [
+      { name: 'pegar', type: 'b64url', desc: 'attestationObject y clientDataJSON de un registro real' },
+      { name: 'demo', type: 'generador', desc: 'attestation sintética reproducible (seed determinista)' },
+      { name: 'ceremonia', type: 'WebAuthn', desc: 'crea una passkey real en este navegador (HTTPS)' },
+      { name: 'flags', type: 'byte', desc: 'cada bit explicado: UP, UV, BE, BS, AT, ED' },
+    ],
+    daily: ['Entender por qué el phishing no roba passkeys: origin y rpIdHash van firmados dentro de la respuesta', 'Auditar qué te dice el flag BS sobre una credencial sincronizada (¿está en la nube de Google/Apple?)', 'Depurar integraciones WebAuthn propias: mira exactamente qué emite el navegador antes de enviarlo al RP'],
+    ethical: ['Las claves generadas son sintéticas y no son curvas válidas: solo anatomía, no autenticación', 'La ceremonia real crea la credencial SOLO en tu dispositivo: nada viaja a ningún servidor', 'El decodificador es local: pega respuestas de test, no de producción ajena'],
+    tips: ['Un signCount ≤ al anterior delata credencial clonada… salvo en passkeys sincronizadas, donde queda congelado a 0 a propósito', 'CBOR es el JSON de lo binario: mapas con claves enteras negativas (alg=-7) y bytes crudos sin base64', 'UP sin UV = solo tocó; UV = verificó biometría/PIN: tu servidor debe exigir el mínimo que tu política promete', 'El phishing de bancoGLOBAL.com nunca obtiene firma válida para bancoGLOBAL.com: eso es ser phishing-resistant por diseño'],
+  },
+  flipperterm: {
+    what: 'Terminal de laboratorio para el ecosistema Flipper Zero vía Web Serial API (Chrome/Edge) con simulador educativo completo cuando no hay hardware: intérprete de comandos subghz/ir/nrf/rfid/nfc/gpio con salidas realistas, referencia de los comandos del CLI con sus riesgos legales, parser de la salida de subghz rx que extrae frecuencia, modulación, protocolo y claves capturadas (fixed-code Princeton/CAME), y lecciones de radio insegura: rolljam, MouseJack, MIFARE roto.',
+    params: [
+      { name: 'terminal', type: 'CLI', desc: 'simulada sin hardware; real con Web Serial a 230400 baud' },
+      { name: 'comandos', type: 'quick chips', desc: 'help, device_info, subghz rx, rfid read…' },
+      { name: 'parser', type: 'subghz rx', desc: 'extrae freq, protocolo, key y bit-length de capturas' },
+      { name: 'referencia', type: 'docs', desc: 'cada comando con su aviso legal si lo lleva' },
+    ],
+    daily: ['Aprender el CLI del Flipper antes de comprarlo (o antes de enchufarlo)', 'Analizar capturas subghz propias: ¿tu mando de garaje es fixed-code de 24 bits?', 'Formación en pentesting físico: por qué la radio 433 MHz es el eslabón débil de millones de puertas'],
+    ethical: ['El simulador NO transmite nada: sin hardware todo es teatro educativo', 'Con hardware real, tú eres el responsable legal de lo que emitas (replay de señales ajenas = delito en la mayoría de jurisdicciones)', 'Las capturas del parser son de ejemplo: las frecuencias legales (bandas ISM) varían por país'],
+    tips: ['Fixed-code (Princeton, 8-24 bits) = grabar y reenviar basta; rolling code (KeeLoq) evita el replay pero no el rolljam con jammer', '2^24 = 16.7M combinaciones: un código fijo se fuerza en minutos con SDR — no hay cifrado que romper', 'MouseJack: los dongles 2.4 GHz de teclados sin emparejar aceptan inyección de pulsaciones desde 2016', 'MIFARE Classic (Crypto1) está roto desde 2008: si tu oficina lo usa, el UID es un nombre público'],
+  },
 }
