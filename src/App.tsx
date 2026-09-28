@@ -8,7 +8,9 @@ import Docs from './pages/Docs'
 import OsCompare from './pages/OsCompare'
 import Advisor from './pages/Advisor'
 import Whoami from './pages/Whoami'
+import ThemeEditor from './pages/ThemeEditor'
 import { TOOLS } from './lib/registry'
+import { applyTheme, getTheme, onThemeChange } from './lib/theme'
 
 const toolPages: Record<string, React.LazyExoticComponent<React.ComponentType>> = {}
 /* Alias id → nombre exacto del fichero en src/tools (para ids cuyo CamelCase
@@ -29,6 +31,9 @@ const FILE_ALIASES: Record<string, string> = {
   deser: 'Deserialization', oauth: 'OAuth', websockets: 'WebSockets', clickjack: 'Clickjacking',
   cachepoison: 'CachePoison', disclosure: 'Disclosure', pp: 'PrototypePollution', smuggler: 'Smuggler',
   twofa: 'TwoFA', logic: 'BusinessLogic', jwks: 'Jwks',
+  passforge: 'Passforge', maskgen: 'Maskgen', policyaudit: 'Policyaudit',
+  quishing: 'Quishing', shorteneraudit: 'Shorteneraudit', phishmtm: 'Phishmtm',
+  emailosint: 'EmailOsint', phonevalidator: 'PhoneValidator',
 }
 for (const t of TOOLS) {
   const file = FILE_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`
@@ -39,6 +44,9 @@ function currentRoute(): string {
   const h = window.location.hash.replace(/^#\/?/, '')
   return h || 'home'
 }
+
+/* Atajos de teclado por si quieres reutilizarlos en otros módulos. */
+const ROUTE_ALIASES: Record<string, string> = { customization: 'personalization', appearance: 'personalization', theme: 'personalization' }
 
 export default function App() {
   const [route, setRoute] = useState(currentRoute)
@@ -55,13 +63,44 @@ export default function App() {
     window.location.hash = id === 'home' ? '/' : `/${id}`
   }, [])
 
+  /* ── motor de theming: aplica el tema guardado y vive atento a cambios ──
+     Se conecta aquí (no en main) para que el guardado del usuario también
+     pinte la pestaña (meta theme-color) y los scrollbar del documento. */
+  useEffect(() => {
+    applyTheme(getTheme())
+    const paintChrome = (c: { bg: string; accent: string }) => {
+      let meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]')
+      if (!meta) {
+        meta = document.createElement('meta')
+        meta.name = 'theme-color'
+        document.head.appendChild(meta)
+      }
+      meta.content = c.bg
+      document.documentElement.style.colorScheme = 'dark'
+    }
+    paintChrome(getTheme())
+    return onThemeChange(paintChrome)
+  }, [])
+
+  /* Alt/Option + T abre la personalización desde cualquier página. */
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.altKey && !e.ctrlKey && !e.metaKey && e.key.toLowerCase() === 't') {
+        e.preventDefault()
+        window.location.hash = '/personalization'
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
   const tool = findTool(route)
   useEffect(() => {
-    const special: Record<string, string> = { whoami: 'Whoami — D1se0', docs: 'Documentación', 'os-compare': 'Comparativa de OS de Hacking Ético', advisor: '¿Qué herramienta necesito?' }
+    const special: Record<string, string> = { whoami: 'Whoami — D1se0', docs: 'Documentación', 'os-compare': 'Comparativa de OS de Hacking Ético', advisor: '¿Qué herramienta necesito?', personalization: 'Personalización' }
     document.title = tool
       ? `${tool.name} — HackNexus`
-      : special[route]
-        ? `${special[route]} — HackNexus`
+      : special[ROUTE_ALIASES[route] ?? route]
+        ? `${special[ROUTE_ALIASES[route] ?? route]} — HackNexus`
         : 'HackNexus — Suite de Hacking Ético'
   }, [tool, route])
 
@@ -88,6 +127,8 @@ export default function App() {
               <OsCompare nav={nav} />
             ) : route === 'advisor' ? (
               <Advisor />
+            ) : route === 'personalization' || route === 'theme' || route === 'customization' || route === 'appearance' ? (
+              <ThemeEditor />
             ) : tool ? (
               <Suspense
                 fallback={

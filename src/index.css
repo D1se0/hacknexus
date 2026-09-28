@@ -84,3 +84,132 @@
     scrollbar-width: none;
   }
 }
+
+/* ═══ HackNexus Theme Engine: variables en vivo ═══
+   El motor (src/lib/theme.ts) escribe estas variables sobre :root en tiempo
+   real. Cada propiedad usa var(--x, fallback): el fallback es el valor de la
+   paleta original, así que sin motor la web se ve exactamente igual. */
+
+:root {
+  /* hex: para propiedades CSS directas (body, .gradient-text…) */
+  --base: #0b0f0d;
+  --panel: #121714;
+  --edge: #232b26;
+  --ink: #d9e2db;
+  --grey: #8a948d;
+  --acento: #2ee88a;
+  --acento-bright: #7dffc0;
+  --acento-dark: #17a85f;
+  --info: #4fb0ff;
+  --warn: #ffb454;
+  --bad: #ff5c78;
+  --ok: #3fb850;
+  /* tripletas RGB (espacio-separated): Tailwind + opacidad */
+  --base-rgb: 11 15 13;
+  --panel-rgb: 18 23 20;
+  --edge-rgb: 35 43 38;
+  --ink-rgb: 217 226 219;
+  --grey-rgb: 138 148 141;
+  --acento-rgb: 46 232 138;
+  --acento-bright-rgb: 125 255 192;
+  --acento-dark-rgb: 23 168 95;
+  --info-rgb: 79 176 255;
+  --warn-rgb: 255 180 84;
+  --bad-rgb: 255 92 120;
+  --ok-rgb: 63 184 80;
+  --radius: 12px;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+@layer base {
+  :root {
+    --tw-ring-color: rgb(var(--acento-rgb) / 0.7);
+  }
+  body {
+    background-color: var(--base, #0b0f0d);
+    color: var(--ink, #d9e2db);
+    font-family: var(--font-sans, 'Inter', system-ui, sans-serif);
+  }
+  ::selection {
+    background-color: rgb(var(--acento-rgb) / 0.9);
+    color: var(--base, #0b0f0d);
+  }
+  ::-webkit-scrollbar-track {
+    background-color: var(--base, #0b0f0d);
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--edge, #232b26);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(var(--acento-rgb) / 0.6);
+  }
+  :focus-visible {
+    outline: 2px solid transparent;
+    box-shadow: 0 0 0 2px rgb(var(--acento-rgb) / 0.7);
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  .grid-bg {
+    background-image: linear-gradient(rgb(var(--acento-rgb) / 0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--acento-rgb) / 0.05) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .text-glow {
+    text-shadow: 0 0 18px rgb(var(--acento-rgb) / 0.55);
+  }
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(120deg, var(--ink) 20%, var(--grey) 45%, var(--acento) 90%);
+  }
+  .section-tag {
+    @apply font-mono text-xs uppercase tracking-[0.3em];
+    color: var(--acento, #2ee88a);
+  }
+  .card {
+    border-radius: var(--radius, 12px);
+    @apply border border-edge bg-panel/80 backdrop-blur-sm transition-all duration-300;
+  }
+  .kbd {
+    @apply inline-flex min-w-[1.9rem] items-center justify-center rounded-md border border-edge bg-[#1a1f1c] px-2 py-1 font-mono text-xs text-ink;
+    box-shadow: 0 2px 0 0 var(--base, #0b0f0d);
+  }
+  .chip {
+    @apply rounded-full border border-edge bg-panel/70 px-3 py-1.5 font-mono text-xs text-grey backdrop-blur-sm;
+  }
+  .scanline-band {
+    @apply pointer-events-none absolute inset-x-0 h-20 animate-scanline;
+    background: linear-gradient(180deg, transparent, rgb(var(--acento-rgb) / 0.05), transparent);
+  }
+}
+
+/* ─── interruptores de efectos (fx-off-*) ───────────────────────────────
+   El tema desactiva efectos sin re-render: apaga animaciones, halos y glows
+   globalmente para equipos modestos o sesiones largas de trabajo. */
+
+.fx-off-grid .grid-bg {
+  animation: none;
+  background-image: none;
+}
+.fx-off-scan .scanline-band,
+.fx-off-scan .animate-gridDrift {
+  animation: none !important;
+}
+.fx-off-glow .text-glow {
+  text-shadow: none;
+}
+.fx-off-glow [class*='shadow-glow'] {
+  box-shadow: none !important;
+}
+.fx-off-glow .halo {
+  opacity: 0.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .grid-bg,
+  .scanline-band {
+    animation: none !important;
+  }
+}

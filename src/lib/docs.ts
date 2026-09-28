@@ -1691,4 +1691,119 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['El JWKS es público por diseño: analizarlo es reconocimiento legítimo', 'Las claves privadas filtradas en un JWKS son hallazgo crítico: reporta, no explotes', 'La postura de claves alimenta el informe de diseño, no el exploit'],
     tips: ['d, p o q en el JSON = clave privada PUBLICADA: rotación de emergencia y hallazgo crítico', 'kid es un input del servidor: SQLi y path traversal en kid son vectores reales si no se valida', 'RSA1_5 en keys use:enc es Bleichenbacher waiting to happen — OAEP es el fix'],
   },
+
+  /* ── Ronda 15: theming ── */
+  personalization: {
+    what: 'Panel de personalización de toda la aplicación: 10 colores editables con selector nativo y entrada hex, 8 temas predefinidos (Terminal Verde, Cyber Blue, Blood Moon, Purple Haze, Amber CRT, Glacier Ice, Synthwave, Matrix), generador de paletas armónicas aleatorias, redondeo global, tipografía de interfaz y tres interruptores de efectos (glow, rejilla, scanline). Aplica en TIEMPO REAL mediante CSS variables sobre :root, persiste en localStorage y permite exportar/importar el tema como JSON. Incluye análisis de accesibilidad que avisa de contrastes pobres.',
+    params: [
+      { name: 'colores', type: '10 pickers', required: true, desc: 'fondo, paneles, bordes, texto, secundario, acento, info, warn, bad y ok — aplican al instante' },
+      { name: 'presets', type: 'select', desc: '8 temas completos; solo cambian colores, no tu radio/fuente/efectos' },
+      { name: 'diseño', type: 'formulario', desc: 'redondeo 0-26px, tipografía Inter/Mono/System y efectos on/off' },
+      { name: 'export/import', type: 'json', desc: 'copia tu tema o pega el de otro para aplicarlo' },
+    ],
+    daily: ['Ajustar el acento al color corporativo de tu cliente para demos', 'Apagar glow y rejilla para sesiones largas o equipos modestos (menos GPU)', 'Exportar tu tema para tenerlo en todos tus equipos'],
+    ethical: ['La configuración se guarda solo en tu navegador: nada de telemetría ni perfiles', 'El análisis de contraste usa luminancia WCAG: te avisa si dejas la UI ilegible'],
+    tips: ['Alt/Option + T abre la personalización desde cualquier página', 'Los modificadores de opacidad de Tailwind (/80, /50…) siguen funcionando: la paleta se aplica con tripletas rgb(var(--x-rgb) / alpha)', 'Si el resultado queda raro, "Restaurar todo" vuelve a la paleta original exacta'],
+  },
+
+  /* ── Ronda 15: contraseñas ── */
+  passforge: {
+    what: 'Generador de passphrases estilo Diceware con WebCrypto: wordlist integrada de ~1.000 palabras cortas, 3-12 palabras, separadores configurables, capitalización (+1 bit/palabra), dos dígitos finales (+6,6 bits) y opción estética leet. Calcula la entropía real y la traduce a tiempo de crackeo ante cuatro adversarios (online con rate limit, GPU modesta, GPU alta y granja estatal), con lote de hasta 20 candidatas clasificadas por fuerza.',
+    params: [
+      { name: 'palabras', type: 'slider 3-12', required: true, desc: 'cada palabra aporta log2(1000) ≈ 10 bits' },
+      { name: 'separador', type: 'select', desc: 'espacio, guion, punto, guion bajo, coma o nada' },
+      { name: 'toggles', type: 'opciones', desc: 'capitalizar, dígitos finales, leet (decorativo)' },
+      { name: 'lote', type: '1-20', desc: 'genera varias y compara entropías' },
+    ],
+    daily: ['Crear la passphrase maestra de tu gestor de contraseñas', 'Contraseñas que SÍ tendrás que teclear a mano: LUKS, BIOS, llaves del gestor', 'Demostrar en formación que "Cobre-Lobo-Menta-42" es más fuerte que "P@ssw0rd!"'],
+    ethical: ['La generación usa crypto.getRandomValues con rejection sampling: sesgo cero', 'La entropía mostrada asume que el atacante conoce la wordlist: estimación honesta, no inflada'],
+    tips: ['4 palabras (~46 bits) resisten años a un rig de GPU; 5+ para cuentas críticas', 'La entropía está en las palabras, no en el leet: las sustituciones son cosméticas', 'Combínala con Auditor de Contraseñas para comprobar que tu passphrase no está filtrada'],
+  },
+  maskgen: {
+    what: 'Diseñador de máscaras hashcat: parsea patrones ?u ?l ?d ?s ?h ?H ?a y ?b mezclados con literales, calcula el keyspace exacto, genera candidatos de ejemplo con WebCrypto y detecta patrones débiles (PINs cortos, sufijos de año, estructuras tipo "Password"). Muestra el comando hashcat -a 3 equivalente y un desglose átomo a átomo.',
+    params: [
+      { name: 'máscara', type: 'string', required: true, desc: 'p. ej. ?u?l?l?l?l?l?d?d?d?d — 24 átomos máximo' },
+      { name: 'presets', type: 'botones', desc: 'patrones reales: capital+año, PIN de 6/8, hex, palabra+símbolo' },
+      { name: 'keyspace', type: 'número', desc: 'nº total de candidatos y su orden de magnitud' },
+      { name: 'muestras', type: 'candidatas', desc: '12 generadas al azar que cumplen la máscara' },
+    ],
+    daily: ['Estimar cuánto tardaría tu política de contraseñas en caer bajo un ataque de máscara', 'Preparar el ataque dirigido de una auditoría autorizada: keyspace antes que reglas', 'Enseñar por qué "una mayúscula y un año al final" no añade apenas entropía'],
+    ethical: ['Las máscaras se diseñan aquí, se lanzan SOLO en auditorías autorizadas', 'El keyspace es tu presupuesto de tiempo: úsalo para justificar políticas, no para acosar'],
+    tips: ['?a son 94 caracteres: una máscara larga con ?a explota exponencialmente — empieza dirigido', 'El aviso "termina en 4 dígitos" es la regla best64 más rentable del mundo real', '--increment en el hint hashcat: arranca con la máscara corta y crece'],
+  },
+  policyaudit: {
+    what: 'Auditor de políticas de contraseñas contra NIST 800-63B: pega los parámetros reales de tu organización (longitud, clases exigidas, rotación, historial, bloqueo, blacklist de filtraciones, MFA) y recibe un veredicto puntuado 0-100 con nota, hallazgos priorizados (crítico/aviso/info/ok) con el por qué y el arreglo de cada uno, y las configuraciones coherentes: pwquality.conf para Linux y una Fine-Grained Password Policy en PowerShell para Windows. Tres presets: corporativo clásico 2003, NIST moderno y alto secreto.',
+    params: [
+      { name: 'parámetros', type: 'formulario', required: true, desc: 'minlen, maxlength, minclass, caducidad, historial, lockout, blacklist, MFA' },
+      { name: 'veredicto', type: 'score + nota', desc: 'la nota que pondría un auditor NIST, con desglose' },
+      { name: 'hallazgos', type: 'lista', desc: 'cada uno con severidad, detalle y fix concreto' },
+      { name: 'configs', type: 'texto', desc: 'pwquality.conf y New-ADFineGrainedPasswordPolicy listos' },
+    ],
+    daily: ['Justificar en el comité de seguridad por qué eliminar la rotación de 30 días', 'Baseline coherente Linux+Windows en un cambio de política', 'Auditar el proveedor de tu cliente: pega su política y enséñale la nota'],
+    ethical: ['Las políticas se auditan con autorización: las contraseñas de la gente son datos personales', 'Política dura + usable = cumplimiento real: el objetivo es subir la nota sin torturar al usuario'],
+    tips: ['Los 3 críticos típicos: minlen < 8, sin bloqueo y sin blacklist — arreglarlos sube 60 puntos', 'La complejidad obligatoria en 4 clases resta puntos: NIST la desaconseja con datos', 'Genera ambas configs del mismo veredicto: la coherencia entre SO es lo que suele romperse'],
+  },
+
+  /* ── Ronda 15: phishing ── */
+  quishing: {
+    what: 'Laboratorio de QR phishing (quishing) para campañas de concientización autorizadas: 4 plantillas de escenario (parking falso, QR de sesión MFA, WiFi cautivo, wallet de cripto), 3 estilos de QR calibrados con campañas reales (corporativo limpio, con logo, etiqueta urbana) y preview en vivo del QR renderizado con la librería qrcode. Cada plantilla incluye su lección de defensa, y la tool cierra con guía de verificación para entrenar al equipo.',
+    params: [
+      { name: 'plantilla', type: 'select', required: true, desc: 'escenario del ataque con su lección' },
+      { name: 'dominio/ruta', type: 'string', desc: 'dominio ficticio del atacante (usa .example)' },
+      { name: 'estilo', type: 'select', desc: 'apariencia del QR: el estilo legítimo es el que más engaña' },
+      { name: 'payload', type: 'texto', desc: 'lo que codifica el QR, copiable para tu material de formación' },
+    ],
+    daily: ['Generar el material de una campaña de awareness interna sobre quishing', 'Demostrar en formación que un QR no se puede leer de vista: por eso engañan', 'Preparar una tabla de ejercicios: ¿cuál de estos 5 QR es el legítimo?'],
+    ethical: ['Los dominios de ejemplo no existen: la tool es para enseñar, no para desplegar', 'Las campañas con QR reales requieren autorización escrita y reporte agregado, nunca humillación', 'Registrar dominios typosquat de terceros es delito en muchas jurisdicciones'],
+    tips: ['El QR blanco y plano con margen genera más confianza que el sucio: así operan los atacantes', 'El logo pegado SOBRE el QR explota la confianza visual: enséñales a mirar qué hay encima', 'El quishing por email salta los filtros de URL: los sandbox no analizan imágenes'],
+  },
+  shorteneraudit: {
+    what: 'Auditor de URLs y acortadores: análisis estático con 7 flags (credenciales en la URL, host IP, punycode xn--, subdominios profundos, typosquatting de marcas conocidas, TLD desechables y redirects abiertos), risk score agregado, expansión de acortadores en vivo siguiendo la cadena de redirecciones con fetch, enlaces de expansión manual sin CORS y catálogo de 8 shorteners con su método de previsualización.',
+    params: [
+      { name: 'url', type: 'string', required: true, desc: 'acortada (bit.ly/...) o completa' },
+      { name: 'análisis estático', type: 'flags', desc: '7 heurísticas con nota y explicación de cada señal' },
+      { name: 'cadena', type: 'redirects', desc: 'hasta 6 saltos con status y Location de cada uno' },
+      { name: 'expansión manual', type: 'enlaces', desc: 'checkshorturl, urlex, unshorten.dev, getlinkinfo' },
+    ],
+    daily: ['Comprobar un enlace acortado recibido por email o SMS antes de abrirlo', 'Analizar URLs de campañas de awareness reales que han pillado a compañeros', 'Verificar enlances de una newsletter sospechosa sin hacer clic'],
+    ethical: ['La expansión hace fetch desde TU navegador: el acortador ve tu IP y tu User-Agent', 'Para URLs muy sensibles, expande desde una VM o usa los servicios de expansión manual', 'El risk score es heurístico: una URL limpia no es una URL segura, solo no tiene señales automáticas'],
+    tips: ['La expansión en vivo depende de CORS: si el acortador lo bloquea, usa los expanders manuales', 'tinyurl nunca expira los enlaces: los dumps antiguos siguen activos', 'El patrón "paypal.com.login.tk" es el clásico: 4+ niveles de subdominio delatan'],
+  },
+  phishmtm: {
+    what: 'Anatomía educativa del phishing con proxy inverso (Evilginx-style): los 7 pasos del ataque (cebo, proxy, credenciales, 2FA capturado, cookie robada, secuestro paralelo, persistencia) con el actor de cada paso, qué pasa exactamente y cómo se rompe. Incluye las 6 capas de defensa que funcionan (passkeys, password manager, filtrado de dominios nuevos, Conditional Access, session binding, formación) clasificadas por nivel, y la lección central: el 2FA OTP NO para esta técnica, solo las passkeys la cortan de raíz.',
+    params: [
+      { name: 'pasos', type: 'timeline', required: false, desc: '7 fases con actor (víctima/atacante/servicio) y defensa por paso' },
+      { name: 'defensas', type: 'catálogo', desc: '6 mitigaciones con nivel: básico, avanzado, estructural' },
+      { name: 'lección', type: 'resumen', desc: 'por qué "no compartas tu código" no basta aquí' },
+    ],
+    daily: ['Explicarle a dirección por qué el MFA por OTP no es suficiente', 'Justificar la migración a passkeys con un argumento visual', 'Formar al equipo: la señal que salva es el password manager que no autocompleta'],
+    ethical: ['Es anatomía, no manual: ningún paso genera código ni configura un proxy', 'El objetivo es defender: entender el mecanismo es lo que permite detectar la campaña', 'Demonstrar el ataque en tu propio lab con tus propias cuentas, nunca con terceros'],
+    tips: ['El paso 5 es el núcleo: la cookie se emite en la sesión del atacante y se copia a la de la víctima', 'Ante sospecha: cerrar TODAS las sesiones y revisar reglas de buzón ANTES de rotar la contraseña', 'Los proxies viven en dominios recién registrados: filtrar edades < 30 días mata la mayoría'],
+  },
+
+  /* ── Ronda 15: análisis ── */
+  emailosint: {
+    what: 'OSINT pasivo por dirección de email (complemento del Username OSINT): perfil Gravatar por hash MD5 (nombre, usuario, ubicación, bio y servicios vinculados), avatar con sonda 404, filtraciones conocidas vía XposedOrNot (CORS abierto, ~200 bases), commits públicos de GitHub firmados con ese email (author-email search), análisis local (proveedor, +tag, punto-gmail, cuentas de rol, dominios descartables, email canónico), 5 dorks listos para Google/Bing/GitHub/DuckDuckGo y 6 verificaciones manuales (HIBP, Intelligence X, DeHashed, holehe…).',
+    params: [
+      { name: 'email', type: 'string', required: true, desc: 'la dirección a investigar; se normaliza antes de hashear' },
+      { name: 'gravatar', type: 'API', desc: 'perfil JSON + avatar con d=404: registro confirmado' },
+      { name: 'filtraciones', type: 'API', desc: 'XposedOrNot check-email: lista de bases donde aparece' },
+      { name: 'github', type: 'API', desc: 'search/commits con author-email: hasta 5 ejemplos con repo y fecha' },
+    ],
+    daily: ['Auditar tu propia huella: ¿qué dice internet de tu email?', 'Comprobar si tu email aparece en filtraciones antes de que te lo cuente la prensa', 'Recuperar cuentas antiguas: el Gravatar apunta a perfiles que olvidaste'],
+    ethical: ['Todo es pasivo: APIs públicas con CORS abierto; el dueño del email no recibe notificación', 'Las filtraciones se consultan para proteger TU email o en incidentes autorizados, nunca para acceder a cuentas', 'El email es dato personal (RGPD): investigar sin base legítima puede ser acoso'],
+    tips: ['El +tag y el punto de Gmail no engañan al OSINT: la tool calcula el email canónico', 'GitHub limita la búsqueda a 10 req/min sin token: si falla, reintenta en un minuto', 'Cruza con Username OSINT: el preferredUsername del Gravatar suele ser su alias en otros sitios'],
+  },
+  phonevalidator: {
+    what: 'Validador telefónico con parser E.164 propio (sin dependencias) y metadatos de 55 países: país por coincidencia de prefijo más larga, tipo (móvil/fijo/especial/rol), geografía aproximada por prefijo de área, operador histórico (con aviso de portabilidad), flags de falsedad (dígitos repetidos, secuencias, rangos ficticios de cine de EE. UU./UK/Australia), formatos E.164/internacional/nacional, URIs tel:, wa.me y RFC 3966, IMEI con Luhn y TAC, modo lista con resumen estadístico y export CSV, más los enlaces honestos para comprobar actividad (Truecaller, Sync.me, NumLookup).',
+    params: [
+      { name: 'número', type: 'string', required: true, desc: 'con +, o sin + con selector de país por defecto' },
+      { name: 'identificación', type: 'ficha', desc: 'país, tipo, región, operador histórico y longitud del plan' },
+      { name: 'flags', type: 'avisos', desc: 'ficticio, relleno, secuencia, longitud fuera de plan' },
+      { name: 'lista', type: 'bulk', desc: 'valida un listado con resumen y CSV exportable' },
+    ],
+    daily: ['Limpiar una base de contactos antes de un simulacro de smishing autorizado', 'Verificar que los números de tu propia empresa están bien formateados en E.164', 'Clasificar móviles vs fijos en un listado de incidente'],
+    ethical: ['Validar formato es neutral; rastrear a una persona por su teléfono puede ser acoso (delito)', 'La tool no localiza, no llama y no escribe a nadie: los enlaces externos los abres tú y bajo tu responsabilidad', 'El teléfono es dato personal: en auditorías limita el alcance a lo autorizado'],
+    tips: ['"Existe de verdad" exige consulta HLR de pago (Twilio Lookup, numverify): aquí se valida que el número es VÁLIDO y de qué tipo', 'El operador por prefijo es histórico: la portabilidad (MNP) lo invalida', 'Los 555-01XX de EE. UU. y 07700 900xxx de UK son rangos de cine: si aparecen en tu base, son datos de prueba'],
+  },
 }

@@ -14,6 +14,7 @@ import {
   Hourglass, AlarmClock, LayoutGrid, Microchip, Bluetooth, BadgeCheck,
   RadioTower, Antenna, ScanLine,
   PackageOpen, FolderInput, MousePointerClick, PlugZap, Smartphone, Ghost, Variable, Boxes, Scale, Eye,
+  Puzzle, TimerReset, ShieldHalf, Captions, AudioLines, KeySquare as KeySquareAlias, PhoneCall, AtSign as AtSignAlias,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -135,6 +136,9 @@ export const TOOLS: ToolDef[] = [
   // ─── Contraseñas ────────────────────────────────────────────────
   { id: 'passgen', name: 'Generador de Contraseñas', short: 'PassGen', desc: 'Contraseñas, frases y PINs criptográficamente seguros con análisis de fortaleza', category: 'Contraseñas', icon: KeyRound },
   { id: 'passaudit', name: 'Auditor de Contraseñas', short: 'PassAudit', desc: 'Fortaleza zxcvbn, tiempo de crackeo y filtraciones vía k-anonymity', category: 'Contraseñas', icon: ShieldCheck },
+  { id: 'passforge', name: 'Passphrase Forge', short: 'PassForge', desc: 'Passphrases Diceware con WebCrypto, tiempos de crackeo por adversario y lote de candidatas listas para el gestor', category: 'Contraseñas', icon: Puzzle },
+  { id: 'maskgen', name: 'Mask Gen', short: 'MaskGen', desc: 'Máscaras hashcat con keyspace exacto, muestras en vivo y avisos de patrones débiles para dirigir la fuerza bruta', category: 'Contraseñas', icon: TimerReset },
+  { id: 'policyaudit', name: 'Password Policy Auditor', short: 'PolicyAudit', desc: 'Audita tu política contra NIST 800-63B con veredicto puntuado y genera pwquality.conf y la PSO de Windows coherentes', category: 'Contraseñas', icon: ShieldHalf },
 
   // ─── Web & payloads ─────────────────────────────────────────────
   { id: 'revshells', name: 'Reverse Shells', short: 'RevShells', desc: 'Generador de reverse shells multiplataforma con IP/puerto y listeners', category: 'Web & payloads', icon: TerminalSquare, ported: true, origin: 'revShellsGenerator-page' },
@@ -172,6 +176,9 @@ export const TOOLS: ToolDef[] = [
   { id: 'mailheader', name: 'Email Header Analyzer', short: 'MailHdr', desc: 'Parsea cabeceras: cadena Received, SPF/DKIM/DMARC, Return-Path vs From y puntuación de spoofing', category: 'Phishing', icon: MailWarning },
   { id: 'urlphish', name: 'URL Phishing Inspector', short: 'URLPhish', desc: 'Desmonta URLs: punycode/homoglyphs, typosquatting, acortadores, credenciales incrustadas y risk score', category: 'Phishing', icon: Link2 },
   { id: 'phishpage', name: 'Awareness Campaign Builder', short: 'Awareness', desc: 'Plantillas de email y landings de entrenamiento anti-phishing con QR (quishing) y disclaimers éticos', category: 'Phishing', icon: Fish },
+  { id: 'quishing', name: 'Quishing Lab', short: 'Quishing', desc: 'QR phishing educativo: plantillas de escenarios reales, estilos de QR legítimos y lecciones para entrenar el ojo del equipo', category: 'Phishing', icon: Captions },
+  { id: 'shorteneraudit', name: 'Shortener Audit', short: 'Shorteners', desc: 'Expande acortadores en vivo y descompone URLs con detección de credenciales, punycode, typosquatting y redirects abiertos', category: 'Phishing', icon: AudioLines },
+  { id: 'phishmtm', name: 'Phishing MITM Anatomy', short: 'MITMPhish', desc: 'Anatomía del phishing con proxy inverso (Evilginx-style): por qué roba sesiones con 2FA activo y qué capas lo rompen', category: 'Phishing', icon: KeySquareAlias },
 
   // ─── Linux & sistema ────────────────────────────────────────────
   { id: 'chmod', name: 'Calculadora CHMOD', short: 'CHMOD', desc: 'Permisos Linux en octal/simbólico con SUID, SGID y Sticky Bit', category: 'Linux & sistema', icon: Crown, ported: true, origin: 'chmod-calculator' },
@@ -205,6 +212,8 @@ export const TOOLS: ToolDef[] = [
   { id: 'iocextract', name: 'IOC Extractor', desc: 'Extrae IPs, dominios, hashes, CVEs, wallets y técnicas MITRE de cualquier texto con contexto y enlaces de análisis', short: 'IOCs', category: 'Análisis', icon: Crosshair },
   { id: 'loganonymize', name: 'Log Anonymizer', desc: 'Pseudonimiza IPs, usuarios y dominios de forma consistente y reversible para compartir logs sin exponer nada', short: 'AnonLogs', category: 'Análisis', icon: EyeOff },
   { id: 'userosint', name: 'Username OSINT', desc: 'Investiga un alias: plataformas donde existe, patrón que sigue, variantes y dorks listos para Google y GitHub', short: 'OSINT', category: 'Análisis', icon: UserSearch },
+  { id: 'emailosint', name: 'Email OSINT', short: 'EmailOSINT', desc: 'Huellas de un email: Gravatar (perfil+avatar), filtraciones vía XposedOrNot, commits de GitHub firmados con esa dirección y dorks listos', category: 'Análisis', icon: AtSignAlias },
+  { id: 'phonevalidator', name: 'Phone Validator & OSINT', short: 'Phone', desc: 'Valida números contra el plan E.164 de ~45 países: país, móvil/fijo, región, operador histórico, fakes, IMEI y verificación de actividad', category: 'Análisis', icon: PhoneCall },
   { id: 'sysmonbuilder', name: 'Sysmon Config Builder', desc: 'Configuración XML de Sysmon con perfiles y guía ofensiva/defensiva de cada evento: el punto de partida de todo SOC', short: 'Sysmon', category: 'Análisis', icon: FileCog },
 
   // ─── Generadores ────────────────────────────────────────────────

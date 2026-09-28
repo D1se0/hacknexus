@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>145 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>153 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-145-2ee88a?style=flat-square" alt="145 tools" />
+  <img src="https://img.shields.io/badge/tools-153-2ee88a?style=flat-square" alt="153 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 145 herramientas
+## 🧰 Las 153 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -62,6 +62,9 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Generador de Contraseñas** | Passwords, passphrases y PINs con crypto.getRandomValues sin sesgo | 🟢 local |
 | **Auditor de Contraseñas** | Fortaleza zxcvbn, tiempo de crackeo offline y filtraciones HIBP (k-anonymity: solo 5 chars del SHA-1) | 🟡 HIBP |
 | **Password Policy Builder** | Políticas coherentes Linux/Windows según NIST 800-63B: longitud sobre complejidad, sin rotación suicida, bloqueo progresivo | 🟢 local |
+| **Passphrase Forge** | Passphrases Diceware con WebCrypto, entropía real y tiempos de crackeo ante 4 adversarios (online → granja de GPUs) | 🟢 local |
+| **Mask Gen** | Máscaras hashcat (?u?l?d?s) con keyspace exacto, muestras en vivo y avisos de patrones débiles | 🟢 local |
+| **Password Policy Auditor** | Audita tu política contra NIST 800-63B con nota 0-100 y genera pwquality.conf + PSO de Windows coherentes | 🟢 local |
 
 ### Web & payloads
 | Tool | Descripción | Red |
@@ -147,6 +150,9 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Email Header Analyzer** | Cadena Received, SPF/DKIM/DMARC, Return-Path vs From vs Reply-To, X-Mailer de scripts y score de spoofing 0-100 | 🟢 local |
 | **URL Phishing Inspector** | Punycode/homoglyphs carácter a carácter, typosquatting de marcas, acortadores, credenciales en URL y risk score — sin visitar la URL | 🟢 local |
 | **Awareness Campaign Builder** | Plantillas de email y landings de entrenamiento (BEC, O365, DHL, quishing, pretexting) con disclaimers, tracking simulado y QR | 🟢 local |
+| **Quishing Lab** | QR phishing educativo: 4 escenarios reales, 3 estilos de QR legítimos y lecciones para entrenar el ojo del equipo | 🟢 local |
+| **Shortener Audit** | Expande acortadores en vivo y detecta credenciales, punycode, typosquatting y redirects abiertos | 🟡 fetch CORS |
+| **Phishing MITM Anatomy** | Anatomía del phishing con proxy inverso (Evilginx-style): por qué roba sesiones con 2FA y qué capas lo rompen | 🟢 local |
 
 ### Linux & sistema
 | Tool | Descripción | Red |
@@ -187,6 +193,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **IOC Extractor** | IPs, dominios, hashes, CVEs, wallets y técnicas MITRE desde cualquier texto, con contexto y enlaces VT/AbuseIPDB | 🟢 local |
 | **Log Anonymizer** | Pseudonimización consistente y reversible de IPs/usuarios/dominios para compartir logs sin exponer nada | 🟢 local |
 | **Username OSINT** | URLs de perfil en ~20 plataformas, patrón del alias, variantes y dorks de Google/GitHub — todo pasivo | 🟢 local |
+| **Email OSINT** | Gravatar (perfil+avatar), filtraciones (XposedOrNot), commits de GitHub firmados con ese email y dorks — pasivo con CORS verificado | 🔵 APIs públicas |
+| **Phone Validator & OSINT** | Validación E.164 de 55 países: país, móvil/fijo, región, operador histórico, fakes, IMEI y verificación de actividad | 🟢 local |
 | **Sysmon Config Builder** | XML de Sysmon por perfiles con guía ofensiva/defensiva de cada evento: el punto de partida de todo SOC | 🟢 local |
 | **Config Diff** | Diff semántico de configs: ignora comentarios/orden, resalta directivas de seguridad que cambiaron | 🟢 local |
 | **GTFOBins Explorer** | Base de datos COMPLETA de GTFOBins: 458 binarios UNIX con todos sus comandos de abuso por contexto (sudo, SUID, capabilities) | 🟢 local |
@@ -219,10 +227,11 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 
 ## 📚 Docs y comparativa de OS
 
-Además de las herramientas, la suite incluye dos secciones de conocimiento:
+Además de las herramientas, la suite incluye varias secciones de conocimiento:
 
 - **[Documentación](https://d1se0.github.io/hacknexus/#/docs)** — cada herramienta con una ficha ultradetallada: qué hace exactamente, parámetros y entradas, usos reales del día a día, aplicaciones en hacking ético y tips. Con buscador global.
 - **[¿Qué herramienta necesito?](https://d1se0.github.io/hacknexus/#/advisor)** — orientador por necesidades: dime qué quieres conseguir (hardening, OSINT, captura, informe…) y te llevo directo a las tools adecuadas con los pasos de inicio. Para quien no se sabe el catálogo de memoria.
+- **[Personalización](https://d1se0.github.io/hacknexus/#/personalization)** — cambia colores, tipografía, redondeo y efectos de TODA la suite en tiempo real: 8 temas predefinidos, paletas aleatorias, export/import del tema como JSON y análisis de contraste. Se guarda en tu navegador (Alt+T para abrirla).
 - **[Comparativa de OS de hacking ético](https://d1se0.github.io/hacknexus/#/os-compare)** — Kali, Arch (+BlackArch), Parrot, Ubuntu, Windows Server/AD, RHEL, Tails, Qubes y más: estadísticas animadas, pros/contras, veredicto honesto, ruta de aprendizaje recomendada y **repos de entornos customizados**, incluidos los del autor:
   - [kali-environment-install](https://github.com/D1se0/kali-environment-install) · [environment-kali-nordic](https://github.com/D1se0/environment-kali-nordic) · [guía del entorno Kali](https://d1se0.github.io/blog_hacking/view.html?enviroment=kalilinux)
   - [Arch_i3_d1se0_Environment](https://github.com/D1se0/Arch_i3_d1se0_Environment) · [environment-ubuntu-installer](https://github.com/D1se0/environment-ubuntu-installer)

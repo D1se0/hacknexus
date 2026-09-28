@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, BookOpen, Laptop, Star, FolderTree, UserRound, Compass, HardDrive, Network, KeyRound, Monitor, Swords, Crosshair, Route } from 'lucide-react'
+import { Search, Github, ShieldAlert, Command, X, Menu, ChevronRight, BookOpen, Laptop, Star, FolderTree, UserRound, Compass, HardDrive, Network, KeyRound, Monitor, Swords, Crosshair, Route, Palette, Ghost } from 'lucide-react'
 import { TOOLS, CATEGORIES, CATEGORY_COLORS, SUBSECTIONS, subsectionOf, type ToolDef } from '../lib/registry'
 import { cn } from '../lib/util'
 import { Typewriter } from './ui'
@@ -14,6 +14,7 @@ const SPECIAL_PAGES: { id: string; name: string; desc: string; icon: React.Eleme
   { id: 'docs', name: 'Documentación', desc: 'Docs detalladas de cada herramienta: qué hace, parámetros y usos', icon: BookOpen },
   { id: 'os-compare', name: 'Comparativa de OS', desc: 'Kali, Arch, Parrot, RHEL… con repos de entornos customizados', icon: Laptop },
   { id: 'advisor', name: '¿Qué tool uso?', desc: 'Dime qué quieres conseguir y te llevo a la herramienta adecuada', icon: Compass },
+  { id: 'personalization', name: 'Personalización', desc: 'Colores, tipografía y efectos de toda la app en tiempo real', icon: Palette, hint: 'alt+T' },
 ]
 
 /* ---------------- Command Palette ⌘K ---------------- */
@@ -157,6 +158,7 @@ const SUB_ICONS: Record<string, React.ElementType> = {
   'win-config': Monitor,
   postex: Route,
   explotacion: Swords,
+  'ofensiva-web': Ghost,
   'privesc-recursos': Crosshair,
 }
 
@@ -402,6 +404,16 @@ export function Layout({ route, nav, children }: { route: string; nav: Nav; chil
               <span className="flex items-center gap-0.5">
                 <Command size={10} /><span className="kbd ml-1 scale-90 px-1 py-0">K</span>
               </span>
+            </button>
+            <button
+              onClick={() => nav('personalization')}
+              title="Personalizar colores y diseño (Alt+T)"
+              className={cn(
+                'rounded-lg border p-1.5 transition-all hover:bg-acento/10',
+                route === 'personalization' ? 'border-acento/60 bg-acento/10 text-acento shadow-glow' : 'border-edge text-grey hover:border-acento/40 hover:text-acento',
+              )}
+            >
+              <Palette size={16} />
             </button>
             <a
               href="https://github.com/D1se0"
