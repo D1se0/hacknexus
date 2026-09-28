@@ -1830,4 +1830,64 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['Cambiar MAC/IP en tu equipo y tu red es privacidad legítima; en redes ajenas pueden aplicar sus normas', 'Usar otra identidad para eludir vetos rompe los Términos de Servicio; con fraude o suplantación, es delito', 'Casos de uso legítimos: privacidad personal, auditorías autorizadas, CTFs, periodismo de fuentes, testing antifraude propio'],
     tips: ['La fuga WebRTC clásica: proxy de navegador + RTCPeerConnection = tu IP real en los candidates ICE; Tor Browser la trae cortada', 'AllowedIPs = 0.0.0.0/0, ::/0 y DNS dentro del [Interface]: sin eso tienes un túnel con fugas, no anonimato', 'NEWNYM cambia el circuito Tor, no garantiza salida distinta: los guardas duran semanas', 'Un solo login con tu cuenta real en el perfil nuevo vincula ambas identidades para siempre'],
   },
+
+  /* ── Ronda 17 ── */
+  homoglyph: {
+    what: 'Detecta dominios y textos que se ven igual pero NO lo son: punycode decodificado (xn--), confusables cirílicos/griegos/latinos con el alfabeto de origen, caracteres invisibles (zero-width, BOM) y bidi (spoof de extensión), tags Unicode del canal de emoji, guiones mezclados, esqueleto canónico para comparar dominios visualmente idénticos, formas limpias reconstruidas y puntuación de riesgo con motivo. Incluye generador de evil twins (cirílico, griego, acentos, zero-width, bidi override, rn→m) para testear que tus filtros y CI las cazan.',
+    params: [
+      { name: 'texto', type: 'string', required: true, desc: 'dominio, email, username o fragmento con sospecha de homoglifos' },
+      { name: 'informe', type: 'análisis', desc: 'riesgo con motivo, hallazgos por carácter, punycode, esqueleto y formas limpias' },
+      { name: 'evil twins', type: 'generador', desc: 'variantes homoglifo de un dominio legítimo para testear detectores' },
+    ],
+    daily: ['Auditar un dominio recibido en un email antes de hacer clic', 'Revisar nombres de usuario y committers en PRs de supply chain', 'Comprobar si tu filtro antiphishing caza las variantes IDN generadas'],
+    ethical: ['Detección pasiva 100% local: no consultas ningún registro ni notificas a nadie', 'Generar evil twins es para TESTEAR tus defensas, no para registrar dominios que suplanten', 'Suplantar una marca o persona con estos dominios es fraude y delito'],
+    tips: ['Firefox: about:config → idn_show_punycode=true para ver SIEMPRE el punycode crudo', 'El esqueleto colapsa dominios visualmente idénticos a la misma cadena: compáralo en CI', 'Un español con acentos dispara riesgo medium legítimamente: lee el motivo, no solo el semáforo', 'Bidi en nombres de fichero = spoof de extensión: GitHub y los IDEs modernos lo bloquean por eso'],
+  },
+  zerowidth: {
+    what: 'Esteganografía en texto plano con caracteres de ancho cero: modo binario clásico (ZWNJ/ZWJ, 1 bit/marca), denso base-4 (4 caracteres, 2 bits/marca) y marcas por palabra (aguanta recortes de plataformas). Extracción con detección automática de modo, métricas de ratio tinta/texto y sanitizer forense que elimina invisibles, bidi, soft hyphen y tags Unicode de entrada no confiable.',
+    params: [
+      { name: 'portador', type: 'texto', required: true, desc: 'el texto visible que todo el mundo puede leer' },
+      { name: 'mensaje', type: 'texto', required: true, desc: 'lo que viaja invisible: 8 bits por carácter' },
+      { name: 'modo', type: 'select', desc: 'binario, denso (el doble de eficiente) o por palabra' },
+      { name: 'sanitizer', type: 'pestaña', desc: 'limpia texto no confiable con métricas de qué se eliminó' },
+    ],
+    daily: ['Marcar un documento confidencial con un ID invisible por destinatario (watermarking)', 'Verificar si tu contenido reaparece copiado en otra web con las marcas intactas', 'Limpiar texto pegado de fuentes no confiables antes de procesarlo'],
+    ethical: ['Watermarking, verificación de copias y forense son legítimos; ocultar actividad maliciosa no lo es', 'La esteganografía no es criptografía: quien sabe buscar la detecta; cifra antes si el contenido es sensible', 'Usar tinta para desanonimizar a otros sin base legal es una violación de privacidad'],
+    tips: ['Copia SIEMPRE con el botón del bloque: seleccionar a mano pierde marcas y trunca el mensaje', 'Twitter/X y Slack recortan parte de los zero-width: prueba el ciclo completo antes de confiar en el canal', 'El modo denso necesita la mitad de marcas para el mismo mensaje', 'El modo por palabra sobrevive a recortes de plataforma pero necesita 8 palabras por carácter'],
+  },
+  classcipher: {
+    what: 'Criptoanálisis ejecutándose, no un catálogo: diagnóstico automático por índice de coincidencia (¿sustitución simple, polialfabético o aleatorio?), Caesar resuelto con chi-cuadrado sobre los 26 turnos, Vigenère con deducción de longitud por Kasiski (distancias de trigramas) y promedio de IC por columnas, resolución de cada columna como un Caesar independiente, sustitución monoalfabética por hill-climbing con cuadrigramas de alta frecuencia ES/EN y confianza honesta, Atbash, ROT47, afín con verificación de invertibilidad y XOR de un byte por fuerza bruta con puntuación de imprimibilidad.',
+    params: [
+      { name: 'ciphertext', type: 'string', required: true, desc: 'texto cifrado; el diagnóstico guía hacia la pestaña correcta' },
+      { name: 'idioma', type: 'select', desc: 'español o inglés (cambia frecuencias y cuadrigramas)' },
+      { name: 'vigenère', type: '2 pasos', desc: 'longitud de clave (IC/Kasiski) y resolución por columnas' },
+      { name: 'sustitución', type: 'hill-climbing', desc: 'mapeo completo cifra→plano con confianza' },
+    ],
+    daily: ['Resolver challenges de CTF de cripto clásica en segundos', 'Entender con datos POR QUÉ Vigenère dejó de ser «indescifrable» en 1863', 'Analizar cifrados simples en malware viejo o configs ofuscadas'],
+    ethical: ['Romper cifrados clásicos de retos propios o CTFs es formación legítima', 'La estadística no distingue autorización: úsalo solo en material que te pertenece o te han autorizado', 'Nada de esto amenaza criptografía moderna: la lección es lo contrario'],
+    tips: ['IC ≈ 0.066 = sustitución simple; ≈ 0.038 = polialfabético o aleatorio: es tu primer filtro', 'Caesar cae con ~20 letras; la sustitución general necesita ~100+ para confianza alta', 'Si el IC da «natural» pero Caesar no cuadra: prueba Atbash (k=25) o afín', 'El XOR del ejemplo (1b3737…) es el reto clásico de cryptopals: clave X (0x58)'],
+  },
+  pubkeylab: {
+    what: 'La matemática de clave pública ejecutándose con BigInt nativo: Diffie-Hellman completo con presets (incluido el trampa de subgrupo pequeño), orden de g, avisos de MITM y primo seguro; RSA textbook con keygen desde dos primos (validación Miller-Rabin), tabla bloque a bloque m→c→m\', ataque de factorización REAL por división de prueba sobre n (hasta 20M iteraciones) para demostrar la escalada exponencial, y modpow binario paso a paso mostrando el square-and-multiply bit a bit.',
+    params: [
+      { name: 'DH', type: 'p, g, a, b', required: true, desc: 'con presets didácticos y warnings de subgrupo/Miller-Rabin' },
+      { name: 'RSA', type: 'p, q, e, mensaje', desc: 'keygen con validación, bloques por carácter y ataque de factorización' },
+      { name: 'modpow', type: 'base, exp, mod', desc: 'visualización bit a bit del square-and-multiply' },
+    ],
+    daily: ['Entender por fin qué pasa dentro de un handshake TLS', 'Demostrar en clase por qué 32 bits de módulo es un chiste y 2048 no lo es', 'Depurar implementaciones cripto con números que sí puedes leer'],
+    ethical: ['Es un laboratorio didáctico: los números son pequeños a propósito y las claves generadas NO son para producción', 'Ataques de factorización contra claves ajenas reales serían delito; aquí factorizas TU n de 12 bits', 'La criptografía real requiere primos de 2048+ bits generados con RNG evaluado'],
+    tips: ['El preset p=23,g=2 muestra el subgrupo pequeño: pocas claves posibles aunque todo «funcione»', 'Con p=61,q=53 (n=3233) la factorización vuela; con primos de 8 dígitos ya tarda: esa es la lección', 'La «h» cifra siempre igual en RSA textbook: el padding OAEP real existe por eso', 'e=65537 es 2¹⁶+1: solo 2 bits a 1 → modpow en 17 pasos'],
+  },
+  bip39: {
+    what: 'Laboratorio de seeds BIP39 con la wordlist oficial de 2048 palabras embebida: generación de 12/15/18/21/24 palabras con crypto.getRandomValues, construcción entropía→checksum SHA-256→palabras interoperables con wallets reales, validación completa (wordlist, longitud, checksum, hex de entropía recuperada), anatomía bit a bit (11 bits por palabra, checksum en la última), reparación por fuerza bruta de UNA palabra corrupta contra el checksum (2048 candidatas), derivación de la seed real PBKDF2-HMAC-SHA512 2048 iteraciones con passphrase 25ª palabra, y lecciones duras de seguridad.',
+    params: [
+      { name: 'longitud', type: '12-24', desc: '128 a 256 bits de entropía' },
+      { name: 'mnemonic', type: 'string', desc: 'a validar: checksum, wordlist y entropía reconstruida' },
+      { name: 'posición', type: 'int', desc: 'palabra sospechosa para la reparación por fuerza bruta' },
+      { name: 'passphrase', type: 'string', desc: '25ª palabra opcional que cambia la seed por completo' },
+    ],
+    daily: ['Entender qué guarda realmente tu papel de recuperación (y por qué el checksum no protege)', 'Recuperar un mnemonic propio con una palabra mal anotada', 'Formación: mostrar en vivo por qué una seed vista es una seed perdida'],
+    ethical: ['Nunca pegues una seed real de wallet: esta tool corre en tu navegador, pero la regla es no digitalizarla nunca', 'La reparación por fuerza bruta es para TUS mnemonics: con los de otros sería robo', 'El lab es educativo: gestiona fondos con software de wallet auditado'],
+    tips: ['El vector «legal winner thank year…» de la doc BIP39 valida a la primera: úsalo para comprobar la tool', 'La corruptora cambia year→gear: la reparación lo encuentra entre 2048 candidatas', 'El checksum filtra 15 de cada 16 palabras aleatorias: puede haber varios candidatos válidos', 'La passphrase 25ª palabra es la única defensa si alguien VE tu papel: las palabras solas no bastan'],
+  },
 }

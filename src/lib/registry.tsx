@@ -15,6 +15,7 @@ import {
   RadioTower, Antenna, ScanLine,
   PackageOpen, FolderInput, MousePointerClick, PlugZap, Smartphone, Ghost, Variable, Boxes, Scale, Eye,
   Puzzle, TimerReset, ShieldHalf, Captions, AudioLines, KeySquare as KeySquareAlias, PhoneCall, AtSign as AtSignAlias,
+  Sigma, ScanFace, Droplet, Dices,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -324,6 +325,13 @@ export const TOOLS: ToolDef[] = [
 
   // ─── Ronda 16: anonimato e identidad ─────────────────────────
   { id: 'anonymity', name: 'Anonymity Lab', desc: 'Diagnóstico en vivo de tu exposición (IP, fuga WebRTC real, DNS, huella, coherencia) y recetas exactas para cambiar IP/MAC de verdad: macchanger, Tor NEWNYM, WireGuard con kill switch por plataforma', short: 'Anonymity', category: 'Red', icon: Ghost },
+
+  // ─── Ronda 17: cripto clásica, identidad textual y seeds ─────
+  { id: 'homoglyph', name: 'Homoglyph Scanner', desc: 'Dominios y textos impostores: punycode, confusables cirílicos/griegos, invisibles y bidi con esqueleto comparador, evil twins para testear filtros y catálogo de ataques IDN', short: 'Homoglyph', category: 'Phishing', icon: ScanFace },
+  { id: 'zerowidth', name: 'Zero-Width Stego', desc: 'Tinta invisible en texto plano: oculta y extrae mensajes con caracteres de ancho cero (binario, denso, por palabra), sanitizer forense y watermarking de filtraciones', short: 'ZeroWidth', category: 'Forense', icon: Droplet },
+  { id: 'classcipher', name: 'Classical Cipher Breaker', desc: 'Criptoanálisis ejecutado: Caesar resuelto por chi-cuadrado, Vigenère por Kasiski e índice de coincidencia, sustitución por hill-climbing con cuadrigramas, XOR por fuerza bruta — ES/EN', short: 'Ciphers', category: 'Criptografía', icon: KeyRound },
+  { id: 'pubkeylab', name: 'Asymmetric Crypto Playground', desc: 'Diffie-Hellman y RSA textbook ejecutándose con BigInt: keygen desde primos, cifrado por bloques, ataque de factorización real sobre n pequeño y modpow paso a paso', short: 'PubKey', category: 'Criptografía', icon: ArrowLeftRight },
+  { id: 'bip39', name: 'BIP39 Seed Lab', desc: 'Mnemonics BIP39 reales: genera con entropía criptográfica, valida checksum y anatomía bit a bit, repara una palabra por fuerza bruta y deriva la seed PBKDF2 — con lecciones de seguridad wallet', short: 'BIP39', category: 'Criptografía', icon: Dices },
 ]
 
 export const CATEGORIES: ToolCategory[] = [

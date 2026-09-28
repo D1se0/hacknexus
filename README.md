@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>155 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>160 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-155-2ee88a?style=flat-square" alt="155 tools" />
+  <img src="https://img.shields.io/badge/tools-160-2ee88a?style=flat-square" alt="160 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 155 herramientas
+## 🧰 Las 160 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -54,6 +54,9 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Emoji & ZW Encoder** | Codifica mensajes en emojis y texto invisible zero-width | 🟢 local |
 | **Cifrados Clásicos** | César/ROT13/ROT47, Vigenère, Atbash, XOR + criptoanálisis automático por frecuencias | 🟢 local |
 | **Hash Visual Fingerprint** | Convierte cualquier hash en un identicon determinista y compara dos de un vistazo con % de similitud (efecto avalancha hecho imagen) | 🟢 local |
+| **Classical Cipher Breaker** | Caesar por chi-cuadrado, Vigenère por Kasiski e IC, sustitución por hill-climbing, XOR por fuerza bruta: criptoanálisis real ES/EN | 🟢 local |
+| **Asymmetric Crypto Playground** | Diffie-Hellman y RSA ejecutándose con BigInt, factorización real de n pequeño y modpow paso a paso | 🟢 local |
+| **BIP39 Seed Lab** | Mnemonics reales interoperables: generar, validar checksum, anatomía bit a bit, reparar por fuerza bruta y seed PBKDF2 | 🟢 local |
 | **X.509 Decoder** | Pega un PEM y desglosa SAN, EKU, keyUsage y BasicConstraints con flags de sospecha: CA:TRUE inesperada, SHA1, wildcards, auto-firmados | 🟢 local |
 
 ### Contraseñas
@@ -131,6 +134,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **PCAP Analyzer** | Parsea pcap/pcapng (big/little endian): protocolos, top talkers, DNS/HTTP, alertas C2/Telnet/NTLM | 🟢 local |
 | **File Analyzer** | Magic bytes de 25+ formatos, entropía de Shannon por bloques, strings, hashes | 🟢 local |
 | **EXIF & Metadatos** | GPS, cámara, software y comentarios de JPG/PNG/HEIC/TIFF/PDF con aviso de ubicación | 🟢 local |
+| **Zero-Width Stego** | Tinta invisible en texto: 3 modos (binario, denso, por palabra), extracción con detección de modo y sanitizer forense | 🟢 local |
 | **Esteganografía LSB** | Oculta/extrae mensajes en el bit menos significativo de píxeles PNG (canvas) | 🟢 local |
 | **Log Forensics** | auth.log/syslog y EVTX-XML: fuerza bruta, top IPs, usuarios, histograma horario, eventos sospechosos (sudo peligroso, 4720, 1102…) y export JSON | 🟢 local |
 | **File Carver** | Carving por magic bytes: recupera PNG/JPG/GIF/PDF/ZIP/RAR/7z/GZIP embebidos en dumps, con preview, SHA-256 y búsqueda ASCII/UTF-16 | 🟢 local |
@@ -150,6 +154,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 |---|---|---|
 | **Email Header Analyzer** | Cadena Received, SPF/DKIM/DMARC, Return-Path vs From vs Reply-To, X-Mailer de scripts y score de spoofing 0-100 | 🟢 local |
 | **URL Phishing Inspector** | Punycode/homoglyphs carácter a carácter, typosquatting de marcas, acortadores, credenciales en URL y risk score — sin visitar la URL | 🟢 local |
+| **Homoglyph Scanner** | Dominios y textos impostores: punycode decodificado, confusables cirílico/griego, invisibles y bidi, esqueleto comparador, evil twins para testear filtros y catálogo IDN | 🟢 local |
 | **Awareness Campaign Builder** | Plantillas de email y landings de entrenamiento (BEC, O365, DHL, quishing, pretexting) con disclaimers, tracking simulado y QR | 🟢 local |
 | **Quishing Lab** | QR phishing educativo: 4 escenarios reales, 3 estilos de QR legítimos y lecciones para entrenar el ojo del equipo | 🟢 local |
 | **Shortener Audit** | Expande acortadores en vivo y detecta credenciales, punycode, typosquatting y redirects abiertos | 🟡 fetch CORS |

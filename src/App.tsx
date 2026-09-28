@@ -35,6 +35,11 @@ const FILE_ALIASES: Record<string, string> = {
   quishing: 'Quishing', shorteneraudit: 'Shorteneraudit', phishmtm: 'Phishmtm',
   emailosint: 'EmailOsint', phonevalidator: 'PhoneValidator', phonehunter: 'PhoneHunter',
   anonymity: 'Anonymity',
+  homoglyph: 'HomoglyphScanner',
+  zerowidth: 'ZeroWidthStego',
+  classcipher: 'ClassicalCipher',
+  pubkeylab: 'PubkeyLab',
+  bip39: 'Bip39Lab',
 }
 for (const t of TOOLS) {
   const file = FILE_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`
