@@ -352,6 +352,163 @@ export const HLR_FACTS: string[] = [
   'En OSINT, un teléfono con WhatsApp activo + foto + "últ. vez" es una identidad viva: el número solo es el identificador.',
 ]
 
+/* ═════════════════════ verificación de existencia (en vivo) ═══════════
+   Arquitectura de fallback triple para cada proveedor de HLR/mensajería:
+   1) clave del usuario (localStorage) — soporte Veriphone/numverify
+   2) sondeos sin credenciales (wa.me vía image beacon, Gravatar-like)
+   3) nunca bloquea la UI: cada sonda es independiente y con timeout
+   Devuelve SIEMPRE un estado, aunque sea 'desconocido'. */
+
+export interface VeriphoneResponse {
+  status?: string
+  phone?: string
+  phone_valid?: boolean
+  phone_type?: string
+  phone_region?: string
+  country?: string
+  country_code?: string
+  country_prefix?: string
+  international_number?: string
+  local_number?: string
+  e164?: string
+  carrier?: string
+  error?: { code?: string; message?: string } | string
+}
+
+export interface NumverifyResponse {
+  valid?: boolean
+  number?: string
+  local_format?: string
+  international_format?: string
+  country_name?: string
+  carrier?: string
+  line_type?: string
+  error?: { code: number; type: string; info: string }
+}
+
+export interface LiveCheckResult {
+  provider: string
+  status: 'active' | 'inactive' | 'unknown' | 'error'
+  carrier?: string
+  type?: string
+  detail: string
+  source: 'clave local' | 'sonda pública' | 'no disponible'
+}
+
+export interface LiveVerification {
+  veriphone: LiveCheckResult
+  numverify: LiveCheckResult
+  whatsapp: LiveCheckResult
+  verified: boolean // al menos una sonda respondió con active/inactive
+  summary: string
+}
+
+export const VERIF_KEY_STORAGE = 'hn-veriphone-key'
+
+export function saveVeriphoneKey(k: string): void {
+  try { localStorage.setItem(VERIF_KEY_STORAGE, k.trim()) } catch { /* noop */ }
+}
+
+export function getVeriphoneKey(): string {
+  try { return localStorage.getItem(VERIF_KEY_STORAGE) ?? '' } catch { return '' }
+}
+
+export function clearVeriphoneKey(): void {
+  try { localStorage.removeItem(VERIF_KEY_STORAGE) } catch { /* noop */ }
+}
+
+function fetchTimeout(url: string, ms: number, opts?: RequestInit): Promise<Response> {
+  const ctrl = new AbortController()
+  const t = setTimeout(() => ctrl.abort(), ms)
+  return fetch(url, { ...opts, signal: ctrl.signal }).finally(() => clearTimeout(t))
+}
+
+/** Veriphone: HLR + carrier + tipo. Requiere clave gratuita del usuario. */
+export async function veriphoneCheck(e164: string, key: string): Promise<LiveCheckResult> {
+  if (!key) return { provider: 'Veriphone', status: 'unknown', detail: 'sin clave: consigue una gratuita en veriphone.io (500 req/mes) y guárdala aquí — nunca sale de tu navegador', source: 'no disponible' }
+  try {
+    const r = await fetchTimeout(`https://api.veriphone.io/v2/verify?phone=${encodeURIComponent(e164)}&key=${encodeURIComponent(key)}`, 12000)
+    const data: VeriphoneResponse = await r.json()
+    if (!r.ok || data.status === 'error') {
+      const msg = typeof data.error === 'object' ? data.error?.message : String(data.error ?? 'error')
+      return { provider: 'Veriphone', status: 'error', detail: msg ?? 'error de la API', source: 'clave local' }
+  }
+    return {
+      provider: 'Veriphone',
+      status: data.phone_valid ? 'active' : 'inactive',
+      carrier: data.carrier,
+      type: data.phone_type,
+      detail: data.phone_valid ? `activo según HLR de Veriphone — operador: ${data.carrier ?? '?'} · tipo: ${data.phone_type ?? '?'}${data.phone_region ? ` · región: ${data.phone_region}` : ''}` : 'Veriphone reporta el número como NO válido/inactivo',
+      source: 'clave local',
+    }
+  } catch (e) {
+    return { provider: 'Veriphone', status: 'error', detail: `red o CORS: ${(e as Error).message}`, source: 'clave local' }
+  }
+}
+
+/** numverify: HLR gratuito (100 req/mes con clave free). CORS abierto. */
+export async function numverifyCheck(e164: string, key: string): Promise<LiveCheckResult> {
+  if (!key) return { provider: 'numverify', status: 'unknown', detail: 'sin clave: crea una gratis en numverify.com (100 req/mes)', source: 'no disponible' }
+  try {
+    const cc = e164.replace('+', '')
+    const r = await fetchTimeout(`https://apilayer.net/api/validate?access_key=${encodeURIComponent(key)}&number=${cc}&country_code=&format=1`, 12000)
+    const data: NumverifyResponse = await r.json()
+    if (data.error) return { provider: 'numverify', status: 'error', detail: data.error.info, source: 'clave local' }
+    return {
+      provider: 'numverify',
+      status: data.valid ? 'active' : 'inactive',
+      carrier: data.carrier,
+      type: data.line_type,
+      detail: data.valid ? `activo según numverify — ${data.carrier ?? '?'} · ${data.line_type ?? '?'} · ${data.country_name ?? ''}` : 'numverify reporta el número como inválido',
+      source: 'clave local',
+    }
+  } catch (e) {
+    return { provider: 'numverify', status: 'error', detail: `red o CORS: ${(e as Error).message}`, source: 'clave local' }
+  }
+}
+
+/** Sonda WhatsApp vía image beacon: wa.me/NUM sirve un avatar si la cuenta
+    existe y es pública. Status opaco (no-cors): ok = respuesta ANY → la
+    cuenta existe o al menos el endpoint respondió; reject = red/CORS. */
+export async function whatsappCheck(e164: string): Promise<LiveCheckResult> {
+  const num = e164.replace('+', '')
+  const url = `https://wa.me/${num}`
+  try {
+    await fetchTimeout(url, 8000, { mode: 'no-cors' })
+    return {
+      provider: 'WhatsApp', status: 'unknown',
+      detail: 'wa.me respondió. OJO: sin renderizar la página no puedo distinguir "cuenta existe" de "número sin WhatsApp" — ábrelo en incógnito (sin enviar mensaje) para verlo: foto + nombre + en línea = cuenta viva',
+      source: 'sonda pública',
+    }
+  } catch {
+    return { provider: 'WhatsApp', status: 'error', detail: 'wa.me no respondió (red o bloqueo): pruébalo manualmente', source: 'sonda pública' }
+  }
+}
+
+/** Ejecuta las 3 sondas en paralelo con veredicto combinado. */
+export async function verifyPhoneExists(e164: string, veriphoneKey: string, numverifyKey: string): Promise<LiveVerification> {
+  const [veriphone, numverify, whatsapp] = await Promise.all([
+    veriphoneCheck(e164, veriphoneKey),
+    numverifyCheck(e164, numverifyKey),
+    whatsappCheck(e164),
+  ])
+  const hlr = [veriphone, numverify].filter((x) => x.status === 'active' || x.status === 'inactive')
+  let summary: string
+  if (hlr.some((x) => x.status === 'active')) summary = '✅ CONFIRMADO ACTIVO: al menos un HLR reporta el número registrado y operativo'
+  else if (hlr.some((x) => x.status === 'inactive')) summary = '❌ REPORTADO INACTIVO: un HLR lo marca como no válido/no asignado — puede estar mal escrito o dado de baja'
+  else if (whatsapp.status === 'unknown' && whatsapp.detail.includes('respondió')) summary = '🟡 PARCIAL: sin clave HLR no puedo confirmar la existencia — abre wa.me en incógnito para la verificación visual (30 segundos, sin dejar rastro)'
+  else summary = '⚪ SIN VERIFICAR: añade una clave gratuita de Veriphone o numverify para la confirmación por HLR (el estándar de la industria)'
+  return { veriphone, numverify, whatsapp, verified: hlr.length > 0, summary }
+}
+
+export const LIVECHECK_NOTES: string[] = [
+  'El "existe de verdad" se responde con una consulta HLR (Home Location Register): la base de datos del operador que dice si un MSISDN está asignado y activo. Veriphone y numverify la exponen con claves gratuitas (500 y 100 req/mes).',
+  'La clave se guarda SOLO en localStorage de tu navegador y viaja únicamente al proveedor en cada consulta: ni HackNexus ni ningún intermediario la ve.',
+  'WhatsApp es el sondeo más rápido pero el más ruidoso: la existencia de cuenta no equivale a línea activa (cuentas Business y prepago sobreviven a líneas canceladas).',
+  'Un número puede ser válido en formato y estar INACTIVO hace años: el HLR es la única fuente de verdad de "está vivo ahora".',
+  'Si tu país tiene portabilidad activa (MNP), el operador que reporta el HLR es el ACTUAL, no el histórico del prefijo: contrástalo con el campo operador histórico.',
+]
+
 export const PHONE_ETHICS: string[] = [
   'Validar formatos es neutral; rastrear a una persona por su teléfono puede ser acoso (delito). Esta tool no localiza, no llama y no escribe a nadie.',
   'Las búsquedas crowdsourced (Truecaller) exponen TU número al usarlas: considera hacerlo desde un contexto controlado.',

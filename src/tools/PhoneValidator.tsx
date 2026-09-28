@@ -1,18 +1,35 @@
 import { useMemo, useState } from 'react'
-import { Phone, ScanSearch, List, AlertTriangle } from 'lucide-react'
-import { ToolHeader, Field, TextInput, TextArea, Select, Button, Badge, InfoBanner, Reveal, KV, CopyBlock } from '../components/ui'
+import { Phone, ScanSearch, List, AlertTriangle, Radar, KeyRound, Trash2 } from 'lucide-react'
+import { ToolHeader, Field, TextInput, TextArea, Select, Button, Badge, InfoBanner, Reveal, KV, CopyBlock, Spinner, useToast } from '../components/ui'
 import {
   parsePhone, parseImei, bulkSummary, PHONE_DORKS, HLR_FACTS, PHONE_ETHICS, COUNTRIES,
-  type ParsedPhone,
+  verifyPhoneExists, saveVeriphoneKey, getVeriphoneKey, clearVeriphoneKey, LIVECHECK_NOTES,
+  type ParsedPhone, type LiveVerification,
 } from '../lib/phoneosint'
 
 export default function PhoneValidator() {
+  const toast = useToast()
   const [raw, setRaw] = useState('+34 612 345 678')
   const [iso, setIso] = useState('ES')
   const [imei, setImei] = useState('')
   const [imeiRes, setImeiRes] = useState<ReturnType<typeof parseImei> | null>(parseImei(''))
 
   const parsed = useMemo(() => parsePhone(raw, iso), [raw, iso])
+
+  /* verificación de existencia en vivo (HLR + mensajería) */
+  const [verifKey, setVerifKey] = useState(getVeriphoneKey())
+  const [numverifyKey, setNumverifyKey] = useState('')
+  const [live, setLive] = useState<LiveVerification | null>(null)
+  const [liveBusy, setLiveBusy] = useState(false)
+  const runLive = async () => {
+    if (!parsed.e164) return
+    setLiveBusy(true)
+    try {
+      setLive(await verifyPhoneExists(parsed.e164, verifKey, numverifyKey))
+    } finally {
+      setLiveBusy(false)
+    }
+  }
 
   /* modo lista */
   const [bulk, setBulk] = useState('')
@@ -27,10 +44,10 @@ export default function PhoneValidator() {
 
   return (
     <div>
-      <ToolHeader icon={Phone} title="Phone Validator & OSINT" badge="E.164" desc="Valida que un número es realmente válido según el plan nacional, identifica país, tipo (móvil/fijo), geografía y operador histórico, y genera los enlaces para verificar si está activo." />
+      <ToolHeader icon={Phone} title="Phone Validator & OSINT" badge="E.164 + HLR" desc="Valida que un número es realmente válido según el plan nacional (55 países), identifica país, tipo y operador, COMPRUEBA EN VIVO si existe y está registrado (HLR vía Veriphone/numverify + sonda WhatsApp), y valida IMEI con Luhn." />
 
       <InfoBanner>
-        <b>La verdad incómoda:</b> saber si un teléfono "existe" de verdad exige una consulta <b>HLR</b> (de pago, vía Twilio/Vonage/numverify). Lo que esta tool hace —y hace bien— es validar el número contra el plan nacional (~45 países), detectar fakes, clasificar móvil/fijo y darte los enlaces públicos para seguir investigando. El IMEI se valida con Luhn.
+        <b>Validación en 3 capas:</b> ① sintáctica contra el plan nacional (instantánea, offline), ② de EXISTENCIA en vivo mediante consultas HLR al operador — la misma que usan bancos y delivery — con claves gratuitas de Veriphone (500 req/mes) o numverify (100 req/mes) que se guardan solo en tu navegador, y ③ sonda pública de WhatsApp. Sin claves, la tool sigue validando formato y te da la ruta manual (wa.me en incógnito) en 30 segundos.
       </InfoBanner>
 
       {/* número individual */}
@@ -119,6 +136,63 @@ export default function PhoneValidator() {
           </Reveal>
         </div>
       )}
+
+      {/* verificación de existencia en vivo */}
+      <Reveal delay={0.05}>
+        <div className="card mt-4 p-5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <h2 className="flex items-center gap-2 font-mono text-sm font-bold text-ink"><Radar size={15} /> ¿Existe y está registrado? Verificación en vivo</h2>
+            {parsed.e164 && (
+              <Button onClick={runLive} disabled={liveBusy} className="text-xs">
+                {liveBusy ? <Spinner /> : <Radar size={14} />} Comprobar {parsed.e164}
+              </Button>
+            )}
+          </div>
+          <p className="mt-2 text-xs leading-relaxed text-grey">
+            Tres sondas en paralelo: <b className="text-ink">Veriphone</b> y <b className="text-ink">numverify</b> preguntan al <b className="text-ink">HLR del operador</b> (la base de datos que responde si el número está asignado y activo, con operador real) y <b className="text-ink">WhatsApp</b> hace una sonda pública del endpoint wa.me. Las claves viajan solo del proveedor a tu navegador.
+          </p>
+
+          <div className="mt-3 grid gap-3 md:grid-cols-[1fr_1fr_auto]">
+            <Field label="Clave Veriphone (gratis en veriphone.io)" hint="500 req/mes">
+              <TextInput value={verifKey} onChange={(e) => setVerifKey(e.target.value)} onBlur={() => saveVeriphoneKey(verifKey)} placeholder="pega tu clave…" type="password" spellCheck={false} />
+            </Field>
+            <Field label="Clave numverify (gratis en numverify.com)" hint="100 req/mes">
+              <TextInput value={numverifyKey} onChange={(e) => setNumverifyKey(e.target.value)} placeholder="pega tu clave…" type="password" spellCheck={false} />
+            </Field>
+            <div className="flex items-end gap-2">
+              <Button variant="ghost" className="text-xs" onClick={() => { saveVeriphoneKey(verifKey); toast('Claves guardadas solo en este navegador', 'ok') }}><KeyRound size={13} /> Guardar</Button>
+              <Button variant="ghost" className="text-xs" onClick={() => { clearVeriphoneKey(); setVerifKey(''); setNumverifyKey(''); toast('Claves borradas') }}><Trash2 size={13} /> Borrar</Button>
+            </div>
+          </div>
+
+          {live && (
+            <div className="mt-4 space-y-2">
+              <div className={`rounded-lg border px-4 py-3 font-mono text-xs ${live.verified ? 'border-ok/40 bg-ok/10 text-ok' : 'border-warn/40 bg-warn/10 text-warn'}`}>
+                {live.summary}
+              </div>
+              {[live.veriphone, live.numverify, live.whatsapp].map((r) => (
+                <div key={r.provider} className="flex items-start justify-between gap-3 rounded-lg border border-edge/70 bg-black/20 px-3 py-2">
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-mono text-xs font-bold text-ink">{r.provider}</span>
+                      <Badge tone={r.status === 'active' ? 'ok' : r.status === 'inactive' ? 'bad' : r.status === 'error' ? 'bad' : 'neutral'}>{r.status}</Badge>
+                      <span className="font-mono text-[9px] uppercase text-grey/50">{r.source}</span>
+                    </div>
+                    <p className="mt-0.5 break-all text-[11px] leading-relaxed text-grey">{r.detail}</p>
+                  </div>
+                  {r.provider === 'WhatsApp' && parsed.e164 && (
+                    <a href={parsed.formats.waUrl} target="_blank" rel="noreferrer" className="shrink-0 rounded-md border border-edge px-2 py-1 font-mono text-[10px] text-info hover:border-info/50">abrir ↗</a>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+
+          <div className="mt-4 space-y-1.5 border-t border-edge/60 pt-3">
+            {LIVECHECK_NOTES.map((n, i) => <p key={i} className="text-[11px] leading-relaxed text-grey/80">💡 {n}</p>)}
+          </div>
+        </div>
+      </Reveal>
 
       {/* IMEI */}
       <Reveal delay={0.1}>

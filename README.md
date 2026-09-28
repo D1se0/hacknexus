@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>153 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>154 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-153-2ee88a?style=flat-square" alt="153 tools" />
+  <img src="https://img.shields.io/badge/tools-154-2ee88a?style=flat-square" alt="154 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 153 herramientas
+## 🧰 Las 154 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -194,7 +194,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Log Anonymizer** | Pseudonimización consistente y reversible de IPs/usuarios/dominios para compartir logs sin exponer nada | 🟢 local |
 | **Username OSINT** | URLs de perfil en ~20 plataformas, patrón del alias, variantes y dorks de Google/GitHub — todo pasivo | 🟢 local |
 | **Email OSINT** | Gravatar (perfil+avatar), filtraciones (XposedOrNot), commits de GitHub firmados con ese email y dorks — pasivo con CORS verificado | 🔵 APIs públicas |
-| **Phone Validator & OSINT** | Validación E.164 de 55 países: país, móvil/fijo, región, operador histórico, fakes, IMEI y verificación de actividad | 🟢 local |
+| **Phone Validator & OSINT** | Validación E.164 de 55 países + verificación EN VIVO de existencia por HLR (Veriphone/numverify) y sonda WhatsApp, con IMEI | 🟡 HLR opcional |
+| **Phone Hunter** | Dossier OSINT de identidad: plan de investigación en 10 pasos, 20+ fuentes, marco legal y solicitudes ARCO/RGPD | 🔵 fuentes públicas |
 | **Sysmon Config Builder** | XML de Sysmon por perfiles con guía ofensiva/defensiva de cada evento: el punto de partida de todo SOC | 🟢 local |
 | **Config Diff** | Diff semántico de configs: ignora comentarios/orden, resalta directivas de seguridad que cambiaron | 🟢 local |
 | **GTFOBins Explorer** | Base de datos COMPLETA de GTFOBins: 458 binarios UNIX con todos sus comandos de abuso por contexto (sudo, SUID, capabilities) | 🟢 local |

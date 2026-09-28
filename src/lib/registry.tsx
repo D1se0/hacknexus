@@ -213,7 +213,8 @@ export const TOOLS: ToolDef[] = [
   { id: 'loganonymize', name: 'Log Anonymizer', desc: 'Pseudonimiza IPs, usuarios y dominios de forma consistente y reversible para compartir logs sin exponer nada', short: 'AnonLogs', category: 'Análisis', icon: EyeOff },
   { id: 'userosint', name: 'Username OSINT', desc: 'Investiga un alias: plataformas donde existe, patrón que sigue, variantes y dorks listos para Google y GitHub', short: 'OSINT', category: 'Análisis', icon: UserSearch },
   { id: 'emailosint', name: 'Email OSINT', short: 'EmailOSINT', desc: 'Huellas de un email: Gravatar (perfil+avatar), filtraciones vía XposedOrNot, commits de GitHub firmados con esa dirección y dorks listos', category: 'Análisis', icon: AtSignAlias },
-  { id: 'phonevalidator', name: 'Phone Validator & OSINT', short: 'Phone', desc: 'Valida números contra el plan E.164 de ~45 países: país, móvil/fijo, región, operador histórico, fakes, IMEI y verificación de actividad', category: 'Análisis', icon: PhoneCall },
+  { id: 'phonevalidator', name: 'Phone Validator & OSINT', short: 'Phone', desc: 'Valida números contra el plan E.164 de 55 países, comprueba EN VIVO si existe y está registrado (HLR vía Veriphone/numverify + sonda WhatsApp), y valida IMEI', category: 'Análisis', icon: PhoneCall },
+  { id: 'phonehunter', name: 'Phone Hunter', short: 'Hunter', desc: 'Dossier OSINT de identidad detrás de un número: lo que revela, plan de investigación en 10 pasos, 20+ fuentes, marco legal y solicitudes ARCO/RGPD', category: 'Análisis', icon: Crosshair },
   { id: 'sysmonbuilder', name: 'Sysmon Config Builder', desc: 'Configuración XML de Sysmon con perfiles y guía ofensiva/defensiva de cada evento: el punto de partida de todo SOC', short: 'Sysmon', category: 'Análisis', icon: FileCog },
 
   // ─── Generadores ────────────────────────────────────────────────

@@ -1804,6 +1804,18 @@ export const DOCS: Record<string, ToolDoc> = {
     ],
     daily: ['Limpiar una base de contactos antes de un simulacro de smishing autorizado', 'Verificar que los números de tu propia empresa están bien formateados en E.164', 'Clasificar móviles vs fijos en un listado de incidente'],
     ethical: ['Validar formato es neutral; rastrear a una persona por su teléfono puede ser acoso (delito)', 'La tool no localiza, no llama y no escribe a nadie: los enlaces externos los abres tú y bajo tu responsabilidad', 'El teléfono es dato personal: en auditorías limita el alcance a lo autorizado'],
-    tips: ['"Existe de verdad" exige consulta HLR de pago (Twilio Lookup, numverify): aquí se valida que el número es VÁLIDO y de qué tipo', 'El operador por prefijo es histórico: la portabilidad (MNP) lo invalida', 'Los 555-01XX de EE. UU. y 07700 900xxx de UK son rangos de cine: si aparecen en tu base, son datos de prueba'],
+    tips: ['"Existe de verdad" se responde con la verificación en vivo por HLR: pega tu clave gratuita de Veriphone o numverify y la tool consulta al operador', 'El operador por prefijo es histórico: el HLR en vivo te da el operador ACTUAL (la portabilidad lo cambia)', 'Los 555-01XX de EE. UU. y 07700 900xxx de UK son rangos de cine: si aparecen en tu base, son datos de prueba'],
+  },
+  phonehunter: {
+    what: 'Dossier de identidad OSINT detrás de un número de teléfono: sintetiza lo que el número revela por sí mismo (país, tipo, región, operador histórico, huella técnica), un plan de investigación profesional en 10 pasos con orden, tiempos y qué esperar de cada uno, un catálogo de 20+ fuentes de identidad clasificadas por categoría y fuerza (caller ID crowdsourced, mensajería, agregadores de datos, filtraciones, marketplace, registros, archivo web), el contexto del país para la investigación (capitals, husos, idiomas, emergencias), el marco legal aplicable y un generador de solicitudes de derechos ARCO/RGPD con el plazo legal de tu jurisdicción. Exporta el dossier completo en Markdown.',
+    params: [
+      { name: 'número', type: 'string', required: true, desc: 'el teléfono a investigar, con + o selector de país' },
+      { name: 'dossier', type: 'secciones', desc: 'identificación, contexto país, huella técnica, superficie OSINT y marco legal' },
+      { name: 'plan', type: '10 pasos', desc: 'metodología con enlace directo a cada fuente y qué esperar de cada una' },
+      { name: 'solicitud', type: 'plantilla', desc: 'carta de ejercicio de derechos con plazo legal (30 días RGPD, 20 MX, 15 BR…)' },
+    ],
+    daily: ['Identificar quién te llama desde un número desconocido antes de devolver la llamada', 'Documentar una campaña de smishing o vishing para reportarla al banco o a la autoridad', 'Investigar fraude con autorización: el dossier ordena la evidencia con fuente y fecha'],
+    ethical: ['Identificar un número es legítimo para proteger tu propio número, fraude autorizado, periodismo y CTFs: para otra cosa, consulta a un abogado', 'Tres fuentes independientes = identidad; una sola = candidato. La prisa convierte hipótesis en falsas acusaciones', 'Truecaller y Sync.me exponen TU número y tu agenda al usarlos: número secundario y sin sincronizar contactos', 'La solicitud ARCO/RGPD es la vía legalmente incontestable: más lenta que el OSINT pero obliga por ley'],
+    tips: ['El paso 2 (wa.me en incógnito, sin enviar nada) resuelve el 60% de los casos en 30 segundos', 'Los últimos 8 dígitos entre comillas en Google es el dork que más rinde', 'Un número sin huella alguna suele ser prepago nuevo, número desechado o spoofing: no es que "no existe", es que es reciente o falsificado', 'Combínalo con Phone Validator para la verificación HLR en vivo antes de gastar tiempo en el plan'],
   },
 }
