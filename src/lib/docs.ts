@@ -1890,4 +1890,54 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['Nunca pegues una seed real de wallet: esta tool corre en tu navegador, pero la regla es no digitalizarla nunca', 'La reparación por fuerza bruta es para TUS mnemonics: con los de otros sería robo', 'El lab es educativo: gestiona fondos con software de wallet auditado'],
     tips: ['El vector «legal winner thank year…» de la doc BIP39 valida a la primera: úsalo para comprobar la tool', 'La corruptora cambia year→gear: la reparación lo encuentra entre 2048 candidatas', 'El checksum filtra 15 de cada 16 palabras aleatorias: puede haber varios candidatos válidos', 'La passphrase 25ª palabra es la única defensa si alguien VE tu papel: las palabras solas no bastan'],
   },
+
+  /* ── Ronda 18 ── */
+  maldoc: {
+    what: 'Autopsia estática de documentos maliciosos sin ejecutar JAMÁS nada: PDF con catálogo de gatillos (/OpenAction, /AA, /Launch, /JS, /EmbeddedFile, /RichMedia, URI/UNC, /Encrypt) con contexto de cada aparición, veredicto por severidad y cadena de ejecución reconstruida; OOXML con inventario textual (vbaProject.bin, TargetMode=External, ActiveX, macroEnabled, updateFields); .eml con From vs Return-Path, SPF/DKIM/DMARC, ruta Received (se lee de abajo arriba), adjuntos peligrosos y dobles extensiones; y generador de muestras inertes de laboratorio (PDF con cadena completa, DOCX macro con relación externa) para entrenar la vista y calibrar sandboxes.',
+    params: [
+      { name: 'pdf', type: 'texto crudo', required: true, desc: 'contenido del PDF (strings, hex-dump decodificado o muestra del generador)' },
+      { name: 'ooxml', type: 'inventario', desc: 'nombres de fichero + XML del docx/xlsx (unzip -l + cat de .rels)' },
+      { name: 'eml', type: 'código fuente', desc: 'el .eml completo con cabeceras; incluye ejemplo de phishing cargable' },
+      { name: 'muestras', type: 'generador', desc: 'suspicious.pdf y poliza_2026_macro.docm inertes para descargar' },
+    ],
+    daily: ['Analizar el adjunto sospechoso de un email ANTES de abrirlo (y de pasárselo al sandbox de pago)', 'Entrenar al equipo con muestras inertes: qué verá el analista en un PDF de campaña real', 'Auditar cabeceras .eml de phishing recibido: sobre SMTP vs From visible'],
+    ethical: ['El análisis es estático: nada se ejecuta, ni el PDF lanza comandos ni la macro corre', 'Las muestras generadas son inertes y para laboratorio propio, no para enviar a nadie', 'Analizar documentos de campañas reales sin tratar puede ser ilegal según jurisdicción: usa muestras de repos públicos de investigación'],
+    tips: ['Un PDF legítimo rara vez necesita /OpenAction + /JS + /Launch juntos: la co-ocurrencia ES el veredicto', 'En Office, vbaProject.bin es el indicador rey; TargetMode="External" con UNC apunta a robo de hash NTLM', 'En .eml, la identidad real está en Return-Path y la Received más antigua (abajo del todo)', 'Los lectores modernos bloquean /Launch a cmd.exe: el ataque real usa JS + EmbeddedFile o explota el lector'],
+  },
+  zipbomb: {
+    what: 'La matemática de las zip bombs sin armas reales: constructor de bombs anidadas CAPADAS (runs de ceros de 1 KB a 10 MB, hasta 8 niveles × 16 ficheros, total expandido siempre acotado) usando deflate-raw nativo del navegador, ensamblador ZIP estándar propio (CRC32, headers STORE), árbol de amplificación con BigInt estilo 42.zip (16 niveles × 16 ficheros = 16¹⁶ copias), analizador de ZIPs sospechosos SIN descomprimir (central directory, ratios por entrada, anidación, veredicto por patrón) y catálogo de las bombs que hicieron historia (42.zip, layered, quine de Russ Cox, ZBLG/ZBSM de Fifield, PGS).',
+    params: [
+      { name: 'ceros hoja', type: '1 KB–10 MB', required: true, desc: 'tamaño del fichero hoja (capa de seguridad integrada)' },
+      { name: 'ficheros × niveles', type: 'sliders', desc: 'estructura de anidación de la bomba capada' },
+      { name: 'analizador', type: 'file input', desc: 'audita cualquier .zip: ratio máximo, anidación, veredicto' },
+      { name: 'calculadora', type: 'BigInt', desc: 'árbol de amplificación estilo 42.zip sin límites' },
+    ],
+    daily: ['Probar si tu extractor (unzip, 7z, libarchive) aplica límites de descompresión reales', 'Auditar adjuntos .zip recibidos: ratio 1000:1 + anidación = patrón de bomba', 'Enseñar por qué «capacidad de disco» sin cuotas es una vulnerabilidad'],
+    ethical: ['Las bombs generadas están CAPADAS: máximo ~10 GB expandibles, imposibles de causar daño', 'Fabricar o distribuir bombs reales para DoS es delito en la mayoría de jurisdicciones', 'El catálogo histórico es documentación pública con fines didácticos'],
+    tips: ['DEFLATE codifica runs con (distancia, longitud): 1 GB de ceros cuesta ~28 KB — el resto es aritmética', 'La defensa es acotar: bytes máximos, ficheros por archivo y profundidad de anidación ANTES de extraer', 'Un ratio > 1000:1 en producción es anómalo: los datos reales comprimen 2-10x', 'La quine de Russ Cox (un ZIP que se contiene a sí mismo) es el límite teórico de la elegancia'],
+  },
+  steganalysis: {
+    what: 'Estegoanálisis LSB sobre imágenes con dos ataques: visor de los 8 planos de bits por canal RGB (canvas, densidad de unos y flip-rate entre vecinos — los planos LSB con estego muestran estructura artificial donde debería haber ruido suave) y ataque chi-cuadrado de Westfeld-Pfitzmann sobre pares de valores (2v, 2v+1) con P-values REALES vía gamma incompleta regularizada (Numerical Recipes), curva P por bloques de la imagen para estimar dónde empieza/termina el payload, más estadística global: densidad LSB por canal y correlación de Pearson entre LSBs vecinos (natural 0.3-0.7, estego < 0.1).',
+    params: [
+      { name: 'imagen', type: 'file input', required: true, desc: 'PNG/BMP/JPG procesada 100% local en canvas (max 1200px)' },
+      { name: 'canal + plano', type: 'select+slider', desc: 'R/G/B × plano 0-7 con render en vivo' },
+      { name: 'chi²', type: '32 bloques', desc: 'P-value acumulado por fracción de imagen con gráfica' },
+      { name: 'stats', type: 'métricas', desc: 'densidad, flip-rate y correlación de vecinos por canal' },
+    ],
+    daily: ['Comprobar si la imagen que te pasó «anon» lleva tinta LSB antes de confiar en su origen', 'Auditar imágenes de tu web: ¿alguien subió estego por el formulario de contacto?', 'Formación: ver en vivo cómo el plano 0 delata el texto incrustado'],
+    ethical: ['Todo el análisis es local: la imagen nunca sale del navegador', 'Detectar estego ajeno sin autorización puede violar privacidad; en tus canales, es DLP legítimo', 'La herramienta es de detección básica: no sustituye un análisis forense certificado'],
+    tips: ['El flip-rate ≈50% en el LSB es la firma del ruido puro: una foto natural queda <30%', 'Si la curva chi² cae de P≈1 a P≈0 a mitad de imagen, el embed empezó arriba: mide el punto para estimar el payload', 'La recompresión (cualquier reescalado) destruye LSB: es la defensa gratuita contra este canal', 'Prueba con una imagen SIN estego y una CON estego (cualquier herramienta LSB): compara los números'],
+  },
+  wayback: {
+    what: 'Máquina del tiempo OSINT para dominios vía CDX API de archive.org (CORS abierto, solo se consulta lo que el usuario escribe): timeline con capturas por año, desglose de códigos HTTP y mimetypes, primeros/últimos snapshots con enlace directo; subdominios históricos con matchType=domain (cuándo aparecieron, cuándo murieron, volumen — candidatos a subdomain takeover); y rutas interesantes indexadas (admin, backup, .env, api, swagger…) con estado HTTP de cada snapshot: el diccionario que otros pagan por descubrir.',
+    params: [
+      { name: 'dominio', type: 'string', required: true, desc: 'se normaliza (sin protocolo, www ni rutas) antes de consultar' },
+      { name: 'modo', type: '3 pestañas', desc: 'timeline (host), subdominios (domain) o rutas interesantes' },
+      { name: 'timeline', type: 'gráfica', desc: 'capturas por año + HTTP/mime breakdown + últimos 40' },
+      { name: 'subs', type: 'tabla', desc: 'subdominio, rango de años activo, capturas y último snapshot' },
+    ],
+    daily: ['Recon pasiva de un target autorizado: surface histórica sin UNA petición al target', 'Buscar endpoints borrados de tu propia web que siguen vivos en el servidor', 'Documentar la evolución tecnológica de un dominio (CMS, migraciones, hosting)'],
+    ethical: ['Solo se consulta archive.org: el target no recibe tráfico y todo es público e indexado', 'El índice que ves es el que ve un atacante: audita TU dominio y limpia la deuda pública', 'Usar rutas históricas contra sistemas sin autorización sigue siendo delito aunque sean «viejas»'],
+    tips: ['Los subdominios con firstY≠lastY y rango antiguo son los mejores candidatos a takeover: cruza con DNS', 'matchType=domain trae hasta 20k registros y es lento: host para el host exacto', 'Received de los .eml y snapshots de la CDX comparten lema: lo antiguo es lo que nadie protege', 'archive.org aplica rate limit: si sale 429, espera unos segundos en vez de machacar'],
+  },
 }

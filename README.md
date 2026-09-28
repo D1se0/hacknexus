@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>160 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>164 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-160-2ee88a?style=flat-square" alt="160 tools" />
+  <img src="https://img.shields.io/badge/tools-164-2ee88a?style=flat-square" alt="164 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 160 herramientas
+## 🧰 Las 164 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -135,6 +135,10 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **File Analyzer** | Magic bytes de 25+ formatos, entropía de Shannon por bloques, strings, hashes | 🟢 local |
 | **EXIF & Metadatos** | GPS, cámara, software y comentarios de JPG/PNG/HEIC/TIFF/PDF con aviso de ubicación | 🟢 local |
 | **Zero-Width Stego** | Tinta invisible en texto: 3 modos (binario, denso, por palabra), extracción con detección de modo y sanitizer forense | 🟢 local |
+| **MalDoc Autopsy** | Autopsia de PDF/OOXML/EML sin ejecutar nada: gatillos /OpenAction+/Launch+/JS, vbaProject, cabeceras de phishing y muestras de laboratorio inertes | 🟢 local |
+| **Zip Bomb Lab** | 42.zip sin armas reales: bombs anidadas capadas con deflate-raw, árbol de amplificación BigInt y analizador de ZIPs sospechosos sin descomprimir | 🟢 local |
+| **Steganalysis** | Radiografía LSB: 8 planos de bits por canal RGB, ataque chi² de Westfeld-Pfitzmann con P-values reales y correlación de vecinos | 🟢 local |
+| **Wayback Time Machine** | OSINT pasivo vía CDX API: timeline del dominio, subdominios históricos (takeover), rutas interesantes indexadas y snapshots — sin tocar el target | 🔵 archive.org |
 | **Esteganografía LSB** | Oculta/extrae mensajes en el bit menos significativo de píxeles PNG (canvas) | 🟢 local |
 | **Log Forensics** | auth.log/syslog y EVTX-XML: fuerza bruta, top IPs, usuarios, histograma horario, eventos sospechosos (sudo peligroso, 4720, 1102…) y export JSON | 🟢 local |
 | **File Carver** | Carving por magic bytes: recupera PNG/JPG/GIF/PDF/ZIP/RAR/7z/GZIP embebidos en dumps, con preview, SHA-256 y búsqueda ASCII/UTF-16 | 🟢 local |

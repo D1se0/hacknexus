@@ -40,6 +40,10 @@ const FILE_ALIASES: Record<string, string> = {
   classcipher: 'ClassicalCipher',
   pubkeylab: 'PubkeyLab',
   bip39: 'Bip39Lab',
+  maldoc: 'MalDocAutopsy',
+  zipbomb: 'ZipBombLab',
+  steganalysis: 'Steganalysis',
+  wayback: 'WaybackMachine',
 }
 for (const t of TOOLS) {
   const file = FILE_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`

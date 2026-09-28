@@ -332,6 +332,12 @@ export const TOOLS: ToolDef[] = [
   { id: 'classcipher', name: 'Classical Cipher Breaker', desc: 'Criptoanálisis ejecutado: Caesar resuelto por chi-cuadrado, Vigenère por Kasiski e índice de coincidencia, sustitución por hill-climbing con cuadrigramas, XOR por fuerza bruta — ES/EN', short: 'Ciphers', category: 'Criptografía', icon: KeyRound },
   { id: 'pubkeylab', name: 'Asymmetric Crypto Playground', desc: 'Diffie-Hellman y RSA textbook ejecutándose con BigInt: keygen desde primos, cifrado por bloques, ataque de factorización real sobre n pequeño y modpow paso a paso', short: 'PubKey', category: 'Criptografía', icon: ArrowLeftRight },
   { id: 'bip39', name: 'BIP39 Seed Lab', desc: 'Mnemonics BIP39 reales: genera con entropía criptográfica, valida checksum y anatomía bit a bit, repara una palabra por fuerza bruta y deriva la seed PBKDF2 — con lecciones de seguridad wallet', short: 'BIP39', category: 'Criptografía', icon: Dices },
+
+  // ─── Ronda 18: forense de documentos, bombs, estegoanálisis y OSINT ──
+  { id: 'maldoc', name: 'MalDoc Autopsy', desc: 'Autopsia de documentos maliciosos sin ejecutar nada: gatillos PDF (/OpenAction, /Launch, /JS), VBA y relaciones externas de Office, cabeceras .eml de phishing y muestras de laboratorio inertes', short: 'MalDoc', category: 'Forense', icon: FileWarning },
+  { id: 'zipbomb', name: 'Zip Bomb Lab', desc: 'La matemática de 42.zip sin armas reales: bombs anidadas capadas con deflate-raw, árbol de amplificación con BigInt, analizador de ZIP sospechosos sin descomprimir y catálogo de bombs históricas', short: 'ZipBomb', category: 'Forense', icon: PackageOpen },
+  { id: 'steganalysis', name: 'Steganalysis', desc: 'Radiografía LSB de imágenes: visor de los 8 planos de bits por canal RGB, ataque chi-cuadrado de Westfeld-Pfitzmann con P-values reales y correlación de vecinos — detecta tinta invisible en píxeles', short: 'Stego', category: 'Forense', icon: ScanLine },
+  { id: 'wayback', name: 'Wayback Time Machine', desc: 'OSINT pasivo con la CDX API de archive.org: timeline del dominio, subdominios históricos candidatos a takeover, rutas interesantes indexadas y acceso a cada snapshot — sin tocar el target', short: 'Wayback', category: 'Forense', icon: History },
 ]
 
 export const CATEGORIES: ToolCategory[] = [
