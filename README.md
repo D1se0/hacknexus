@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>168 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>170 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-168-2ee88a?style=flat-square" alt="168 tools" />
+  <img src="https://img.shields.io/badge/tools-170-2ee88a?style=flat-square" alt="170 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 168 herramientas
+## 🧰 Las 170 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -166,6 +166,8 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Quishing Lab** | QR phishing educativo: 4 escenarios reales, 3 estilos de QR legítimos y lecciones para entrenar el ojo del equipo | 🟢 local |
 | **Shortener Audit** | Expande acortadores en vivo y detecta credenciales, punycode, typosquatting y redirects abiertos | 🟡 fetch CORS |
 | **Phishing MITM Anatomy** | Anatomía del phishing con proxy inverso (Evilginx-style): por qué roba sesiones con 2FA y qué capas lo rompen | 🟢 local |
+| **CardForge** | Generador de tarjetas FICTICIAS con Luhn real (ISO/IEC 7812) y IIN de 7 redes: plástico 3D por red, lote, completar BIN y analizador MII/Luhn | 🟢 local |
+| **DNI Generator** | DNI/NIE ficticios con el algoritmo real: letra módulo 23, NIE 0/10/20M, MRZ ICAO 9303 del reverso y validador explicado — preview DNI 3.0 | 🟢 local |
 
 ### Linux & sistema
 | Tool | Descripción | Red |

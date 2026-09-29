@@ -10,10 +10,10 @@ import {
   UserSearch, ListPlus, ClipboardList, MonitorCog, FileCog, FileText,
   Terminal, Sparkles, FileDiff, History,
   Filter, FileCode2, Route, MonitorPlay, FileInput, Users, BookMarked,
-  Languages, SquareTerminal, Cable, HeartPulse, Nfc, Keyboard,
+  Languages, SquareTerminal, Cable, HeartPulse, Nfc, Keyboard, IdCard, Ticket,
   Hourglass, AlarmClock, LayoutGrid, Microchip, Bluetooth, BadgeCheck,
   RadioTower, Antenna, ScanLine,
-  PackageOpen, FolderInput, MousePointerClick, PlugZap, Smartphone, Ghost, Variable, Boxes, Scale, Eye,
+  PackageOpen, FolderInput, MousePointerClick, PlugZap, Smartphone, Ghost, Variable, Boxes, Scale, Eye, CreditCard,
   Puzzle, TimerReset, ShieldHalf, Captions, AudioLines, KeySquare as KeySquareAlias, PhoneCall, AtSign as AtSignAlias,
   Sigma, ScanFace, Droplet, Dices,
 } from 'lucide-react'
@@ -344,6 +344,10 @@ export const TOOLS: ToolDef[] = [
   { id: 'biometrics', name: 'Keystroke Biometrics', desc: 'Biometría conductual del teclado: dwell y flight time, perfil estadístico de tu escritura y detector de bots por ritmo — el MFA invisible de los bancos, capturado y analizado en local', short: 'Biometrics', category: 'Análisis', icon: Keyboard },
   { id: 'passkeys', name: 'Passkeys Lab', desc: 'Anatomía de WebAuthn: decodificador CBOR de attestationObject, flags del authenticatorData, clave pública COSE, clientDataJSON y ceremonia real de registro — la passkey disseccionada byte a byte', short: 'Passkeys', category: 'Criptografía', icon: Fingerprint },
   { id: 'flipperterm', name: 'Flipper Terminal', desc: 'Terminal para Flipper Zero vía Web Serial API con simulador educativo completo: comandos subghz/ir/nrf/rfid/nfc, parser de capturas de radio y lecciones de fixed-code vs rolling code', short: 'Flipper', category: 'Red', icon: Cable },
+
+  // ─── Ronda 20: generadores de documentos ficticios ───────
+  { id: 'cardforge', name: 'CardForge', desc: 'Generador de tarjetas de crédito FICTICIAS con Luhn real (ISO/IEC 7812) y prefijos IIN de 7 redes: preview animada del plástico por red, lote, completar BIN y analizador de números — el formato de pago disseccionado', short: 'CardForge', category: 'Phishing', icon: CreditCard },
+  { id: 'dnigen', name: 'DNI Generator', desc: 'DNI/NIE españoles FICTICIOS con el algoritmo real: letra módulo 23 (tabla TRWAGMYFPDXBNJZSQVHLCKE), NIE con el truco del 0/10/20 millones, MRZ ICAO 9303 del reverso y validador explicado — preview estilo DNI 3.0', short: 'DniGen', category: 'Phishing', icon: IdCard },
 ]
 
 export const CATEGORIES: ToolCategory[] = [

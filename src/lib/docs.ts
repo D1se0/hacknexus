@@ -1989,4 +1989,28 @@ export const DOCS: Record<string, ToolDoc> = {
     ethical: ['El simulador NO transmite nada: sin hardware todo es teatro educativo', 'Con hardware real, tú eres el responsable legal de lo que emitas (replay de señales ajenas = delito en la mayoría de jurisdicciones)', 'Las capturas del parser son de ejemplo: las frecuencias legales (bandas ISM) varían por país'],
     tips: ['Fixed-code (Princeton, 8-24 bits) = grabar y reenviar basta; rolling code (KeeLoq) evita el replay pero no el rolljam con jammer', '2^24 = 16.7M combinaciones: un código fijo se fuerza en minutos con SDR — no hay cifrado que romper', 'MouseJack: los dongles 2.4 GHz de teclados sin emparejar aceptan inyección de pulsaciones desde 2016', 'MIFARE Classic (Crypto1) está roto desde 2008: si tu oficina lo usa, el UID es un nombre público'],
   },
+  cardforge: {
+    what: 'Generador didáctico de tarjetas de crédito FICTICIAS con la aritmética REAL de pago: checksum de Luhn (ISO/IEC 7812-1, patentado en 1954 contra errores de tecleo), prefijos IIN/BIN públicos de 7 redes (Visa, Mastercard, Amex, Discover, JCB, Diners, UnionPay) con sus longitudes y CVC reales, datos de titular y banco sintéticos, lote hasta 20, y analizador que desglosa cualquier número pegado: red detectada, Luhn, MII (primer dígito = industria), BIN y veredicto honesto.',
+    params: [
+      { name: 'red', type: 'select', required: true, desc: '7 redes con prefijos, longitudes y CVC reales' },
+      { name: 'BIN', type: 'opcional', desc: 'fija los primeros 6-8 dígitos del plástico' },
+      { name: 'preview', type: 'tarjeta 3D', desc: 'plástico con gradiente por red, chip, flip al dorso con CVC' },
+      { name: 'analizador', type: 'pegado', desc: 'red + Luhn + MII + BIN de cualquier número' },
+    ],
+    daily: ['Probar la validación de tu propio formulario de checkout: ¿comprueba Luhn antes de llamar al gateway?', 'Entrenar al equipo en PCI DSS: por qué el CVV jamás se almacena y el PAN va tokenizado/iframe', 'Demostrar que «Luhn OK» no significa nada: la autorización real la decide el emisor online'],
+    ethical: ['Los números generados NO existen en ningún emisor: no tienen cuenta, fondos ni superan una autorización real', 'Usar números plausibles de tarjeta ajena en formularios reales es fraude (art. 248 CP y equivalentes)', 'Es un laboratorio de formato para desarrolladores y formadores: nada se envía a ninguna API'],
+    tips: ['Luhn NO es criptografía: es un chequeo de calidad de datos como el ISBN o el IBAN — detecta 1 dígito mal o 2 transpuestos', 'El primer dígito (MII) ya dice la industria: 4/5 banca, 3 viajes (Amex/JCB/Diners), 7 petróleo, 9 asignación nacional', 'Mastercard moderna empieza por 2221-2720 (rango 2): por eso el MII 2 también es «banca» desde 2017', 'Amex: 15 dígitos y CVC de 4 en el FRENTE; el resto de redes: CVC de 3 al dorso'],
+  },
+  dnigen: {
+    what: 'Generador de DNI/NIE españoles FICTICIOS con el algoritmo oficial REAL: letra módulo 23 sobre el número con la tabla TRWAGMYFPDXBNJZSQVHLCKE, NIE (Orden INT/1097/2005) sumando el valor de la inicial (X=0, Y=10M, Z=20M) antes del módulo, MRZ TD1 de ICAO 9303 (las 3 líneas OCR-B del reverso del DNI 3.0) con checksums 7-3-1 reales, lote hasta 25 y validador que explica el cálculo paso a paso con la letra esperada.',
+    params: [
+      { name: 'tipo', type: 'select', required: true, desc: 'DNI (8+letra) o NIE (X/Y/Z + 7 + letra)' },
+      { name: 'preview', type: 'carné', desc: 'estilo DNI 3.0: foto sintética, MRZ real con checks' },
+      { name: 'lote', type: '1-25', desc: 'tabla con número, letra y módulo de cada uno' },
+      { name: 'validador', type: 'pegado', desc: 'explica el mod 23 y la letra esperada' },
+    ],
+    daily: ['Validar el campo DNI de tu formulario antes de enviarlo al backend (la letra es computable, gratis y local)', 'Detectar datos falsos con letra inconsistente en registros de prueba o importaciones', 'Formación en KYC: entender qué comprueba un escáner MRZ y por qué la letra es solo la primera valla'],
+    ethical: ['Los documentos generados son FICTICIOS: la aritmética cuadra pero la existencia la acredita solo el Registro Civil', 'Usar DNI ajenos o inventados plausibles para registrarse, contratar o suplantar es delito (suplantación y fraude documental)', 'No se consulta ninguna base de datos: todo el cálculo es local y no sale ningún byte'],
+    tips: ['El NIE es un DNI disfrazado: X-1234567 tiene la MISMA letra que el DNI 01234567 porque X=0 millones', 'La MRZ del reverso usa pesos 7-3-1 sobre dígitos, letras (A=10…Z=35) y «<» (filler): el mismo estándar de pasaportes de todo el mundo', '12345678 → mod 23 = 14 → letra Z: comprueba el algoritmo a mano la primera vez y nunca más lo dudes', 'Válido ≠ real: igual que Luhn no consulta al emisor, el mod 23 no consulta el padrón — la verificación real es documental'],
+  },
 }
