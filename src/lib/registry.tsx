@@ -16,6 +16,7 @@ import {
   PackageOpen, FolderInput, MousePointerClick, PlugZap, Smartphone, Ghost, Variable, Boxes, Scale, Eye, CreditCard,
   Puzzle, TimerReset, ShieldHalf, Captions, AudioLines, KeySquare as KeySquareAlias, PhoneCall, AtSign as AtSignAlias,
   Sigma, ScanFace, Droplet, Dices,
+  Microscope,
 } from 'lucide-react'
 
 export type ToolCategory =
@@ -348,6 +349,10 @@ export const TOOLS: ToolDef[] = [
   // ─── Ronda 20: generadores de documentos ficticios ───────
   { id: 'cardforge', name: 'CardForge', desc: 'Generador de tarjetas de crédito FICTICIAS con Luhn real (ISO/IEC 7812) y prefijos IIN de 7 redes: preview animada del plástico por red, lote, completar BIN y analizador de números — el formato de pago disseccionado', short: 'CardForge', category: 'Phishing', icon: CreditCard },
   { id: 'dnigen', name: 'DNI Generator', desc: 'DNI/NIE españoles FICTICIOS con el algoritmo real: letra módulo 23 (tabla TRWAGMYFPDXBNJZSQVHLCKE), NIE con el truco del 0/10/20 millones, MRZ ICAO 9303 del reverso y validador explicado — preview estilo DNI 3.0', short: 'DniGen', category: 'Phishing', icon: IdCard },
+
+  // ─── Ronda 21: documentación forense y academia Wireshark ───────
+  { id: 'forensicsdoc', name: 'Forensics Playbook', desc: 'Guía completa de análisis forense TESTADA sobre evidencias reales: árbol de decisión «tengo este fichero, ¿qué hago?», Volatility 3 (RAM), The Sleuth Kit (disco), file/binwalk/carving, EVTX Sysmon, Prefetch LZXPRESS-Huffman y registro con regipy — con los 3 retos Atenea resueltos paso a paso', short: 'ForPlaybook', category: 'Forense', icon: Microscope },
+  { id: 'wifilterdoc', name: 'WiFilter Academy', desc: 'Academia de Wireshark: 60+ display filters verificados con tshark 4.6.2 (cada uno con qué hace el disector por detrás y su trampa), conceptos desde nivel 0, trucos de tshark (export-objects, follow stream, estadísticas -z) y la ruta de aprendizaje hasta DFIR', short: 'WiAcademy', category: 'Red', icon: Network },
 ]
 
 export const CATEGORIES: ToolCategory[] = [

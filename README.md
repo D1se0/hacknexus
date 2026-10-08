@@ -6,12 +6,12 @@
 
 <p align="center">
   <strong>Suite de hacking ético, ciberseguridad y forense — 100% client-side</strong><br/>
-  <span font-mono>170 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
+  <span font-mono>172 herramientas · docs detalladas · comparativa de OS · sin backend · tus datos nunca salen del navegador</span>
 </p>
 
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-2ee88a?style=flat-square" alt="MIT License" />
-  <img src="https://img.shields.io/badge/tools-170-2ee88a?style=flat-square" alt="170 tools" />
+  <img src="https://img.shields.io/badge/tools-172-2ee88a?style=flat-square" alt="172 tools" />
   <img src="https://img.shields.io/badge/backend-0-blueviolet?style=flat-square" alt="0 backend" />
   <img src="https://img.shields.io/badge/React%2018-Vite%205-61dafb?style=flat-square" alt="React 18 + Vite 5" />
   <img src="https://img.shields.io/badge/TypeScript-strict-3178c6?style=flat-square" alt="TS strict" />
@@ -38,7 +38,7 @@ npm run preview
 
 El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github/workflows/pages.yml](.github/workflows/pages.yml) (build + deploy). Configura en *Settings → Pages → Source: GitHub Actions*.
 
-## 🧰 Las 170 herramientas
+## 🧰 Las 172 herramientas
 
 ### Criptografía
 | Tool | Descripción | Red |
@@ -122,6 +122,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Cable Docs Animadas** | Pinout RJ45 T568A/B con señal animada, categorías Cat5e–Cat8, tipos de cable con trampas, fibra single/multimodo y conectores LC/SC/ST/MPO | 🟢 local |
 | **Internet Speed Test** | Test real de latencia, jitter, descarga y subida contra speed.cloudflare.com con velocímetro animado, nota, matriz de usos e historial | 🔵 speed.cloudflare.com |
 | **Wireshark Display Filters** | Constructor visual de display filters: catálogo por protocolo, presets de caza (escaneos, exfil DNS, credenciales) y validación en vivo | 🟢 local |
+| **WiFilter Academy** | Academia de Wireshark: 60+ display filters verificados con tshark 4.6.2 (disector por detrás + trampa + conteos reales), conceptos nivel 0, trucos tshark (export-objects, follow, -z) y ruta 0→DFIR | 🟢 local |
 | **BLE GATT Explorer** | Servicios y characteristics Bluetooth con su riesgo real (tracking, DFU sin firma), conversor UUID y decoder de advertising | 🟢 local |
 | **WiFi Attack Lab** | Los 7 pasos de una auditoría 802.11 en tu laboratorio: comandos con placeholders personalizables, qué esperar en cada salida, la trampa típica y cómo se detecta cada acción | 🟢 local |
 | **Decodificador 802.11** | Pega un frame en hex y desglosa la cabecera MAC bit a bit: flags, direcciones según toDS/fromDS e Information Elements con el RSN completo (WPA2/WPA3/PMF) | 🟢 local |
@@ -144,6 +145,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **Wayback Time Machine** | OSINT pasivo vía CDX API: timeline del dominio, subdominios históricos (takeover), rutas interesantes indexadas y snapshots — sin tocar el target | 🔵 archive.org |
 | **Esteganografía LSB** | Oculta/extrae mensajes en el bit menos significativo de píxeles PNG (canvas) | 🟢 local |
 | **Log Forensics** | auth.log/syslog y EVTX-XML: fuerza bruta, top IPs, usuarios, histograma horario, eventos sospechosos (sudo peligroso, 4720, 1102…) y export JSON | 🟢 local |
+| **Forensics Playbook** | Guía forense testada sobre evidencias reales: árbol de decisión por tipo de fichero, Volatility 3 (RAM), TSK (disco), file/binwalk/carving, EVTX Sysmon, Prefetch LZXPRESS y registro — con 3 retos Atenea resueltos | 🟢 local |
 | **File Carver** | Carving por magic bytes: recupera PNG/JPG/GIF/PDF/ZIP/RAR/7z/GZIP embebidos en dumps, con preview, SHA-256 y búsqueda ASCII/UTF-16 | 🟢 local |
 | **Stego Audio** | Esteganografía LSB sobre WAV/PCM real con parser RIFF propio, capacidad en bytes, waveform y espectrograma por FFT propia | 🟢 local |
 

@@ -50,6 +50,8 @@ const FILE_ALIASES: Record<string, string> = {
   flipperterm: 'FlipperTerm',
   cardforge: 'CardForge',
   dnigen: 'DniGen',
+  forensicsdoc: 'ForensicsDoc',
+  wifilterdoc: 'WiFilterDoc',
 }
 for (const t of TOOLS) {
   const file = FILE_ALIASES[t.id] ?? `${t.id.charAt(0).toUpperCase()}${t.id.slice(1)}`
