@@ -4,6 +4,7 @@ import { Calculator, Plus, Trash2, Download, ChevronDown, ChevronRight } from 'l
 import { ToolHeader, Badge, Field, TextInput, Button, Reveal, CopyBlock, useToast } from '../components/ui'
 import { subnetInfo, vlsm, maskFromCidr, toBinaryIp, intToIp, type VlsmBlock, type SubnetInfo } from '../lib/subnet'
 import { download } from '../lib/util'
+import VlsmXSection from './VlsmXSection'
 
 const PRESETS: { label: string; base: string; reqs: { name: string; hosts: number }[] }[] = [
   { label: 'demo clásica', base: '192.168.1.0/24', reqs: [{ name: 'RRHH', hosts: 50 }, { name: 'IT', hosts: 120 }, { name: 'Servidores', hosts: 20 }] },
@@ -381,6 +382,9 @@ export default function Vlsm() {
           Los bloques se alinean a su tamaño (una /26 siempre empieza en múltiplos de 64). Haz clic en una fila para ver los binarios y el detalle completo.
         </div>
       </Reveal>
+
+      {/* ─── sección nueva: VLSM en Formato X (rejilla de bits de aula) ─── */}
+      <VlsmXSection vlsmBlocks={result?.blocks.filter((b) => b.ok) ?? null} />
     </div>
   )
 }
