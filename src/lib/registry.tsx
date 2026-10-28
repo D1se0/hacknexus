@@ -156,7 +156,7 @@ export const TOOLS: ToolDef[] = [
   { id: 'httpinspector', name: 'HTTP Inspector', short: 'HTTP Info', desc: 'Auditoría de cabeceras HTTP y cabeceras de seguridad de cualquier URL', category: 'Red', icon: Activity },
   { id: 'pingtool', name: 'Ping & Traceroute web', short: 'Ping', desc: 'Mide latencia HTTP desde el navegador con estadísticas y gráfica', category: 'Red', icon: Activity },
   { id: 'subnetting', name: 'Subnetting Calculator', short: 'Subnetting', desc: 'IPv4/CIDR completa con binarios, clase y tabla de referencia', category: 'Red', icon: Split, ported: true, origin: 'calculadora_subnetting' },
-  { id: 'vlsm', name: 'Calculadora VLSM', short: 'VLSM', desc: 'Segmenta una red en subredes por hosts con binarios y clase', category: 'Red', icon: Calculator, ported: true, origin: 'calculadora_vlsm' },
+  { id: 'vlsm', name: 'Calculadora VLSM', short: 'VLSM', desc: 'Segmenta una red en subredes por hosts con binarios y clase · rejilla «formato X» de aula: la X marca el 1er bit de host (subnetting, método de la X, formato X, binario)', category: 'Red', icon: Calculator, ported: true, origin: 'calculadora_vlsm' },
   { id: 'ipv4', name: 'IPv4 Generator', short: 'IPv4 Gen', desc: 'Genera direcciones IPv4 aleatorias criptográficas por tipo con análisis de subred completo', category: 'Red', icon: Network },
   { id: 'ipv6', name: 'IPv6 Toolkit', short: 'IPv6', desc: 'Expande/comprime, tipo de dirección, prefijos, EUI-64, generador de MACs y reverse DNS', category: 'Red', icon: Wifi },
   { id: 'curlbuilder', name: 'Curl Builder', short: 'Curl', desc: 'Construye comandos curl con headers, auth, body y proxy', category: 'Red', icon: Server },

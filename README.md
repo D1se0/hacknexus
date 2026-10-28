@@ -111,7 +111,7 @@ El deploy a **GitHub Pages** es automático: cada push a `main` ejecuta [.github
 | **HTTP Inspector** | Auditoría de cabeceras de seguridad (HSTS, CSP, XFO…) con explicaciones | 🔵 target |
 | **Ping & Latencia web** | RTT HTTP real desde el navegador, min/avg/max con gráfica animada | 🔵 target |
 | **Subnetting Calculator** 🔥 port | IPv4/CIDR completa: binarios, clase, wildcard, tabla de referencia clicable | 🟢 local |
-| **Calculadora VLSM** 🔥 port | Segmenta por hosts con mapa visual proporcional, binarios por subred, eficiencia, huecos libres, detalle expandible y export CSV | 🟢 local |
+| **Calculadora VLSM** 🔥 port | Segmenta por hosts con mapa visual proporcional, binarios por subred, eficiencia, huecos libres, detalle expandible y export CSV · debajo, la sección **VLSM en Formato X**: rejilla de bits de aula con la X (idéntica a la plantilla Excel), modo A por lista y modo B desde la VLSM, modo estudio paso a paso y export TSV/Markdown/JSON/PNG/.xlsx (motor testado contra los 7 bloques del Excel real) | 🟢 local |
 | **IPv4 Generator** | Genera IPs aleatorias criptográficas por tipo (privada, pública, multicast…) con análisis de subred por dirección | 🟢 local |
 | **IPv6 Toolkit** | Expande/comprime, tipo, prefijos, EUI-64, reverse ip6.arpa y **generador de MACs** por fabricante | 🟢 local |
 | **Curl Builder** | Construye curl con headers, auth, proxy y equivalente Python requests | 🟢 local |
